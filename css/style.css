@@ -1,0 +1,246 @@
+@charset "UTF-8";
+
+* {
+    margin: 0;
+    padding: 0;
+    /* No text select */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    box-sizing: border-box;
+}
+
+*:focus {
+    outline: none;
+}
+
+html,
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: transparent;
+    z-index: 0;
+}
+
+#screenFix {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    z-index: 0;
+}
+
+.hide {
+    display: none !important;
+}
+
+#container {
+    position: absolute;
+    width: 1280px;
+    height: 720px;
+    /* overflow: hidden; */
+    background-color: transparent;
+    z-index: 1;
+}
+
+#pre-build {
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+}
+
+#frame {
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+}
+
+/* Tela Content */
+
+#tela-content {
+    width: 100%;
+    height: 100%;
+}
+
+#tela-content * {
+    line-height: 1.4;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#desc-content {
+    width: 42%;
+    height: 100%;
+    background-color: white;
+    float: left;
+}
+
+#desc-content {
+    color: #595b68;
+    padding: 3em 62px 0 62px;
+}
+
+.--desc-title {
+    font-size: 1.8em;
+}
+
+.--desc-goals {
+    font-weight: bold;
+    margin-top: 3.5em;
+    width: 74%;
+}
+
+.--desc-learning {
+    display: list-item;
+    list-style: disc outside none;
+    margin-left: 1em;
+    margin-left: .5em;
+    padding-left: 0.5em;
+    width: 89%;
+}
+
+.--desc-link {
+    font-size: .8em;
+    color: #595B68;
+    text-decoration: none;
+    bottom: 20px;
+    position: absolute;
+}
+
+#main-content {
+    width: 58%;
+    height: 100%;
+    background-color: #9A9BB3;
+    float: left;
+    padding: 3em 62px 0 62px;
+    color: white;
+}
+
+.--content-title {
+    font-size: 1.8em;
+}
+
+.--content-start-button {
+    width: 52px;
+    height: 52px;
+    float: right;
+    background: url('../assets/img/hud/button_start.png') no-repeat scroll 0 0 transparent;
+    margin-top: -5px;
+    margin-right: -8px;
+    cursor: pointer;
+    z-index: 9;
+}
+
+.--content-start-button:hover {
+    background: url('../assets/img/hud/button_start.png') no-repeat scroll -52px 0 transparent !important;
+}
+
+.--content-link {
+    width: 100%;
+    margin-top: 3.5em;
+    /* background-color: red; */
+}
+
+.--content-link li {
+    list-style: none;
+    padding: 0.8em 16px;
+    margin: 4px 36px;
+    cursor: pointer;
+}
+
+.--content-link .-orange {
+    background-color: #F17164;
+}
+
+.--content-link .-pink {
+    background-color: #E6388F;
+}
+
+.--content-link .-purple {
+    background-color: #7146B2;
+}
+
+.--content-link .-blue {
+    background-color: #536FC3;
+}
+
+.--content-link .-green {
+    background-color: #5EC7CB;
+}
+
+
+
+
+/* decoration */
+
+.--linedesign {
+    position: fixed;
+    position: device-fixed;
+    /*ipad fix */
+    width: 100%;
+    height: 4px;
+    z-index: 7;
+}
+
+.--linedesign * {
+    position: relative;
+    display: inline-block;
+    float: left;
+    width: 10%;
+    height: 100%;
+}
+
+.--linedesign-top {
+    top: -0.5px;
+    left: 0;
+}
+
+.--linedesign-top * {
+    float: right;
+}
+
+.--linedesign-bottom {
+    bottom: 0;
+    right: 0;
+}
+
+.--linedesign-bottom * {
+    float: left;
+}
+
+.--color-back-1 {
+    background-color: #f17164;
+}
+
+.--color-back-2 {
+    background-color: #e6388f;
+}
+
+.--color-back-3 {
+    background-color: #7146b2;
+}
+
+.--color-back-4 {
+    background-color: #536fc3;
+}
+
+.--color-back-5 {
+    background-color: #5ec7cb;
+}
+
+.--color-back-6 {
+    background-color: #87889d;
+}
+
+.--color-back-7 {
+    background-color: #595b68;
+}
+
+/* --------------------------------- IFRAMES ---------------------------------*/
+
+#iframes {
+    width: 100%;
+    height: 100%;
+}
