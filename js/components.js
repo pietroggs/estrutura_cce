@@ -50,7 +50,7 @@ function createAudioCloud(obj)
             else
             {
                 audio.id = "audio-cl-" + id;
-                audio.src = "./audio/" + obj.audio + ".mp3";
+                audio.src = "./audios/" + obj.audio + ".mp3";
                 PlayAudioCloud();
             }
         });
@@ -122,12 +122,12 @@ function createAudioTimeline(obj)
     //#region Audio
         // Audio
         let audio = document.querySelector("audio");
-        audio.src = "./audio/" + obj.audio + ".mp3";
+        audio.src = "./audios/" + obj.audio + ".mp3";
         audio.id = "audio-tl-" + id;
 
         // Temp Audio
         let m_audio = new Audio();
-        m_audio.src = "./audio/" + obj.audio + ".mp3";
+        m_audio.src = "./audios/" + obj.audio + ".mp3";
     //#endregion
 
     //#region Event Listeners
@@ -152,7 +152,7 @@ function createAudioTimeline(obj)
             else
             {
                 audio.id = "audio-tl-" + id;
-                audio.src = "./audio/" + obj.audio + ".mp3";
+                audio.src = "./audios/" + obj.audio + ".mp3";
                 PlayAudioTimeline();
             }
             progressBar.addEventListener("mousedown", timelineProgressBarEvent);
@@ -808,7 +808,6 @@ function createRowOrderer(obj)
     //#endregion
 }
 //#endregion
-
 
 // #region DRAW LINE
 function createDrawline(obj)

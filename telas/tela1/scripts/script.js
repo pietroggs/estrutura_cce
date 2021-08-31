@@ -12,7 +12,13 @@ let grammarBoxObj = {
     id: 0,
     title: "Title",
     icon: "icon_lamp",
-    text: ["<span class = 'pink'>span</span>", "<hr>", "lari lira"]
+    text: ["<span class = 'bg-blue'>Vanessa</span>",
+            "<hr>",
+            "lari lira",
+            "lari lira",
+            "lari lira",
+            "lari lira",
+            "lari lira"]
 }
 
 // video object sample
@@ -20,8 +26,8 @@ let videoObj = {
     id: 0,
     video: "video_00",
     poster: "video_00",
-    keyframe: [0.10, 0.16],
-    subtitle: [ "Cacilds vidis litro abertis. Suco de cevadiss deixa as pessoas mais interessantis.",
+    keyframe: [0.05, 0.16],
+    subtitle: ["Cacilds",
     "Diuretics paradis num copo é motivis de denguis. Sapien in monti palavris qui num significa nadis i pareci latim."]
 }
 
@@ -29,7 +35,7 @@ let videoObj = {
 let rowOrdererObj = {
     id: 0,
     correct: [2,1,3,0], 
-    text: ["Olá", "Não sei", "Cacildis", "I don't know", "Aline", "Flávio"]
+    text: ["Olá", "Não sei", "Cacildis", "I don't know"]
 }
 
 // draw line object sample WIP
@@ -37,6 +43,8 @@ let drawlineObj = { id: 0, amount: 3, orientation: "vertical" }
 
 
 createAudioCloud(cloudObj);
+
+
 createAudioTimeline(timelineObj);
 createGrammarBox(grammarBoxObj);
 createImageFrame(imageFrameObj);
