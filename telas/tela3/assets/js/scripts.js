@@ -13,11 +13,6 @@ var practiceIsScored = document.querySelector("#" + practiceContainerId).hasAttr
 var mainFramePath = parent.screen; // parent ...
 var MFPontuar = mainFramePath.pontuar; // função mainFramePath.pontuar():
 
-// temp
-function MFPontuar(prId, score){
-    log("<<< Practice ID: "+prId+" | Sending score: "+score+" >>>");
-}
-
 // Practice specific properties
 var practiceProperties = [
     ["I'm sorry Kieran, but …", 1, 0], // [alternative text, correct answer, score]
