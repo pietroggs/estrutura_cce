@@ -143,6 +143,8 @@ var screen = {
     // Pontuação
     pontuar: (quest, point) => {
         EST.telas.geral[screen.current].pontos = val;
+
+        log("<<< PONTUAR: "+EST.telas.geral[screen.current].pontos+" >>>");
     },
 
     setCheck: (callback) => {
