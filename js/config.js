@@ -74,6 +74,7 @@ function loadContentScreen(telas) {
     document.querySelector('.--desc-title').innerText = EST.telas.content.text_skill;
     document.querySelector('.--desc-learning').innerText = EST.telas.content.text_learning;
     document.querySelector('.--content-title').innerText = EST.telas.content.text_title;
+    document.querySelector('.--topbar-title').innerText = EST.telas.content.text_title;
 
     // Criando links
     let link_list = document.querySelector('.--content-link');
@@ -82,19 +83,38 @@ function loadContentScreen(telas) {
         // skip loop if the property is from prototype
         if (!telas.hasOwnProperty(key)) continue;
         let tela = telas[key];
-        let li = document.createElement('li');
-        li.className = `-${tela.color}`;
-        let span = document.createElement('span');
-        span.innerText = tela.title;
-        li.appendChild(span);
+        if (key != 'content') {
+            let li = document.createElement('li');
 
+            let bg = document.createElement('div');
+            bg.className = `-${tela.color} -bg`;
+            li.appendChild(bg);
+
+            let span = document.createElement('span');
+            span.innerText = tela.title;
+            li.appendChild(span);
+
+            // Ribbon
+            let rbb = document.createElement('div');
+            rbb.classList.add('--rb');
+            rbb.classList.add('-b');
+            rbb.classList.add(`-${tela.color}`);
+            li.appendChild(rbb);
+
+            let rbf = document.createElement('div');
+            rbf.classList.add('--rb');
+            rbf.classList.add('-f');
+            rbf.classList.add(`-${tela.color}`);
+            li.appendChild(rbf);
+
+            li.onclick = function () {
+                screen.move(EST.telas.lista.indexOf(tela.src));
+            };
+
+            link_list.appendChild(li);
+
+        }
         EST.telas.lista.push(tela.src);
-
-        li.onclick = function () {
-            screen.move(EST.telas.lista.indexOf(tela.src));
-        };
-
-        link_list.appendChild(li);
     }
 
     log(`Telas a serem carregadas: ${[EST.telas.lista]}`);
@@ -116,7 +136,7 @@ function loadIframes(telas) {
         frame.height = '100%';
         frame.className = 'hide';
         frame.id = tela.src;
-        
+
         div_t.appendChild(frame);
     }
 }

@@ -145,9 +145,27 @@ body {
 
 .--content-link li {
     list-style: none;
-    padding: 0.8em 16px;
+    padding: 1.4em 16px;
     margin: 4px 36px;
     cursor: pointer;
+    position: relative;
+    z-index: 3;
+}
+
+.--content-link .-bg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 2;
+}
+
+.--content-link span {
+    position: absolute;
+    z-index: 3;
+    top: 52%;
+    transform: translateY(-50%);
 }
 
 .--content-link .-orange {
@@ -202,7 +220,7 @@ body {
 }
 
 .--linedesign-bottom {
-    bottom: 0;
+    bottom: 0px;
     right: 0;
 }
 
@@ -236,6 +254,176 @@ body {
 
 .--color-back-7 {
     background-color: #595b68;
+}
+
+/* Ribbons */
+
+.--rb {
+    background-position: center;
+    background-size: 100% 100%;
+    height: 100%;
+    position: absolute;
+    width: 36px;
+    top: 2px;
+    z-index: 1;
+    background-color: transparent !important;
+}
+
+.--rb.-b {
+    left: -30px !important;
+}
+
+.-b.-orange {
+    background-image: url(../assets/img/hud/rib1_l.png);
+}
+
+.-b.-pink {
+    background-image: url(../assets/img/hud/rib2_l.png);
+}
+
+.-b.-purple {
+    background-image: url(../assets/img/hud/rib3_l.png);
+}
+
+.-b.-blue {
+    background-image: url(../assets/img/hud/rib4_l.png);
+}
+
+.-b.-green {
+    background-image: url(../assets/img/hud/rib5_l.png);
+}
+
+.-b.-grey {
+    background-image: url(../assets/img/hud/rib6_l.png);
+}
+
+.--rb.-f {
+    right: -30px;
+}
+
+.-f.-orange {
+    background-image: url(../assets/img/hud/rib1_r.png);
+}
+
+.-f.-pink {
+    background-image: url(../assets/img/hud/rib2_r.png);
+}
+
+.-f.-purple {
+    background-image: url(../assets/img/hud/rib3_r.png);
+}
+
+.-f.-blue {
+    background-image: url(../assets/img/hud/rib4_r.png);
+}
+
+.-f.-green {
+    background-image: url(../assets/img/hud/rib5_r.png);
+}
+
+.-f.-grey {
+    background-image: url(../assets/img/hud/rib6_r.png);
+}
+
+/* Top Bar */
+
+.--topbar {
+    text-align: right;
+    padding: 1.5em 62px;
+    overflow: auto;
+    font-size: 16px;
+    line-height: normal;
+}
+
+.--topbar{
+    font-family: Arial, Helvetica, sans-serif;
+    color: #595b68;
+}
+
+.--topbar *{
+    float: right;
+    margin-top: 5px;
+}
+
+.--topbar span {
+    margin-left: 10px;
+}
+
+span.-orange {
+    color: #F17164;
+}
+
+span.-pink {
+    color: #E6388F;
+}
+
+span.-purple {
+    color: #7146B2;
+}
+
+span.-blue {
+    color: #536FC3;
+}
+
+span.-green {
+    color: #5EC7CB;
+}
+
+.--btn-dic {
+    border-radius: 7px;
+    width: 46px;
+    height: 46px;
+    display: inline-block;
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    border: 2px solid #87889D;
+    background: url(../assets/img/hud/btn_dictionary.png) no-repeat scroll transparent;
+    background-position: -1px -1px;
+    background-size: auto 44px;
+
+}
+
+.--btn-dic:hover {
+    border: 2px solid #E6388F !important;
+    background-position: -45px -1px !important;
+}
+
+.--btn-menu {
+    background: url(../assets/img/hud/button_home.png) no-repeat right top;
+    background-size: 30px auto;
+    display: inline-block;
+    height: 30px;
+    position: fixed;
+    right: 16px;
+    top: 18px;
+    width: 32px;
+    cursor: pointer;
+}
+
+.--seta-next {
+    background: url(../assets/img/hud/button_next_page.png) no-repeat center center;
+    background-size: 40px 80px;
+    cursor: pointer;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    right: 10px;
+    width: 40px;
+    height: 80px;
+}
+
+.--seta-prev {
+    background: url(../assets/img/hud/button_next_page.png) no-repeat center center;
+    background-size: 40px 80px;
+    cursor: pointer;
+    position: absolute;
+    transform: translate(-50%, -50%) scaleX(-1);
+    top: 50%;
+    left: 50px;
+    width: 40px;
+    height: 80px;
 }
 
 /* --------------------------------- IFRAMES ---------------------------------*/
