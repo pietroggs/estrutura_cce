@@ -1,5 +1,6 @@
 function init() {
     calcScale();
+    screen.navControl();
 }
 
 //#region Scale
@@ -70,16 +71,94 @@ function mobileAndTabletCheck() {
 //#region Navigation
 
 var screen = {
+    // Navegação
     current: "tela-content",
+    index: 0,
     move: (sn) => {
+        // Change screen
         document.querySelector(`#${screen.current}`).classList.add('hide');
         screen.current = EST.telas.lista[sn];
         document.querySelector(`#${screen.current}`).classList.remove('hide');
+        screen.navControl();
     },
-    pontuar: (val)=> {
+    next: () => {
+        screen.index++;
+        screen.move(screen.index);
+    },
+    prev: () => {
+        screen.index--;
+        screen.move(screen.index);
+    },
+    navControl: () => {
+        console.log(`Nav Control: ${screen.index}`)
+        let i = screen.index;
+        let l = EST.telas.lista.length;
+
+        if (i != 0)
+            document.querySelector('.--topbar').querySelector('span').innerText = EST.telas.geral[EST.telas.lista[i]].title;
+
+        // Controle Dicionario
+        if (i == 0 || i > (l - 2)) {
+            document.querySelector('.--btn-dic').classList.add('hide');
+        } else {
+            try {
+                document.querySelector('.--btn-dic').classList.remove('hide');
+            } catch (e) {
+                log(`Erro hide d: ${e}`)
+            }
+        }
+
+        // Controle Menu
+        if (i == 0) {
+            document.querySelector('.--btn-menu').classList.add('hide');
+        } else {
+            try {
+                document.querySelector('.--btn-menu').classList.remove('hide');
+            } catch (e) {
+                log(`Erro hide m: ${e}`)
+            }
+        }
+
+        // Controle Setas
+        if (i == 0 || (i + 1) > (l)) {
+            document.querySelector('.--seta-next').classList.add('hide');
+        } else {
+            try {
+                document.querySelector('.--seta-next').classList.remove('hide');
+            } catch (e) {
+                log(`Erro hide sn: ${e}`)
+            }
+        }
+
+        if (i == 0) {
+            document.querySelector('.--seta-prev').classList.add('hide');
+        } else {
+            try {
+                document.querySelector('.--seta-prev').classList.remove('hide');
+            } catch (e) {
+                log(`Erro hide sp: ${e}`)
+            }
+        }
+    },
+    // Pontuação
+    pontuar: (quest, point) => {
         EST.telas.geral[screen.current].pontos = val;
     },
+
+    setCheck: (callback) => {
+        // Set check button function
+    },
+
+    setKey: (callback) => {
+        // Set key button function
+    },
+
+    reset: () => {
+        // Reset iframe and points
+    }
 }
+
+var points = []
 
 //#endregion
 
