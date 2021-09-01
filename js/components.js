@@ -921,7 +921,7 @@ function createDrawline(obj)
 
     function CreateGhost()
     {
-        ghost = create('',"#--drawline-drawlineContainer-" + id, "--ghost", "--ghost");
+        ghost = create('',"#--drawline-drawlineContainer-" + id, "--drawline-ghost", "--drawline-ghost");
        
         window.onmousemove = function(e) { 
 

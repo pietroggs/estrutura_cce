@@ -38,7 +38,7 @@ let rowOrdererObj = {
     text: ["Olá", "Não sei", "Cacildis", "I don't know"]
 }
 
-// draw line object sample WIP
+// draw line object sample
 let drawlineObj = { 
     id: 0,
     amount: 3,
@@ -48,8 +48,6 @@ let drawlineObj = {
 
 
 createAudioCloud(cloudObj);
-
-
 createAudioTimeline(timelineObj);
 createGrammarBox(grammarBoxObj);
 createImageFrame(imageFrameObj);
