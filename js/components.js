@@ -360,14 +360,16 @@ function createImageFrame(obj)
     //#region Popup
     function popup()
     {
-        let body = document.getElementsByTagName("body");
-        body = body[0];
+        let topBar = parent.document.querySelector(".--topbar");
+        topBar.style.cssText = "display: none;";
 
-        let parentContainer = parent.document.getElementById("container");
+        log(topBar);
+
+        body = document.getElementsByTagName("body");
+        body = body[0];
 
         // Mask
         let popMask = create('',"#--container-outer", "--imageFrame-popupMask", "--imageFrame-popupMask");
-        body.append(popMask);
 
         //#region Popup Container
             create('', "#--imageFrame-popupMask", "--imageFrame-popupBg", "--imageFrame-popupBg");
@@ -383,11 +385,12 @@ function createImageFrame(obj)
             popClose.addEventListener("click", function()
             {
                 body.removeChild(popMask);
+                topBar.style.cssText = "display: block;";
             });
 
         //#endregion
 
-        // parentContainer.append(popMask);
+        body.append(popMask);
     }
     //#endregion
 
@@ -630,16 +633,23 @@ function createVideo(obj)
         // Full Screen
         function openFullscreen()
         {
+            let topBar = parent.document.querySelector(".--topbar");
+            topBar.style.cssText = "display: none;";
+
             body = document.getElementsByTagName("body");
             body = body[0];
 
             videoMask = create('',"#--container-outer", "--videoContainer-videoMask", "--videoContainer-videoMask");
             videoMask.appendChild(videoContainer);
-            body.append(videoMask);
             btn_fullScreen.classList.add("--controlsContainer-fullscreen-close");
+
+            body.append(videoMask);
         }
         function closeFullscreen()
         {
+            let topBar = parent.document.querySelector(".--topbar");
+            topBar.style.cssText = "display: block;";
+
             let videoBg = document.getElementById("--inner-videoBg-" + id);
             videoBg.insertBefore(videoContainer, videoBg.children[1]);
             body.removeChild(videoMask);
