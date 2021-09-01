@@ -350,6 +350,7 @@ function createImageFrame(obj)
         //Button Container
         create('',"#--imageFrame-frameContainer-" + id, "--imageFrame-frameButtonContainer-" + id, "--imageFrame-frameButtonContainer");
         let btn = create('',"#--imageFrame-frameButtonContainer-" + id, "--imageFrame-frameButton-" + id, "--imageFrame-frameButton");
+        if(!obj.zoom) btn.style.cssText = "display: none;";
 
         // Bottom line
         create('',"#--imageFrame-frameContainer-" + id, "--imageFrame-frameBottom-" + id, "--imageFrame-frameBottom");
@@ -361,6 +362,8 @@ function createImageFrame(obj)
     {
         let body = document.getElementsByTagName("body");
         body = body[0];
+
+        let parentContainer = parent.document.getElementById("container");
 
         // Mask
         let popMask = create('',"#--container-outer", "--imageFrame-popupMask", "--imageFrame-popupMask");
@@ -383,6 +386,8 @@ function createImageFrame(obj)
             });
 
         //#endregion
+
+        // parentContainer.append(popMask);
     }
     //#endregion
 

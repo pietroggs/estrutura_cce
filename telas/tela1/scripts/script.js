@@ -5,7 +5,11 @@ let cloudObj = { id: 0, text: "Texto moderno", audio: "01" }
 let timelineObj = { id: 0, audio: "02" }
 
 // image object sample
-let imageFrameObj = { id: 0, image: "image_00" }
+let imageFrameObj = {
+    id: 0,
+    image: "image_00",
+    zoom: true
+}
 
 // grammar box object sample
 let grammarBoxObj = {   
