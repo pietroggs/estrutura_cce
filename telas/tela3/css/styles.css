@@ -1,0 +1,207 @@
+.practice {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    height: auto;
+
+    font-family: Arial,Helvetica,sans-serif;
+    color: #595b68;
+}
+
+#practice-mc2-container {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#practice-mc2-container li {
+    padding: 2vw 0;
+    border-top: 1px solid #87889D;
+}
+
+#practice-mc2-container li.practice-mc2-li-labels {
+    position: relative;
+    padding: 2.5vw 0;
+    border-top: none;
+    font-size: 1.5vw;
+    text-align: center;
+}
+
+#practice-mc2-container li.practice-mc2-li-labels .label0 {
+    position: absolute;
+    width: 8vw;
+    right: 5.8vw;
+    top:50%;
+    transform:translate(-50%,-50%);
+}
+
+#practice-mc2-container li.practice-mc2-li-labels .label1 {
+    position: absolute;
+    width: 8vw;
+    right: -2.5vw;
+    top:50%;
+    transform:translate(-50%,-50%);
+}
+
+#practice-mc2-container li span.text-limiter {
+    display: block;
+    width: 75%;
+    font-size: 1.5vw;
+}
+
+#practice-mc2-container li .button {
+    position: absolute;
+    width: 3.5vw;
+    height: 3.5vw;
+    border: 1px solid #87889D;
+    border-radius: 0.5vw;
+
+    transform: translate(-50%, -70%);
+}
+
+#practice-mc2-container li .button.correct {
+    border: 1px solid #5EC7CB;
+}
+
+#practice-mc2-container li .button.incorrect {
+    border: 1px solid #E6388F;
+}
+
+/* Button - small square */
+#practice-mc2-container li .button::after {
+    position: absolute;
+    content: "";
+    width: 1.8vw;
+    height: 1.8vw;
+    border: 1px solid #87889D;
+    border-radius: 0.2vw;
+    background-color: #fff;
+
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+/* Button - small square + active class */
+#practice-mc2-container li .button.active::after {
+    position: absolute;
+    content: "";
+    width: 1.8vw;
+    height: 1.8vw;
+    border: 1px solid #87889D;
+    border-radius: 0.2vw;
+    background-color: #87889D;
+
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+/* Button - small square + correct class */
+#practice-mc2-container li .button.correct::after {
+    position: absolute;
+    content: "";
+    width: 1.8vw;
+    height: 1.8vw;
+    border: 1px solid #5EC7CB;
+    border-radius: 0.2vw;
+    background-color: #5EC7CB;
+
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+/* Button - small square + incorrect class */
+#practice-mc2-container li .button.incorrect::after {
+    position: absolute;
+    content: "";
+    width: 1.8vw;
+    height: 1.8vw;
+    border: 1px solid #E6388F;
+    border-radius: 0.2vw;
+    background-color: #E6388F;
+
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+#practice-mc2-container li .button0 {
+    right: 12vw;
+}
+
+#practice-mc2-container li .button1 {
+    right: 4vw;
+}
+
+/* Footer buttons */
+#practice-footer-buttons {
+    bottom: 94px;
+    float: right;
+    position: fixed;
+    right: 0px;
+    width: auto;
+    z-index: 11;
+    border-top: 4px solid rgb(135, 136, 157);
+    padding: 10px 62px 0px;
+}
+
+#practice-footer-buttons > div {
+    width: 44px;
+    height: 44px;
+    margin-left: 0.4em;
+}
+
+#practice-footer-buttons .mark-all {
+    cursor: pointer;
+    display: inline-block;
+    background: url('../images/button_check.png') 0px 0px / auto 44px no-repeat scroll rgb(255, 255, 255);
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(94, 199, 203);
+    border-image: initial;
+}
+
+#practice-footer-buttons .mark-all.active {
+    background: url('../images/button_check.png') -88px 0px / auto 44px no-repeat scroll rgb(94, 199, 203);
+}
+
+#practice-footer-buttons .show-answers {
+    cursor: pointer;
+    display: inline-block;
+    background: url('../images/button_show_answer.png') 0px 0px / auto 44px no-repeat scroll rgb(255, 255, 255);
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(135, 136, 157);
+    border-image: initial;
+}
+
+#practice-footer-buttons .show-answers.active {
+    background: url('../images/button_show_answer.png') -88px 0px / auto 44px no-repeat scroll rgb(135, 136, 157);
+}
+
+#practice-footer-buttons .reset {
+    cursor: pointer;
+    display: inline-block;
+    background: url('../images/button_reset.png') 0px 0px / auto 44px no-repeat scroll rgb(255, 255, 255);
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(230, 56, 143);
+    border-image: initial;
+}
+
+#practice-footer-buttons .reset.active {
+    background: url('../images/button_reset.png') -88px 0px / auto 44px no-repeat scroll rgb(230, 56, 143);
+}
+
+#--ghost{
+    margin: 0;
+    width: 3rem;
+    height: 3rem;
+    background-color: brown;
+    position: absolute;
+    float: left;
+    transform:translate(-50%,-50%);
+    z-index: 10;
+}
