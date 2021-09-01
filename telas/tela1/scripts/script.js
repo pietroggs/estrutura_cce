@@ -5,7 +5,11 @@ let cloudObj = { id: 0, text: "Texto moderno", audio: "01" }
 let timelineObj = { id: 0, audio: "02" }
 
 // image object sample
-let imageFrameObj = { id: 0, image: "image_00" }
+let imageFrameObj = {
+    id: 0,
+    image: "image_00",
+    zoom: true
+}
 
 // grammar box object sample
 let grammarBoxObj = {   
@@ -34,17 +38,21 @@ let videoObj = {
 // row orderer object sample
 let rowOrdererObj = {
     id: 0,
+    orientation: "horizontal",
     correct: [2,1,3,0], 
     text: ["Olá", "Não sei", "Cacildis", "I don't know"]
 }
 
-// draw line object sample WIP
-let drawlineObj = { id: 0, amount: 3, orientation: "vertical" }
+// draw line object sample
+let drawlineObj = { 
+    id: 0,
+    amount: 3,
+    orientation: "vertical",
+    correct: [2,0,1]
+}
 
 
 createAudioCloud(cloudObj);
-
-
 createAudioTimeline(timelineObj);
 createGrammarBox(grammarBoxObj);
 createImageFrame(imageFrameObj);

@@ -350,6 +350,7 @@ function createImageFrame(obj)
         //Button Container
         create('',"#--imageFrame-frameContainer-" + id, "--imageFrame-frameButtonContainer-" + id, "--imageFrame-frameButtonContainer");
         let btn = create('',"#--imageFrame-frameButtonContainer-" + id, "--imageFrame-frameButton-" + id, "--imageFrame-frameButton");
+        if(!obj.zoom) btn.style.cssText = "display: none;";
 
         // Bottom line
         create('',"#--imageFrame-frameContainer-" + id, "--imageFrame-frameBottom-" + id, "--imageFrame-frameBottom");
@@ -359,12 +360,16 @@ function createImageFrame(obj)
     //#region Popup
     function popup()
     {
-        let body = document.getElementsByTagName("body");
+        let topBar = parent.document.querySelector(".--topbar");
+        topBar.style.cssText = "display: none;";
+
+        log(topBar);
+
+        body = document.getElementsByTagName("body");
         body = body[0];
 
         // Mask
         let popMask = create('',"#--container-outer", "--imageFrame-popupMask", "--imageFrame-popupMask");
-        body.append(popMask);
 
         //#region Popup Container
             create('', "#--imageFrame-popupMask", "--imageFrame-popupBg", "--imageFrame-popupBg");
@@ -380,9 +385,12 @@ function createImageFrame(obj)
             popClose.addEventListener("click", function()
             {
                 body.removeChild(popMask);
+                topBar.style.cssText = "display: block;";
             });
 
         //#endregion
+
+        body.append(popMask);
     }
     //#endregion
 
@@ -625,16 +633,23 @@ function createVideo(obj)
         // Full Screen
         function openFullscreen()
         {
+            let topBar = parent.document.querySelector(".--topbar");
+            topBar.style.cssText = "display: none;";
+
             body = document.getElementsByTagName("body");
             body = body[0];
 
             videoMask = create('',"#--container-outer", "--videoContainer-videoMask", "--videoContainer-videoMask");
             videoMask.appendChild(videoContainer);
-            body.append(videoMask);
             btn_fullScreen.classList.add("--controlsContainer-fullscreen-close");
+
+            body.append(videoMask);
         }
         function closeFullscreen()
         {
+            let topBar = parent.document.querySelector(".--topbar");
+            topBar.style.cssText = "display: block;";
+
             let videoBg = document.getElementById("--inner-videoBg-" + id);
             videoBg.insertBefore(videoContainer, videoBg.children[1]);
             body.removeChild(videoMask);
@@ -745,6 +760,10 @@ function createRowOrderer(obj)
 
     let id = obj.id;
 
+    let rowOrdererContainer = document.getElementById("--inner-rowOrderer-" + id);
+    let orientationClass = "--inner-rowOrderer-" + obj.orientation;
+    rowOrdererContainer.classList.add(orientationClass);
+
     for(let i = 0; i < obj.text.length; i++)
     {
         // Backgound Container
@@ -766,6 +785,8 @@ function createRowOrderer(obj)
         // Text
         let text = create('p',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-text-" + id + "-" + i, "--rowOrderer-text text white");
         text.innerHTML = obj.text[i];
+        // Arrow
+        create('',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-arrow-" + id + "-" + i, "--rowOrderer-arrow");
 
         drag[i].addEventListener("dragstart", function(e)
         {
@@ -813,6 +834,7 @@ function createRowOrderer(obj)
 function createDrawline(obj)
 {
     let id = obj.id;
+    let currentAnswer = [];
     let currentStartPoint = null;
     let currentMousePosition = [];
     let pointsContainerOrientation = (obj.orientation == "vertical") ? "horizontal" : "vertical";
@@ -831,7 +853,8 @@ function createDrawline(obj)
     // Elements
     for(let i = 0; i < obj.amount; i++)
     {
-        
+        currentAnswer[i] = "";
+
         create('',"#--drawline-startpointContainer-" + id, "--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpointBorder");
         let startPoint = create('',"#--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpoint-" + id + "-" + i, "--drawline-startpoint");
         
@@ -841,31 +864,85 @@ function createDrawline(obj)
         startPoint.addEventListener("mousedown", function(e)
         {
             e.preventDefault();
+            startPoint.style.cssText = "background-color: rgb(135, 136, 157);";
             currentStartPoint = this;
             currentMousePosition = [e.pageX, e.pageY];
-            RemoveGhost();
 
+            let m_startPositions = GetPointArrayPosition(currentStartPoint);
+
+            // Clear Endpoint connected
+            if(currentStartPoint.firstChild != null)
+            {
+                if(currentAnswer[m_startPositions] !== "")
+                {
+                    let m_endPosition = document.getElementById("--drawline-endpoint-" + id + "-" + currentAnswer[m_startPositions]);
+                    m_endPosition.style.cssText = "background-color: none;";
+                    currentAnswer[m_startPositions] = "";
+                }
+            }
+
+            RemoveGhost();
             CreateGhost();
         });
 
         endPoint.addEventListener("mouseup", function()
         {
-            
-            if(currentStartPoint != null)
+            RemoveGhost();
+
+            // Set end point case its free
+            if(CheckEndPointIsMarked(endPoint))
             {
-                RemoveGhost();
-                CreateLine(currentStartPoint, this);
+                if(currentStartPoint != null)
+                {
+                    currentStartPoint.style.cssText = "background-color: rgb(135, 136, 157);";
+                    endPoint.style.cssText = "background-color: rgb(135, 136, 157);";
+                    CreateLine(currentStartPoint, this);
+    
+                    let m_startPositions = GetPointArrayPosition(currentStartPoint);
+                    let m_endPositions = GetPointArrayPosition(endPoint);
+    
+                    // set answer
+                    currentAnswer[m_startPositions] = m_endPositions;
+                    console.log(currentAnswer);
+                }
+            }
+            else
+            {
+                currentStartPoint.style.cssText = "background-color: none;";
+                currentStartPoint.removeChild(currentStartPoint.firstChild);
             }
 
             currentStartPoint = null;
         });
     }
 
+    function CheckEndPointIsMarked(endPoint)
+    {
+        let m_end = GetPointArrayPosition(endPoint);
+
+        for(let i = 0; i < currentAnswer.length; i++)
+        {
+            if(currentAnswer[i] === m_end)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function GetPointArrayPosition(point)
+    {
+        let position = parseInt( point.id.split("-")[5] );
+        return position;
+    }
+    
+    // Line follow the cursor
     let ghost = null;
 
     function CreateGhost()
     {
-        ghost = create('',"#--drawline-drawlineContainer-" + id, "--ghost", "--ghost");
+        ghost = create('',"#--drawline-drawlineContainer-" + id, "--drawline-ghost", "--drawline-ghost");
        
         window.onmousemove = function(e) { 
 
@@ -881,10 +958,12 @@ function createDrawline(obj)
         {
             if(currentStartPoint != null)
             {
-                // console.log(currentStartPoint.firstChild);
-
                 window.onmousemove = function(e) {};
-                if(currentStartPoint.firstChild != null) currentStartPoint.removeChild(currentStartPoint.firstChild);
+                if(currentStartPoint.firstChild != null)
+                {
+                    currentStartPoint.removeChild(currentStartPoint.firstChild);
+                    currentStartPoint.style.cssText = "background-color: none";
+                } 
             }
         });
     }
@@ -916,7 +995,7 @@ function createDrawline(obj)
         let angleDeg = Math.atan2( m_height, m_width) * 180 / Math.PI;
 
         line.style.transform = "rotate(" + angleDeg + "deg)";
-        line.style.width = tan + "px";
+        line.style.width = tan + "px";  
     }
 }
 //#endregion
