@@ -760,6 +760,10 @@ function createRowOrderer(obj)
 
     let id = obj.id;
 
+    let rowOrdererContainer = document.getElementById("--inner-rowOrderer-" + id);
+    let orientationClass = "--inner-rowOrderer-" + obj.orientation;
+    rowOrdererContainer.classList.add(orientationClass);
+
     for(let i = 0; i < obj.text.length; i++)
     {
         // Backgound Container
@@ -781,6 +785,8 @@ function createRowOrderer(obj)
         // Text
         let text = create('p',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-text-" + id + "-" + i, "--rowOrderer-text text white");
         text.innerHTML = obj.text[i];
+        // Arrow
+        create('',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-arrow-" + id + "-" + i, "--rowOrderer-arrow");
 
         drag[i].addEventListener("dragstart", function(e)
         {

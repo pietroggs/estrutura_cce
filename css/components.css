@@ -526,11 +526,22 @@ body{
 /*#region ROW ORDERER*/
 .--inner-rowOrderer{
     width: 100%;
+    display: flex;
+}
+.--inner-rowOrderer-horizontal{
+    flex-direction: row;
+    /* justify-content: space-between; */
+}
+.--inner-rowOrderer-vertical{
+    flex-direction: column;
+}
+.--inner-rowOrderer-horizontal .--rowOrderer-bg{
+    min-width: 3rem;
 }
 .--rowOrderer-bg{
     height: 3rem;
-    border: 1px solid #87889D;
-    margin-bottom: 0.2rem;
+    /* border: 1px solid #87889D; */
+    /* margin-bottom: 0.2rem; */
 }
 .--rowOrderer-drag{
     height: 3rem;
@@ -538,15 +549,29 @@ body{
     position: relative;
     align-items: center;
     justify-content: center;
-    background-image: url(../images/row_arrows.png);
-    background-repeat: no-repeat;
-    background-position-x: 99%;
-    background-position-y: center;
     background-color: #87889D;
     cursor: pointer;
 }
 .--rowOrderer-drag *{
     pointer-events: none;
+}
+.--rowOrderer-arrow{
+    right: 1rem;
+    height: 1rem;
+    width: 1rem;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.--inner-rowOrderer-horizontal .--rowOrderer-drag *{
+    margin: 0 0.5rem;
+}
+.--inner-rowOrderer-horizontal .--rowOrderer-arrow{
+    background-image: url(../images/row_arrows_horizontal.png);
+}
+.--inner-rowOrderer-vertical .--rowOrderer-arrow{
+    position: absolute;
+    background-image: url(../images/row_arrows_vertical.png);
 }
 /*#endregion ROW ORDERER*/
 

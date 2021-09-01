@@ -38,6 +38,7 @@ let videoObj = {
 // row orderer object sample
 let rowOrdererObj = {
     id: 0,
+    orientation: "horizontal",
     correct: [2,1,3,0], 
     text: ["Olá", "Não sei", "Cacildis", "I don't know"]
 }
