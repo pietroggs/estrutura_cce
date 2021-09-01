@@ -1011,6 +1011,8 @@ function createDrawline(obj)
 
  function createPracticeMultipleChoice2(practiceObj){
 
+    var isDebugOn = practiceObj.debug;
+
     var practiceContainerId = "--inner-multiple-choice-2-" + practiceObj.id;
     var practiceIsScored = document.querySelector("#" + practiceContainerId).hasAttribute("data-practice-scored");
 
@@ -1027,8 +1029,10 @@ function createDrawline(obj)
     var scorePerItem = practiceScore / practiceProperties.length;
     var finalScore = 0;
 
-    log("<<< Practice MC2 - Max score: " + practiceScore + " >>>");
-    log("<<< Practice MC2 - scorePerItem: " + scorePerItem + " >>>");
+    if(isDebugOn){
+        log("<<< Practice MC2 - Max score: " + practiceScore + " >>>");
+        log("<<< Practice MC2 - scorePerItem: " + scorePerItem + " >>>");
+    }
 
     var selectedAnswers = [];
 
@@ -1136,19 +1140,19 @@ function createDrawline(obj)
 
             // Send score if 'practiceIsScored'
             if (practiceIsScored) {
-                console.log("<<< Practice MC2 - Final score: " + finalScore.toFixed() + " >>>");
+                if(isDebugOn) console.log("<<< Practice MC2 - Final score: " + finalScore.toFixed() + " >>>");
 
                 // send score each interaction
                 MFPontuar(btnGroup, finalScore.toFixed());
             }
 
-            // console.log("<<< Score: " + finalScore.toFixed() + " >>>");
+            // if(isDebugOn) console.log("<<< Score: " + finalScore.toFixed() + " >>>");
 
             if (allCorrect == practiceProperties.length) {
                 soundId[2].play();
             }
 
-            console.log("<<< Practice MC2 - selectedAnswers: " + selectedAnswers + " >>>");
+            if(isDebugOn) console.log("<<< Practice MC2 - selectedAnswers: " + selectedAnswers + " >>>");
         }
     }();
 
@@ -1246,7 +1250,7 @@ function createDrawline(obj)
             selectedAnswers[i] = null;
         }
 
-        log("<<< selectedAnswers [on reset]: " + selectedAnswers + " >>>");
+        if(isDebugOn) log("<<< selectedAnswers [on reset]: " + selectedAnswers + " >>>");
 
         // Turn OFF ShowAnswer results if it's on
         if (showAllOn) {
@@ -1275,4 +1279,4 @@ function createDrawline(obj)
         }
     }
 }
-//#endregion
+//#endregion PRACTICE - MP2
