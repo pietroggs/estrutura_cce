@@ -638,3 +638,10 @@ body{
 }
 /* #endregion DRAW LINE */
 
+/*#region SENTENCE INPUT */
+.--sentenceInput-input{
+    width: 5rem;
+    border: 1px solid rgb(135, 136, 157);
+    text-align: center;
+}
+/*#endregion SENTENCE INPUT */

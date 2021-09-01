@@ -16,13 +16,7 @@ let grammarBoxObj = {
     id: 0,
     title: "Title",
     icon: "icon_lamp",
-    text: ["<span class = 'bg-blue'>Vanessa</span>",
-            "<hr>",
-            "lari lira",
-            "lari lira",
-            "lari lira",
-            "lari lira",
-            "lari lira"]
+    text: [""]
 }
 
 // video object sample
@@ -38,7 +32,7 @@ let videoObj = {
 // row orderer object sample
 let rowOrdererObj = {
     id: 0,
-    orientation: "horizontal",
+    orientation: "vertical",
     correct: [2,1,3,0], 
     text: ["Olá", "Não sei", "Cacildis", "I don't know"]
 }
@@ -51,6 +45,13 @@ let drawlineObj = {
     correct: [2,0,1]
 }
 
+// sentence input object sample
+let sentenceInputObj = { 
+    id: 0,
+    text: ["You are not a journalist. You are a secretary. You", "a secretary."],
+    correct: ["aren't"]
+}
+
 
 createAudioCloud(cloudObj);
 createAudioTimeline(timelineObj);
@@ -59,3 +60,5 @@ createImageFrame(imageFrameObj);
 createVideo(videoObj);
 createRowOrderer(rowOrdererObj);
 createDrawline(drawlineObj);
+
+createSentenceInput(sentenceInputObj);

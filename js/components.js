@@ -1275,3 +1275,59 @@ function createDrawline(obj)
     }
 }
 //#endregion
+
+//#region SENTENCE INPUT
+function createSentenceInput(obj)
+{
+    let id = obj.id;
+    let input = [];
+    let text = create("p", "#--inner-sentenceInput-" + id, "--sentenceInput-text" + id, "text gray --sentenceInput-text");
+    
+    for(let i = 0; i < (obj.text.length - 1); i++)
+    {
+        text.innerHTML = text.innerHTML + obj.text[i] + " ";
+
+        input[i] = create("input", "#--inner-sentenceInput-" + id, "--sentenceInput-input" + id + "-" + i, "text gray --sentenceInput-input");
+        input[i].setAttribute("autocomplete", "off");
+        
+        text.append(input[i]);
+
+        text.innerHTML = text.innerHTML + " ";
+
+        document.getElementById(input[i].id).addEventListener("blur", function()
+        {
+            console.log(input[i].id);
+        });
+    }
+
+    text.innerHTML = text.innerHTML + obj.text[obj.text.length - 1];
+
+    //#region Listeners
+    for(let i = 0; i < input.length; i++)
+    {
+        document.getElementById(input[i].id).addEventListener("blur", function(e)
+        {
+            CheckInput(e.target.value, i);
+        });
+    }
+    //#endregion
+
+    //#region Functions
+    function CheckInput(value, index)
+    {
+        let m_value = value.toLowerCase();
+        let m_index = obj.correct[index].toLowerCase();
+
+        if(m_value === m_index)
+        {
+            console.log("correto");
+        }
+        else
+        {
+            console.log("errado");
+        }
+    }
+    //#endregion
+}
+//#endregion
+
