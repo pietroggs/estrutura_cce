@@ -228,7 +228,7 @@ body{
     position: absolute;
     width: 100%;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -585,8 +585,11 @@ body{
     height: 50%;
     border: 3px solid rgb(135, 136, 157);
     border-radius: 100%;
-    background-color: rgb(135, 136, 157);
+    /* background-color: rgb(135, 136, 157); */
     position: relative;
+}
+.--drawline-startpoint{
+    cursor: pointer;
 }
 .--drawline-line{
     position: absolute;
@@ -597,6 +600,16 @@ body{
     background-color: rgb(135, 136, 157);
     transform-origin: center left;
     z-index: 2;
+}
+#--drawline-ghost{
+    margin: 0;
+    width: 3rem;
+    height: 3rem;
+    opacity: 0;
+    position: absolute;
+    float: left;
+    transform:translate(-50%,-50%);
+    z-index: 10;
 }
 /* #endregion DRAW LINE */
 

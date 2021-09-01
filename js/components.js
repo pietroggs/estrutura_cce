@@ -350,6 +350,7 @@ function createImageFrame(obj)
         //Button Container
         create('',"#--imageFrame-frameContainer-" + id, "--imageFrame-frameButtonContainer-" + id, "--imageFrame-frameButtonContainer");
         let btn = create('',"#--imageFrame-frameButtonContainer-" + id, "--imageFrame-frameButton-" + id, "--imageFrame-frameButton");
+        if(!obj.zoom) btn.style.cssText = "display: none;";
 
         // Bottom line
         create('',"#--imageFrame-frameContainer-" + id, "--imageFrame-frameBottom-" + id, "--imageFrame-frameBottom");
@@ -359,12 +360,16 @@ function createImageFrame(obj)
     //#region Popup
     function popup()
     {
-        let body = document.getElementsByTagName("body");
+        let topBar = parent.document.querySelector(".--topbar");
+        topBar.style.cssText = "display: none;";
+
+        log(topBar);
+
+        body = document.getElementsByTagName("body");
         body = body[0];
 
         // Mask
         let popMask = create('',"#--container-outer", "--imageFrame-popupMask", "--imageFrame-popupMask");
-        body.append(popMask);
 
         //#region Popup Container
             create('', "#--imageFrame-popupMask", "--imageFrame-popupBg", "--imageFrame-popupBg");
@@ -380,9 +385,12 @@ function createImageFrame(obj)
             popClose.addEventListener("click", function()
             {
                 body.removeChild(popMask);
+                topBar.style.cssText = "display: block;";
             });
 
         //#endregion
+
+        body.append(popMask);
     }
     //#endregion
 
@@ -625,16 +633,23 @@ function createVideo(obj)
         // Full Screen
         function openFullscreen()
         {
+            let topBar = parent.document.querySelector(".--topbar");
+            topBar.style.cssText = "display: none;";
+
             body = document.getElementsByTagName("body");
             body = body[0];
 
             videoMask = create('',"#--container-outer", "--videoContainer-videoMask", "--videoContainer-videoMask");
             videoMask.appendChild(videoContainer);
-            body.append(videoMask);
             btn_fullScreen.classList.add("--controlsContainer-fullscreen-close");
+
+            body.append(videoMask);
         }
         function closeFullscreen()
         {
+            let topBar = parent.document.querySelector(".--topbar");
+            topBar.style.cssText = "display: block;";
+
             let videoBg = document.getElementById("--inner-videoBg-" + id);
             videoBg.insertBefore(videoContainer, videoBg.children[1]);
             body.removeChild(videoMask);
@@ -813,6 +828,7 @@ function createRowOrderer(obj)
 function createDrawline(obj)
 {
     let id = obj.id;
+    let currentAnswer = [];
     let currentStartPoint = null;
     let currentMousePosition = [];
     let pointsContainerOrientation = (obj.orientation == "vertical") ? "horizontal" : "vertical";
@@ -831,7 +847,8 @@ function createDrawline(obj)
     // Elements
     for(let i = 0; i < obj.amount; i++)
     {
-        
+        currentAnswer[i] = "";
+
         create('',"#--drawline-startpointContainer-" + id, "--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpointBorder");
         let startPoint = create('',"#--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpoint-" + id + "-" + i, "--drawline-startpoint");
         
@@ -841,31 +858,85 @@ function createDrawline(obj)
         startPoint.addEventListener("mousedown", function(e)
         {
             e.preventDefault();
+            startPoint.style.cssText = "background-color: rgb(135, 136, 157);";
             currentStartPoint = this;
             currentMousePosition = [e.pageX, e.pageY];
-            RemoveGhost();
 
+            let m_startPositions = GetPointArrayPosition(currentStartPoint);
+
+            // Clear Endpoint connected
+            if(currentStartPoint.firstChild != null)
+            {
+                if(currentAnswer[m_startPositions] !== "")
+                {
+                    let m_endPosition = document.getElementById("--drawline-endpoint-" + id + "-" + currentAnswer[m_startPositions]);
+                    m_endPosition.style.cssText = "background-color: none;";
+                    currentAnswer[m_startPositions] = "";
+                }
+            }
+
+            RemoveGhost();
             CreateGhost();
         });
 
         endPoint.addEventListener("mouseup", function()
         {
-            
-            if(currentStartPoint != null)
+            RemoveGhost();
+
+            // Set end point case its free
+            if(CheckEndPointIsMarked(endPoint))
             {
-                RemoveGhost();
-                CreateLine(currentStartPoint, this);
+                if(currentStartPoint != null)
+                {
+                    currentStartPoint.style.cssText = "background-color: rgb(135, 136, 157);";
+                    endPoint.style.cssText = "background-color: rgb(135, 136, 157);";
+                    CreateLine(currentStartPoint, this);
+    
+                    let m_startPositions = GetPointArrayPosition(currentStartPoint);
+                    let m_endPositions = GetPointArrayPosition(endPoint);
+    
+                    // set answer
+                    currentAnswer[m_startPositions] = m_endPositions;
+                    console.log(currentAnswer);
+                }
+            }
+            else
+            {
+                currentStartPoint.style.cssText = "background-color: none;";
+                currentStartPoint.removeChild(currentStartPoint.firstChild);
             }
 
             currentStartPoint = null;
         });
     }
 
+    function CheckEndPointIsMarked(endPoint)
+    {
+        let m_end = GetPointArrayPosition(endPoint);
+
+        for(let i = 0; i < currentAnswer.length; i++)
+        {
+            if(currentAnswer[i] === m_end)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function GetPointArrayPosition(point)
+    {
+        let position = parseInt( point.id.split("-")[5] );
+        return position;
+    }
+    
+    // Line follow the cursor
     let ghost = null;
 
     function CreateGhost()
     {
-        ghost = create('',"#--drawline-drawlineContainer-" + id, "--ghost", "--ghost");
+        ghost = create('',"#--drawline-drawlineContainer-" + id, "--drawline-ghost", "--drawline-ghost");
        
         window.onmousemove = function(e) { 
 
@@ -881,10 +952,12 @@ function createDrawline(obj)
         {
             if(currentStartPoint != null)
             {
-                // console.log(currentStartPoint.firstChild);
-
                 window.onmousemove = function(e) {};
-                if(currentStartPoint.firstChild != null) currentStartPoint.removeChild(currentStartPoint.firstChild);
+                if(currentStartPoint.firstChild != null)
+                {
+                    currentStartPoint.removeChild(currentStartPoint.firstChild);
+                    currentStartPoint.style.cssText = "background-color: none";
+                } 
             }
         });
     }
@@ -916,7 +989,283 @@ function createDrawline(obj)
         let angleDeg = Math.atan2( m_height, m_width) * 180 / Math.PI;
 
         line.style.transform = "rotate(" + angleDeg + "deg)";
-        line.style.width = tan + "px";
+        line.style.width = tan + "px";  
+    }
+}
+//#endregion
+
+// #region PRACTICE - MP2
+/**
+ * @author Flavio Martins
+ * @version 1.2 (2021-08-31)
+ * 2021-08-20
+ * 
+ * @description multiple choice 2 - dynamic activity (one item selection per line)
+ */
+
+ function createPracticeMultipleChoice2(practiceObj){
+
+    var practiceContainerId = "--inner-multiple-choice-2-" + practiceObj.id;
+    var practiceIsScored = document.querySelector("#" + practiceContainerId).hasAttribute("data-practice-scored");
+
+    var mainFramePathScreen = parent.screen;
+    var mainFramePathEST = parent.EST.telas.geral;
+    var currentScreen = window.frameElement.id;
+
+    var MFPontuar = mainFramePathScreen.pontuar; // função mainFramePathScreen.pontuar():
+
+    // Practice specific properties
+    var practiceProperties = practiceObj.properties;
+
+    var practiceScore = mainFramePathEST[currentScreen].max_pontos; // vem de fora! mainFrame
+    var scorePerItem = practiceScore / practiceProperties.length;
+    var finalScore = 0;
+
+    log("<<< Max score: " + practiceScore + " >>>");
+    log("<<< scorePerItem: " + scorePerItem + " >>>");
+
+    var selectedAnswers = [];
+
+    var buttonLabel = practiceObj.columnLabel; // [label btn left (0), label btn right(1)]
+
+    var soundId = [
+        document.getElementById("sound-correct"), // correct answer sound
+        document.getElementById("sound-incorrect"), // incorrect answer sound
+        document.getElementById("sound-success") // success answer sound
+    ];
+
+    var answerButtonsAux = [];
+
+    // SetUp function
+    var SetUp_PracticeMultipleChoice2 = function () {
+
+        /** Structure */
+        // ul container
+        create('ul', '#' + practiceContainerId, 'practice-mc2-container', 'practice-mc2-ul');
+
+        // lines
+        var lines = [];
+        // var answerButtons0 = [];
+        var answerButtons = [];
+
+        create('li', '#practice-mc2-container', '', 'practice-mc2-li-labels');
+        create('span', '.practice-mc2-li-labels', '', 'label0').innerHTML = buttonLabel[0];
+        create('span', '.practice-mc2-li-labels', '', 'label1').innerHTML = buttonLabel[1];
+
+        for (let i = 0; i < practiceProperties.length; i++) {
+            lines[i] = create('li', '#practice-mc2-container', '', 'practice-mc2-li-' + i);
+            lines[i].innerHTML = "<span class='text-limiter'>" + practiceProperties[i][0] + "</span>";
+
+            answerButtons.push([create('div', '.' + lines[i].getAttribute("class"), 'b0' + i, 'button button0 practice-mc2-button-0-' + i),
+            create('div', '.' + lines[i].getAttribute("class"), 'b1' + i, 'button button1 practice-mc2-button-1-' + i)]);
+
+            /** Action */
+            for (let j = 0; j < answerButtons[i].length; j++) {
+                answerButtons[i][j].addEventListener("click", handlerSelectButton);
+            }
+
+            selectedAnswers[i] = null;
+        }
+
+        answerButtonsAux = answerButtons; // to 'outside'
+
+        /** Selecting buttons */
+        function handlerSelectButton(event) {
+            var btnId = this.id;
+            var btnPair = btnId.substr(1, 1);
+            var btnGroup = btnId.substr(2);
+
+            var allCorrect = 0;
+
+            for (let i = 0; i < practiceProperties.length; i++) {
+                for (let j = 0; j < answerButtons[i].length; j++) {
+                    if (btnGroup == i && btnPair != j) {
+                        answerButtons[i][j].classList.remove('active');
+                    }
+                }
+            }
+
+            this.classList.toggle('active');
+
+            /** validating (sound on click) */
+            for (let i = 0; i < practiceProperties.length; i++) {
+                for (let j = 0; j < answerButtons[i].length; j++) {
+                    if (practiceProperties[i][1] == btnPair) {
+                        // correct answer
+                        if (btnGroup == i && this.classList.contains('active')) {
+                            soundId[0].play();
+                            selectedAnswers[btnGroup] = btnPair;
+
+                            practiceProperties[i][2] = scorePerItem;
+                        }
+                    } else {
+                        // incorrect answer
+                        if (btnGroup == i && this.classList.contains('active')) {
+                            soundId[1].play();
+                            selectedAnswers[btnGroup] = btnPair;
+
+                            practiceProperties[i][2] = 0;
+                        }
+                    }
+                }
+
+                if (!this.classList.contains('active')) {
+                    selectedAnswers[btnGroup] = null;
+                }
+            }
+
+            /** play success sound if all are correct */
+            finalScore = 0;
+
+            for (let i = 0; i < selectedAnswers.length; i++) {
+                if (selectedAnswers[i] !== null) {
+                    if (practiceProperties[i][1] == selectedAnswers[i]) {
+                        allCorrect++;
+
+                        finalScore += practiceProperties[i][2];
+                    }
+                }
+            }
+
+            // send score each interaction
+            MFPontuar("", finalScore.toFixed());
+
+            // console.log("<<< Score: " + finalScore.toFixed() + " >>>");
+
+            if (allCorrect == practiceProperties.length) {
+                soundId[2].play();
+
+                // Send score if 'practiceIsScored'
+                if (practiceIsScored) {
+                    console.log("<<< Final score: " + finalScore.toFixed() + " >>>");
+                }
+            }
+
+            console.log("<<< selectedAnswers: " + selectedAnswers + " >>>");
+        }
+    }();
+
+    /** Footer buttons actions */
+
+    var markAllOn = false;
+    var showAllOn = false;
+    var resetOn = false;
+
+    var buttonMarkAll = document.querySelector('.mark-all');
+    var buttonShowAnswers = document.querySelector('.show-answers');
+    var buttonReset = document.querySelector('.reset');
+
+    /** Show feedback of all selected itens on click and block/unblock all buttons */
+
+    buttonMarkAll.addEventListener("click", markAnswers);
+    function markAnswers(event) {
+
+        for (let i = 0; i < selectedAnswers.length; i++) {
+            if (selectedAnswers[i] !== null) {
+                if (practiceProperties[i][1] == selectedAnswers[i]) {
+                    answerButtonsAux[i][selectedAnswers[i]].classList.add('correct');
+                } else {
+                    answerButtonsAux[i][selectedAnswers[i]].classList.add('incorrect');
+                }
+            }
+        }
+
+        // Turn OFF ShowAnswer results if it's on
+        if (showAllOn) {
+            showAnswers();
+        }
+
+        /** block all buttons when selected and unblock when it's not */
+        blockAllButtons(!markAllOn ? 0 : 1, 0);
+
+        /** apply class active */
+        buttonMarkAll.classList.toggle('active');
+
+        /** toggle true/false */
+        markAllOn = !markAllOn;
+    }
+
+    /** Show feedback of all selected itens on click and block/unblock all buttons */
+
+    buttonShowAnswers.addEventListener("click", showAnswers);
+    function showAnswers(event) {
+
+        for (let i = 0; i < selectedAnswers.length; i++) {
+            for (let j = 0; j < answerButtonsAux[i].length; j++) {
+                answerButtonsAux[i][j].classList.remove('active');
+            }
+        }
+
+        for (let i = 0; i < selectedAnswers.length; i++) {
+            if (!showAllOn) {
+                answerButtonsAux[i][practiceProperties[i][1]].classList.add('active'); // show all correct answers
+            } else {
+                if (selectedAnswers[i] !== null) {
+                    answerButtonsAux[i][selectedAnswers[i]].classList.add('active'); // show previous selection
+                }
+            }
+        }
+
+        // Turn OFF markAnswers results if it's on
+        if (markAllOn) {
+            markAnswers();
+        }
+
+        /** block all buttons when selected and unblock when it's not */
+        blockAllButtons(!showAllOn ? 0 : 1, 1);
+
+        /** apply class active */
+        buttonShowAnswers.classList.toggle('active');
+
+        /** toggle true/false */
+        showAllOn = !showAllOn;
+    }
+
+    /** Reset this practice */
+
+    buttonReset.addEventListener("mousedown", resetPractice);
+    buttonReset.addEventListener("mouseup", resetPractice);
+    function resetPractice(event) {
+
+        // reset all buttons to initial state
+        var allButtons = document.querySelectorAll(".button");
+
+        for (let i = 0; i < allButtons.length; i++) {
+            allButtons[i].classList.remove('active', 'correct', 'incorrect'); // remove classes
+        }
+
+        // Set all registered selections to null
+        for (let i = 0; i < selectedAnswers.length; i++) {
+            selectedAnswers[i] = null;
+        }
+
+        log("<<< selectedAnswers [on reset]: " + selectedAnswers + " >>>");
+
+        // Turn OFF ShowAnswer results if it's on
+        if (showAllOn) {
+            showAnswers();
+        }
+
+        // Turn OFF markAnswers results if it's on
+        if (markAllOn) {
+            markAnswers();
+        }
+
+        /** apply class active */
+        this.classList.toggle('active');
+
+        /** toggle true/false */
+        resetOn = !resetOn;
+    }
+
+    /** block all practice buttons */
+    function blockAllButtons(stat, from) {
+        var allButtons = document.querySelectorAll(".button");
+
+        for (let i = 0; i < allButtons.length; i++) {
+            allButtons[i].style.pointerEvents = stat == 0 ? 'none' : 'auto'; // block stat = 0 / unblock stat = 1
+            if (stat == 1 && from == 0) allButtons[i].classList.remove('correct', 'incorrect'); // remove classes -> stat = 1
+        }
     }
 }
 //#endregion

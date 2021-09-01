@@ -36,7 +36,7 @@ var EST = {
                 title: 'Pratice',
                 color: 'purple',
                 src: 'tela3',
-                max_pontos: 10,
+                max_pontos: 6,
                 pontos: 0
             },
             // TELAS EDITAVEIS FIM
