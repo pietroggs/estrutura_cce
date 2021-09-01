@@ -144,7 +144,7 @@ var screen = {
     pontuar: (quest, point) => {
         EST.telas.geral[screen.current].pontos = point;
 
-        log("<<< PONTUAR: "+EST.telas.geral[screen.current].pontos+" >>>");
+        log("<<< QUEST: "+quest+" | PONTO: "+EST.telas.geral[screen.current].pontos+" >>>");
     },
 
     setCheck: (callback) => {

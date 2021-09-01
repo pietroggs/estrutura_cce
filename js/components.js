@@ -944,12 +944,12 @@ function createDrawline(obj)
     // Practice specific properties
     var practiceProperties = practiceObj.properties;
 
-    var practiceScore = mainFramePathEST[currentScreen].max_pontos; // vem de fora! mainFrame
+    var practiceScore = mainFramePathEST[currentScreen].max_pontos;
     var scorePerItem = practiceScore / practiceProperties.length;
     var finalScore = 0;
 
-    log("<<< Max score: " + practiceScore + " >>>");
-    log("<<< scorePerItem: " + scorePerItem + " >>>");
+    log("<<< Practice MC2 - Max score: " + practiceScore + " >>>");
+    log("<<< Practice MC2 - scorePerItem: " + scorePerItem + " >>>");
 
     var selectedAnswers = [];
 
@@ -1054,21 +1054,22 @@ function createDrawline(obj)
                 }
             }
 
-            // send score each interaction
-            MFPontuar("", finalScore.toFixed());
+
+            // Send score if 'practiceIsScored'
+            if (practiceIsScored) {
+                console.log("<<< Practice MC2 - Final score: " + finalScore.toFixed() + " >>>");
+
+                // send score each interaction
+                MFPontuar(btnGroup, finalScore.toFixed());
+            }
 
             // console.log("<<< Score: " + finalScore.toFixed() + " >>>");
 
             if (allCorrect == practiceProperties.length) {
                 soundId[2].play();
-
-                // Send score if 'practiceIsScored'
-                if (practiceIsScored) {
-                    console.log("<<< Final score: " + finalScore.toFixed() + " >>>");
-                }
             }
 
-            console.log("<<< selectedAnswers: " + selectedAnswers + " >>>");
+            console.log("<<< Practice MC2 - selectedAnswers: " + selectedAnswers + " >>>");
         }
     }();
 
