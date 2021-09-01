@@ -39,7 +39,12 @@ let rowOrdererObj = {
 }
 
 // draw line object sample WIP
-let drawlineObj = { id: 0, amount: 3, orientation: "vertical" }
+let drawlineObj = { 
+    id: 0,
+    amount: 3,
+    orientation: "vertical",
+    correct: [2,0,1]
+}
 
 
 createAudioCloud(cloudObj);

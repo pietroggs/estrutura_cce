@@ -585,7 +585,7 @@ body{
     height: 50%;
     border: 3px solid rgb(135, 136, 157);
     border-radius: 100%;
-    background-color: rgb(135, 136, 157);
+    /* background-color: rgb(135, 136, 157); */
     position: relative;
 }
 .--drawline-line{

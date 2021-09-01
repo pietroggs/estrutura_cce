@@ -813,6 +813,7 @@ function createRowOrderer(obj)
 function createDrawline(obj)
 {
     let id = obj.id;
+    let currentAnswer = [];
     let currentStartPoint = null;
     let currentMousePosition = [];
     let pointsContainerOrientation = (obj.orientation == "vertical") ? "horizontal" : "vertical";
@@ -831,7 +832,8 @@ function createDrawline(obj)
     // Elements
     for(let i = 0; i < obj.amount; i++)
     {
-        
+        currentAnswer[i] = "";
+
         create('',"#--drawline-startpointContainer-" + id, "--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpointBorder");
         let startPoint = create('',"#--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpoint-" + id + "-" + i, "--drawline-startpoint");
         
@@ -841,26 +843,80 @@ function createDrawline(obj)
         startPoint.addEventListener("mousedown", function(e)
         {
             e.preventDefault();
+            startPoint.style.cssText = "background-color: rgb(135, 136, 157);";
             currentStartPoint = this;
             currentMousePosition = [e.pageX, e.pageY];
-            RemoveGhost();
 
+            let m_startPositions = GetPointArrayPosition(currentStartPoint);
+
+            // Clear Endpoint connected
+            if(currentStartPoint.firstChild != null)
+            {
+                if(currentAnswer[m_startPositions] !== "")
+                {
+                    let m_endPosition = document.getElementById("--drawline-endpoint-" + id + "-" + currentAnswer[m_startPositions]);
+                    m_endPosition.style.cssText = "background-color: none;";
+                    currentAnswer[m_startPositions] = "";
+                }
+            }
+
+            RemoveGhost();
             CreateGhost();
         });
 
         endPoint.addEventListener("mouseup", function()
         {
-            
-            if(currentStartPoint != null)
+            RemoveGhost();
+
+            // Set end point case its free
+            if(CheckEndPointIsMarked(endPoint))
             {
-                RemoveGhost();
-                CreateLine(currentStartPoint, this);
+                if(currentStartPoint != null)
+                {
+                    currentStartPoint.style.cssText = "background-color: rgb(135, 136, 157);";
+                    endPoint.style.cssText = "background-color: rgb(135, 136, 157);";
+                    CreateLine(currentStartPoint, this);
+    
+                    let m_startPositions = GetPointArrayPosition(currentStartPoint);
+                    let m_endPositions = GetPointArrayPosition(endPoint);
+    
+                    // set answer
+                    currentAnswer[m_startPositions] = m_endPositions;
+                    console.log(currentAnswer);
+                }
+            }
+            else
+            {
+                currentStartPoint.style.cssText = "background-color: none;";
+                currentStartPoint.removeChild(currentStartPoint.firstChild);
             }
 
             currentStartPoint = null;
         });
     }
 
+    function CheckEndPointIsMarked(endPoint)
+    {
+        let m_end = GetPointArrayPosition(endPoint);
+
+        for(let i = 0; i < currentAnswer.length; i++)
+        {
+            if(currentAnswer[i] === m_end)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function GetPointArrayPosition(point)
+    {
+        let position = parseInt( point.id.split("-")[5] );
+        return position;
+    }
+    
+    // Line follow the cursor
     let ghost = null;
 
     function CreateGhost()
@@ -881,10 +937,12 @@ function createDrawline(obj)
         {
             if(currentStartPoint != null)
             {
-                // console.log(currentStartPoint.firstChild);
-
                 window.onmousemove = function(e) {};
-                if(currentStartPoint.firstChild != null) currentStartPoint.removeChild(currentStartPoint.firstChild);
+                if(currentStartPoint.firstChild != null)
+                {
+                    currentStartPoint.removeChild(currentStartPoint.firstChild);
+                    currentStartPoint.style.cssText = "background-color: none";
+                } 
             }
         });
     }
@@ -916,7 +974,7 @@ function createDrawline(obj)
         let angleDeg = Math.atan2( m_height, m_width) * 180 / Math.PI;
 
         line.style.transform = "rotate(" + angleDeg + "deg)";
-        line.style.width = tan + "px";
+        line.style.width = tan + "px";  
     }
 }
 //#endregion
