@@ -380,7 +380,7 @@ function createImageFrame(obj)
 
             // Close button
             let popClose = create('img', "#--imageFrame-popupBg", "--imageFrame-popupClose", "--imageFrame-popupClose");
-            popClose.src = "../../assets/img/pop_close.png";
+            popClose.src = "../../assets/img/components/pop_close.png";
                     // Pop Close
             popClose.addEventListener("click", function()
             {
