@@ -141,10 +141,10 @@ var screen = {
         }
     },
     // Pontuação
-    pontuar: (quest, point) => {
-        EST.telas.geral[screen.current].pontos = point;
+    pontuar: (res) => {
+        EST.telas.geral[screen.current].pontos = res;
 
-        log("<<< QUEST: "+quest+" | PONTO: "+EST.telas.geral[screen.current].pontos+" >>>");
+        log("<<< MF PONTOS "+screen.current+": "+ EST.telas.geral[screen.current].pontos+" >>>");
     },
 
     setCheck: (callback) => {

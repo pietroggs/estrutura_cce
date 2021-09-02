@@ -15,8 +15,7 @@ let practiceMC2_Obj = {
         ["Sorry Elaine, I'm going to interrupt you there …", 1, 0],
         ["Sorry to cut you off …", 1, 0]
     ],
-    columnLabel: ["Changing topic", "Interrupting"],
-    debug: true
+    columnLabel: ["Changing topic", "Interrupting"]
 }
 
 createAudioCloud(cloudObj);

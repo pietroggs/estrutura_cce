@@ -50,7 +50,7 @@ function createAudioCloud(obj)
             else
             {
                 audio.id = "audio-cl-" + id;
-                audio.src = "./audios/" + obj.audio + ".mp3";
+                audio.src = "./assets/audios/" + obj.audio + ".mp3";
                 PlayAudioCloud();
             }
         });
@@ -122,12 +122,12 @@ function createAudioTimeline(obj)
     //#region Audio
         // Audio
         let audio = document.querySelector("audio");
-        audio.src = "./audios/" + obj.audio + ".mp3";
+        audio.src = "./assets/audios/" + obj.audio + ".mp3";
         audio.id = "audio-tl-" + id;
 
         // Temp Audio
         let m_audio = new Audio();
-        m_audio.src = "./audios/" + obj.audio + ".mp3";
+        m_audio.src = "./assets/audios/" + obj.audio + ".mp3";
     //#endregion
 
     //#region Event Listeners
@@ -152,7 +152,7 @@ function createAudioTimeline(obj)
             else
             {
                 audio.id = "audio-tl-" + id;
-                audio.src = "./audios/" + obj.audio + ".mp3";
+                audio.src = "./assets/audios/" + obj.audio + ".mp3";
                 PlayAudioTimeline();
             }
             progressBar.addEventListener("mousedown", timelineProgressBarEvent);
@@ -309,7 +309,7 @@ function createGrammarBox(obj)
             if(obj.icon != "")
             {
                 let icon = create('img',"#--grammarbox-header-" + id, "--grammarbox-icon-" + id, "--grammarbox-icon");
-                icon.src = "../../images/" + obj.icon + ".png";
+                icon.src = "../../assets/img/components/" + obj.icon + ".png";
             }
         //#endregion
 
@@ -339,7 +339,7 @@ function createImageFrame(obj)
 
     //Image
     let img = create('img',"#--imageFrame-frameBg-" + id, "--imageFrame-image-" + id, "--imageFrame-image");
-    img.src = "./images/" + obj.image + ".png";
+    img.src = "./assets/img/" + obj.image + ".png";
 
     //#region Frame Container
         create('',"#--imageFrame-frameBg-" + id, "--imageFrame-frameContainer-" + id, "--imageFrame-frameContainer");
@@ -376,11 +376,11 @@ function createImageFrame(obj)
 
             // Image
             popImage = create('img', "#--imageFrame-popupBg", "--imageFrame-popupImage", "--imageFrame-popupImage");
-            popImage.src = "./images/" + obj.image + ".png";
+            popImage.src = "./assets/img/" + obj.image + ".png";
 
             // Close button
             let popClose = create('img', "#--imageFrame-popupBg", "--imageFrame-popupClose", "--imageFrame-popupClose");
-            popClose.src = "../../images/pop_close.png";
+            popClose.src = "../../assets/img/pop_close.png";
                     // Pop Close
             popClose.addEventListener("click", function()
             {
@@ -432,7 +432,7 @@ function createVideo(obj)
         // Video Player
         let video = create("video", "#--videoBg-videoContainer-" + id, "--videoContainer-video-" + id, "--videoContainer-video");
         video.src = "./videos/" + obj.video + ".mp4";
-        if(obj.poster != "") video.poster="./images/" + obj.poster + ".png";
+        if(obj.poster != "") video.poster="./assets/img/" + obj.poster + ".png";
 
         // Video HUD
         let hud = create("", "#--videoBg-videoContainer-" + id, "--videoContainer-hud-" + id, "--videoContainer-hud");
@@ -495,7 +495,7 @@ function createVideo(obj)
             let playBlock = create("", "#--videoBg-videoContainer-" + id, "--videoContainer-playblock-" + id, "--videoContainer-playblock");
             create("", "#--videoContainer-playblock-" + id, "--playblock-square-" + id, "--playblock-square");
             let playBlockImg = create("img", "#--playblock-square-" + id, "--playblock-image-" + id, "--playblock-image");
-            playBlockImg.src = "../../images/button_play_3.png";
+            playBlockImg.src = "../../assets/img/components/button_play_3.png";
         //#endregion
 
     //#endregion
@@ -1011,8 +1011,6 @@ function createDrawline(obj)
 
  function createPracticeMultipleChoice2(practiceObj){
 
-    var isDebugOn = practiceObj.debug;
-
     var practiceContainerId = "--inner-multiple-choice-2-" + practiceObj.id;
     var practiceIsScored = document.querySelector("#" + practiceContainerId).hasAttribute("data-practice-scored");
 
@@ -1028,20 +1026,19 @@ function createDrawline(obj)
     var practiceScore = mainFramePathEST[currentScreen].max_pontos;
     var scorePerItem = practiceScore / practiceProperties.length;
     var finalScore = 0;
+    var scoreResults = [];
 
-    if(isDebugOn){
-        log("<<< Practice MC2 - Max score: " + practiceScore + " >>>");
-        log("<<< Practice MC2 - scorePerItem: " + scorePerItem + " >>>");
-    }
+    log("<<< Practice MC2 - Max score: " + practiceScore + " >>>");
+    log("<<< Practice MC2 - scorePerItem: " + scorePerItem + " >>>");
 
     var selectedAnswers = [];
 
     var buttonLabel = practiceObj.columnLabel; // [label btn left (0), label btn right(1)]
 
     var soundId = [
-        document.getElementById("sound-correct"), // correct answer sound
-        document.getElementById("sound-incorrect"), // incorrect answer sound
-        document.getElementById("sound-success") // success answer sound
+        parent.document.getElementById("sound-correct"), // correct answer sound
+        parent.document.getElementById("sound-incorrect"), // incorrect answer sound
+        parent.document.getElementById("sound-success") // success answer sound
     ];
 
     var answerButtonsAux = [];
@@ -1124,7 +1121,6 @@ function createDrawline(obj)
                 }
             }
 
-            /** play success sound if all are correct */
             finalScore = 0;
 
             for (let i = 0; i < selectedAnswers.length; i++) {
@@ -1132,27 +1128,33 @@ function createDrawline(obj)
                     if (practiceProperties[i][1] == selectedAnswers[i]) {
                         allCorrect++;
 
+                        scoreResults[i] = scorePerItem;
+
                         finalScore += practiceProperties[i][2];
+                    } else {
+                        scoreResults[i] = 0;
                     }
+                } else {
+                    scoreResults[i] = null;
                 }
             }
 
-
             // Send score if 'practiceIsScored'
             if (practiceIsScored) {
-                if(isDebugOn) console.log("<<< Practice MC2 - Final score: " + finalScore.toFixed() + " >>>");
+                 log("<<< Practice MC2 - Final score: " + finalScore.toFixed() + " >>>");
 
                 // send score each interaction
-                MFPontuar(btnGroup, finalScore.toFixed());
+                MFPontuar(scoreResults);
             }
 
-            // if(isDebugOn) console.log("<<< Score: " + finalScore.toFixed() + " >>>");
+            // log("<<< Score: " + finalScore.toFixed() + " >>>");
 
             if (allCorrect == practiceProperties.length) {
+                /** play success sound if all are correct */
                 soundId[2].play();
             }
 
-            if(isDebugOn) console.log("<<< Practice MC2 - selectedAnswers: " + selectedAnswers + " >>>");
+             log("<<< Practice MC2 - selectedAnswers: " + selectedAnswers + " >>>");
         }
     }();
 
@@ -1250,7 +1252,7 @@ function createDrawline(obj)
             selectedAnswers[i] = null;
         }
 
-        if(isDebugOn) log("<<< selectedAnswers [on reset]: " + selectedAnswers + " >>>");
+         log("<<< selectedAnswers [on reset]: " + selectedAnswers + " >>>");
 
         // Turn OFF ShowAnswer results if it's on
         if (showAllOn) {
