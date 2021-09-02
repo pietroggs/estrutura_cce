@@ -37,7 +37,7 @@ var EST = {
                 color: 'purple',
                 src: 'tela3',
                 max_pontos: 6,
-                pontos: 0
+                pontos: []
             },
             // TELAS EDITAVEIS FIM
             report: {

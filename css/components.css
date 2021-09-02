@@ -47,17 +47,17 @@ body{
     flex-direction: column;
 }
 .--cloud-button{
-    background-image: url(../images/button_play_0.png);
+    background-image: url(../assets/img/components/button_play_0.png);
 }
 .--cloud-button-active{
-    background-image: url(../images/button_stop_0.png) !important;
+    background-image: url(../assets/img/components/button_stop_0.png) !important;
 }
 .--cloud-bottomImg{
     background-size: contain;
     background-repeat: no-repeat;
     width: 2rem;
     height: 1.3rem;
-    background-image: url(../images/tick_rubric.png);
+    background-image: url(../assets/img/components/tick_rubric.png);
     transform: translate(55%, -10%);
 }
 .--inner-cloud p
@@ -72,11 +72,11 @@ body{
     align-items: center;
 }
 .--timeline-button{
-    background-image: url(../images/button_play_1.png);
+    background-image: url(../assets/img/components/button_play_1.png);
     background-position-x: 65% !important;
 }
 .--timeline-button-active{
-    background-image: url(../images/button_stop_1.png) !important;
+    background-image: url(../assets/img/components/button_stop_1.png) !important;
     background-position-x: center !important;
 }
 .--timeline-slider-bg{
@@ -152,7 +152,7 @@ body{
 
 /*#region GRAMMA BOX*/
 .--grammarbox-bg {
-    background: url(../images/texture_01.png) #536FC3;
+    background: url(../assets/img/components/texture_01.png) #536FC3;
     padding: 1em;
     border-radius: 7px;
     margin: 1rem 0;
@@ -215,7 +215,7 @@ body{
     height: 2.5rem;
     background-size: contain;
     background-repeat: no-repeat;
-    background-image: url(../images/button_fullscreen_0.png);
+    background-image: url(../assets/img/components/button_fullscreen_0.png);
     cursor: pointer;
 }
 .--imageFrame-frameBottom{
@@ -346,13 +346,13 @@ body{
 }
 .--videoContainer-progressBar::-moz-progress-bar{
     background-color: #66a8cc;
-    background-image: url(../images/progressBar-stripes_0.png);
+    background-image: url(../assets/img/components/progressBar-stripes_0.png);
     background-repeat: repeat-x;
     background-size: contain;
 }
 .--videoContainer-progressBar::-webkit-progress-value{
     background-color: #66a8cc;
-    background-image: url(../images/progressBar-stripes_0.png);
+    background-image: url(../assets/img/componentss/progressBar-stripes_0.png);
     background-repeat: repeat-x;
     background-size: contain;
 }
@@ -409,12 +409,12 @@ body{
     transition: 0.3s;
     background-repeat: no-repeat;
     background-size: contain;
-    background-image: url(../images/button_play_2.png);
+    background-image: url(../assets/img/components/button_play_2.png);
     cursor: pointer;
 }
 .--controlsContainer-play-active{
     transition: 0.3s;
-    background-image: url(../images/button_stop_2.png);
+    background-image: url(../assets/img/components/button_stop_2.png);
 }
 /*#endregion playbutton*/
 /*#region volume button*/
@@ -428,7 +428,7 @@ body{
     width: 50%;
     background-repeat: no-repeat;
     background-size: contain;
-    background-image: url(../images/audio_level_0.png);
+    background-image: url(../assets/img/components/audio_level_0.png);
 }
 .--controlsContainer-level{
     width: 50%;
@@ -442,15 +442,15 @@ body{
 }
 .--controlsContainer-level_1{
     transition: 0.3s;
-    background-image: url(../images/audio_level_1.png);
+    background-image: url(../assets/img/components/audio_level_1.png);
 }
 .--controlsContainer-level_2{
     transition: 0.3s;
-    background-image: url(../images/audio_level_2.png);
+    background-image: url(../assets/img/components/audio_level_2.png);
 }
 .--controlsContainer-level_3{
     transition: 0.3s;
-    background-image: url(../images/audio_level_3.png);
+    background-image: url(../assets/img/components/audio_level_3.png);
 }
 /*#endregion volume button*/
 /*#region volume bar*/
@@ -471,14 +471,14 @@ body{
 .--controlsContainer-volumebar::-moz-progress-bar
 {
     background-color: #66a8cc;
-    background-image: url(../images/progressBar-stripes_0.png);
+    background-image: url(../assets/img/components/progressBar-stripes_0.png);
     background-repeat: repeat-x;
     background-size: contain;
 }
 .--controlsContainer-volumebar::-webkit-progress-value
 {
     background-color: #66a8cc;
-    background-image: url(../images/progressBar-stripes_0.png);
+    background-image: url(../assets/img/components/progressBar-stripes_0.png);
     background-repeat: repeat-x;
     background-size: contain;
 }
@@ -497,10 +497,10 @@ body{
     cursor: pointer;
     background-repeat: no-repeat;
     background-size: contain;
-    background-image: url(../images/button_fullscreen_1.png);
+    background-image: url(../assets/img/components/button_fullscreen_1.png);
 }
 .--controlsContainer-fullscreen-close{
-    background-image: url(../images/button_fullscreen_2.png) !important;
+    background-image: url(../assets/img/components/button_fullscreen_2.png) !important;
 }
 .--videoContainer-videoMask
 {
@@ -567,11 +567,11 @@ body{
     margin: 0 0.5rem;
 }
 .--inner-rowOrderer-horizontal .--rowOrderer-arrow{
-    background-image: url(../images/row_arrows_horizontal.png);
+    background-image: url(../assets/img/games/row_arrows_horizontal.png);
 }
 .--inner-rowOrderer-vertical .--rowOrderer-arrow{
     position: absolute;
-    background-image: url(../images/row_arrows_vertical.png);
+    background-image: url(../assets/img/games/row_arrows_vertical.png);
 }
 /*#endregion ROW ORDERER*/
 
@@ -645,3 +645,203 @@ body{
     text-align: center;
 }
 /*#endregion SENTENCE INPUT */
+
+/* #region PRACTICE - MP2 */
+.practice {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    height: auto;
+
+    font-family: Arial,Helvetica,sans-serif;
+    color: #595b68;
+}
+
+#practice-mc2-container {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#practice-mc2-container li {
+    padding: 2vw 0;
+    border-top: 1px solid #87889D;
+}
+
+#practice-mc2-container li.practice-mc2-li-labels {
+    position: relative;
+    padding: 2.5vw 0;
+    border-top: none;
+    font-size: 1.5vw;
+    text-align: center;
+}
+
+#practice-mc2-container li.practice-mc2-li-labels .label0 {
+    position: absolute;
+    width: 8vw;
+    right: 5.8vw;
+    top:50%;
+    transform:translate(-50%,-50%);
+}
+
+#practice-mc2-container li.practice-mc2-li-labels .label1 {
+    position: absolute;
+    width: 8vw;
+    right: -2.5vw;
+    top:50%;
+    transform:translate(-50%,-50%);
+}
+
+#practice-mc2-container li span.text-limiter {
+    display: block;
+    width: 75%;
+    font-size: 1.5vw;
+}
+
+#practice-mc2-container li .button {
+    position: absolute;
+    width: 3.5vw;
+    height: 3.5vw;
+    border: 1px solid #87889D;
+    border-radius: 0.5vw;
+
+    transform: translate(-50%, -70%);
+}
+
+#practice-mc2-container li .button.correct {
+    border: 1px solid #5EC7CB;
+}
+
+#practice-mc2-container li .button.incorrect {
+    border: 1px solid #E6388F;
+}
+
+/* Button - small square */
+#practice-mc2-container li .button::after {
+    position: absolute;
+    content: "";
+    width: 1.8vw;
+    height: 1.8vw;
+    border: 1px solid #87889D;
+    border-radius: 0.2vw;
+    background-color: #fff;
+
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+/* Button - small square + active class */
+#practice-mc2-container li .button.active::after {
+    position: absolute;
+    content: "";
+    width: 1.8vw;
+    height: 1.8vw;
+    border: 1px solid #87889D;
+    border-radius: 0.2vw;
+    background-color: #87889D;
+
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+/* Button - small square + correct class */
+#practice-mc2-container li .button.correct::after {
+    position: absolute;
+    content: "";
+    width: 1.8vw;
+    height: 1.8vw;
+    border: 1px solid #5EC7CB;
+    border-radius: 0.2vw;
+    background-color: #5EC7CB;
+
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+/* Button - small square + incorrect class */
+#practice-mc2-container li .button.incorrect::after {
+    position: absolute;
+    content: "";
+    width: 1.8vw;
+    height: 1.8vw;
+    border: 1px solid #E6388F;
+    border-radius: 0.2vw;
+    background-color: #E6388F;
+
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+#practice-mc2-container li .button0 {
+    right: 12vw;
+}
+
+#practice-mc2-container li .button1 {
+    right: 4vw;
+}
+
+/* Footer buttons */
+#practice-footer-buttons {
+    bottom: 94px;
+    float: right;
+    position: fixed;
+    right: 0px;
+    width: auto;
+    z-index: 11;
+    border-top: 4px solid rgb(135, 136, 157);
+    padding: 10px 62px 0px;
+}
+
+#practice-footer-buttons > div {
+    width: 44px;
+    height: 44px;
+    margin-left: 0.4em;
+}
+
+#practice-footer-buttons .mark-all {
+    cursor: pointer;
+    display: inline-block;
+    background: url('../assets/img/components/button_check.png') 0px 0px / auto 44px no-repeat scroll rgb(255, 255, 255);
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(94, 199, 203);
+    border-image: initial;
+}
+
+#practice-footer-buttons .mark-all.active {
+    background: url('../assets/img/components/button_check.png') -88px 0px / auto 44px no-repeat scroll rgb(94, 199, 203);
+}
+
+#practice-footer-buttons .show-answers {
+    cursor: pointer;
+    display: inline-block;
+    background: url('../assets/img/components/button_show_answer.png') 0px 0px / auto 44px no-repeat scroll rgb(255, 255, 255);
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(135, 136, 157);
+    border-image: initial;
+}
+
+#practice-footer-buttons .show-answers.active {
+    background: url('../assets/img/components/button_show_answer.png') -88px 0px / auto 44px no-repeat scroll rgb(135, 136, 157);
+}
+
+#practice-footer-buttons .reset {
+    cursor: pointer;
+    display: inline-block;
+    background: url('../assets/img/components/button_reset.png') 0px 0px / auto 44px no-repeat scroll rgb(255, 255, 255);
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(230, 56, 143);
+    border-image: initial;
+}
+
+#practice-footer-buttons .reset.active {
+    background: url('../assets/img/components/button_reset.png') -88px 0px / auto 44px no-repeat scroll rgb(230, 56, 143);
+}
+
+/* #endregion PRACTICE - MP2 */
