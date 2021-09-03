@@ -336,7 +336,7 @@ function createImageFrame(obj)
 
     //Image
     let img = create('img',"#--imageFrame-frameBg-" + id, "--imageFrame-image-" + id, "--imageFrame-image");
-    img.src = "./assets/img/" + obj.image + ".png";
+    img.src = "./assets/img/" + obj.image + ".jpg";
 
     //#region Frame Container
         create('',"#--imageFrame-frameBg-" + id, "--imageFrame-frameContainer-" + id, "--imageFrame-frameContainer");
@@ -373,7 +373,7 @@ function createImageFrame(obj)
 
             // Image
             popImage = create('img', "#--imageFrame-popupBg", "--imageFrame-popupImage", "--imageFrame-popupImage");
-            popImage.src = "./assets/img/" + obj.image + ".png";
+            popImage.src = "./assets/img/" + obj.image + ".jpg";
 
             // Close button
             let popClose = create('img', "#--imageFrame-popupBg", "--imageFrame-popupClose", "--imageFrame-popupClose");
@@ -1254,7 +1254,6 @@ function createSentenceInput(obj)
             {
                 log("Desativa Mark");
                 markAllIsActive = false;
-
             }
         }
         function Reset(callback)
