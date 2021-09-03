@@ -1430,3 +1430,43 @@ function createSentenceChoice(obj){
     });
 
 }
+
+// # region SENTENCE SELECT
+function createSentenceSelect(obj){
+    let buttonsInner = [];
+    let selectedAnswer = "";
+
+    create("", "#--inner-sentenceSelect-0", "--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelectContainer  text gray");
+    for (let i = 0; i < obj.text.length; i++) {
+        
+        create("", "#--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect");
+        create("", "#--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect-button-0-" + obj.id+"-"+i, "--sentenceSelect-sentenceSelect-button  --drawline-startpointBorder");
+      
+        buttonsInner[i] = create("", "#--sentenceSelect-sentenceSelect-button-0-" + obj.id+"-"+i, "--sentenceSelect-sentenceSelect-text-0-"+ obj.id+"-"+i, "--sentenceSelect-sentenceSelect-buttonInner  --drawline-startpoint");
+        
+        let text = create("p", "#--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect-text-0-" + obj.id, "--sentenceSelect-sentenceSelect-text");
+        text.innerHTML = obj.text[i];
+    }
+
+    buttonsInner.forEach(function(element, index){
+        document.getElementById(element.id).addEventListener("click", function(){
+            if(selectedAnswer === "" || selectedAnswer != index){
+                selectedAnswer = index;
+                buttonsInner.forEach(function(e){
+                    if(e.classList.contains("buttonBackgroundSelected")){
+                        e.classList.remove("buttonBackgroundSelected");
+                    }
+                });
+                buttonsInner[index].classList.toggle("buttonBackgroundSelected");
+                if(index === obj.correct){
+                    log("CORRETOOO");
+                }else{
+                    log("INCORRETOOOOO");
+                }
+            }else{
+                buttonsInner[index].classList.remove("buttonBackgroundSelected");
+                selectedAnswer = "";
+            }
+        });
+    });    
+}

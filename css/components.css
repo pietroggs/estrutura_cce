@@ -916,7 +916,7 @@ body{
 }
 /* END SELECT LIST */
 
-/* #region SENETENCE CHOICE */
+/* #region SENTENCE CHOICE */
 .--sentenceChoice-sentenceChoiceContainer{
     display: flex;
     gap: 7px;
@@ -940,3 +940,12 @@ body{
     color: white;
 }
 /* END SENTENCE CHOICE */
+
+/* # region SENTENCE SELECT */
+.--sentenceSelect-sentenceSelect{
+    margin: 0.5rem auto;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+/* END SENTENCE SELECT */
