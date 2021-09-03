@@ -914,3 +914,28 @@ body{
     background-color: lightgray;
     cursor: pointer;
 }
+/* END SELECT LIST */
+
+/* #region SENETENCE CHOICE */
+.--sentenceChoice-sentenceChoiceContainer{
+    display: flex;
+    gap: 7px;
+    align-items: center;
+}
+.--sentenceChoice-sentenceChoiceContainer p{
+    margin: 1rem 0;
+}
+.--sentenceChoice-sentenceChoiceButton{
+    border: 1px solid gray;
+    height: 2rem;
+    width: 2rem;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+.buttonBackgroundSelected{
+    background-color: rgb(135, 136, 157);
+    color: white;
+}
+/* END SENTENCE CHOICE */
