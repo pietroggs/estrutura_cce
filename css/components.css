@@ -554,6 +554,12 @@ body{
 }
 .--rowOrderer-drag *{
     pointer-events: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 .--rowOrderer-arrow{
     right: 1rem;
@@ -645,6 +651,29 @@ body{
     text-align: center;
 }
 /*#endregion SENTENCE INPUT */
+
+/* #region SIDE BY SIDE */
+.--inner-verticalline{
+    width: 1px;
+    height: 100%;
+    background-color: #87889D;
+}
+.--inner-sidebyside{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.--inner-sidebyside .--sidebyside-container-2{
+    width: 45%;
+}
+.--inner-sidebyside .--sidebyside-container-3{
+    width: 30%;
+}
+.--inner-sidebyside .--sidebyside-container-4{
+    width: 15%;
+}
+/* #endregion VERTICAL LINE */
 
 /* #region PRACTICE - MP2 */
 .practice {
@@ -784,7 +813,9 @@ body{
     right: 4vw;
 }
 
-/* Footer buttons */
+/* #endregion PRACTICE - MP2 */
+
+/* #region Footer buttons */
 #practice-footer-buttons {
     bottom: 94px;
     float: right;
@@ -810,6 +841,7 @@ body{
     border-style: solid;
     border-color: rgb(94, 199, 203);
     border-image: initial;
+    border-radius: 10px;
 }
 
 #practice-footer-buttons .mark-all.active {
@@ -824,6 +856,7 @@ body{
     border-style: solid;
     border-color: rgb(135, 136, 157);
     border-image: initial;
+    border-radius: 10px;
 }
 
 #practice-footer-buttons .show-answers.active {
@@ -838,10 +871,10 @@ body{
     border-style: solid;
     border-color: rgb(230, 56, 143);
     border-image: initial;
+    border-radius: 10px;
 }
 
 #practice-footer-buttons .reset.active {
     background: url('../assets/img/components/button_reset.png') -88px 0px / auto 44px no-repeat scroll rgb(230, 56, 143);
 }
-
-/* #endregion PRACTICE - MP2 */
+/* #endregion Footer buttons */

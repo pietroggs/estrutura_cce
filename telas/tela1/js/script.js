@@ -16,7 +16,7 @@ let grammarBoxObj = {
     id: 0,
     title: "Title",
     icon: "icon_lamp",
-    text: [""]
+    text: ["Mussum Ipsum, cacilds vidis litro abertis. Suco de cevadiss deixa as pessoas mais interessantis. Quem num gosta di mé, boa gentis num é. Casamentiss faiz malandris se pirulitá.", "Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis."]
 }
 
 // video object sample
@@ -48,10 +48,24 @@ let drawlineObj = {
 // sentence input object sample
 let sentenceInputObj = { 
     id: 0,
+    text: ["You are not a journalist. You are a secretary. You", "a secretary.", "a secretary."],
+    correct: ["aren't", "Uh Didiii"]
+}
+
+
+
+let sentenceInputObj1 = { 
+    id: 1,
     text: ["You are not a journalist. You are a secretary. You", "a secretary."],
     correct: ["aren't"]
 }
+let imageFrameObj1 = {
+    id: 1,
+    image: "image_00",
+    zoom: true
+}
 
+let buttonStatus = createFooterButtons();
 
 createAudioCloud(cloudObj);
 createAudioTimeline(timelineObj);
@@ -60,5 +74,9 @@ createImageFrame(imageFrameObj);
 createVideo(videoObj);
 createRowOrderer(rowOrdererObj);
 createDrawline(drawlineObj);
-
 createSentenceInput(sentenceInputObj);
+
+
+
+// createSentenceInput(sentenceInputObj1);
+// createImageFrame(imageFrameObj1);

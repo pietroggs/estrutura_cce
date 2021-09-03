@@ -26,7 +26,6 @@ function createAudioCloud(obj)
 
     //#region Audio
         let audio = document.querySelector("audio");
-        audio.id = "audio-cl-" + id;
     //#endregion
 
     //#region Button Listener
@@ -122,8 +121,6 @@ function createAudioTimeline(obj)
     //#region Audio
         // Audio
         let audio = document.querySelector("audio");
-        audio.src = "./assets/audios/" + obj.audio + ".mp3";
-        audio.id = "audio-tl-" + id;
 
         // Temp Audio
         let m_audio = new Audio();
@@ -432,7 +429,7 @@ function createVideo(obj)
         // Video Player
         let video = create("video", "#--videoBg-videoContainer-" + id, "--videoContainer-video-" + id, "--videoContainer-video");
         video.src = "./videos/" + obj.video + ".mp4";
-        if(obj.poster != "") video.poster="./assets/img/" + obj.poster + ".png";
+        if(obj.poster != "") video.poster="./assets/img/" + obj.poster + ".jpg";
 
         // Video HUD
         let hud = create("", "#--videoBg-videoContainer-" + id, "--videoContainer-hud-" + id, "--videoContainer-hud");
@@ -758,6 +755,35 @@ function createRowOrderer(obj)
     let draggedItemParent = null;
     let currentAnswer = [];
 
+    let containerEvent = function()
+    {
+        if(this.firstChild != null)
+        {
+            draggedItemParent.append(this.firstChild);
+            this.append(draggedItem);
+            draggedItemParent = this;
+        }
+    }
+    let dragStart = function(e)
+    {
+        draggedItem = e.target;
+        draggedItemParent = e.target.parentNode;
+        setTimeout(function()
+        {
+            draggedItem.style.display = "none";
+        }, 0);
+    }
+    let dragEnd = function(e)
+    {
+        setTimeout(function()
+        {
+            draggedItem.style.display = "flex";
+            draggedItemParent = null;
+            draggedItem = null;
+            CheckResult();
+        }, 0);
+    }
+
     let id = obj.id;
 
     let rowOrdererContainer = document.getElementById("--inner-rowOrderer-" + id);
@@ -769,15 +795,7 @@ function createRowOrderer(obj)
         // Backgound Container
         container[i] = create('',"#--inner-rowOrderer-" + id, "--rowOrderer-bg-" + id + "-" + i, "--rowOrderer-bg");
 
-        container[i].addEventListener("dragenter", function(e)
-        {
-            if(this.firstChild != null)
-            {
-                draggedItemParent.append(this.firstChild);
-                this.append(draggedItem);
-                draggedItemParent = this;
-            }
-        });
+        container[i].addEventListener("dragenter", containerEvent);
 
         // Draggable Element
         drag[i] = create('',"#--rowOrderer-bg-" + id + "-" + i, "--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-drag");
@@ -785,28 +803,12 @@ function createRowOrderer(obj)
         // Text
         let text = create('p',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-text-" + id + "-" + i, "--rowOrderer-text text white");
         text.innerHTML = obj.text[i];
+
         // Arrow
         create('',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-arrow-" + id + "-" + i, "--rowOrderer-arrow");
 
-        drag[i].addEventListener("dragstart", function(e)
-        {
-            draggedItem = e.target;
-            draggedItemParent = e.target.parentNode;
-            setTimeout(function()
-            {
-                draggedItem.style.display = "none";
-            }, 0);
-        });
-        drag[i].addEventListener("dragend", function(e)
-        {
-            setTimeout(function()
-            {
-                draggedItem.style.display = "flex";
-                draggedItemParent = null;
-                draggedItem = null;
-                CheckResult();
-            }, 0);
-        });
+        drag[i].addEventListener("dragstart", dragStart);
+        drag[i].addEventListener("dragend", dragEnd);
     }
 
     // #region Functions
@@ -826,6 +828,84 @@ function createRowOrderer(obj)
         }
         console.log("Correto");
     }
+
+    // #region Pratice Handler
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                log("Ativa show");
+
+                showAnswersIsActive = true;
+
+                for(let i = 0; i < drag.length; i++)
+                {
+                    container[i].append( drag[obj.correct[i]] );
+                    drag[i].setAttribute("draggable", "false");
+                    drag[i].style.cssText = "background-color: lightgray;";
+                    container[i].removeEventListener("dragenter", containerEvent);
+                    drag[i].removeEventListener("dragstart", dragStart);
+                    drag[i].removeEventListener("dragend", dragEnd);
+                }
+            }
+            else
+            {
+                log("Desativa show");
+
+                showAnswersIsActive = false;
+
+                for(let i = 0; i < drag.length; i++)
+                {
+                    if(currentAnswer.length == 0)
+                    {
+                        container[i].append( drag[i] );
+                    }
+                    else
+                    {
+                        container[i].append( drag[ currentAnswer[i] ] );
+                    }
+
+                    drag[i].setAttribute("draggable", "true");
+                    drag[i].style.cssText = "background-color: #87889D;";
+                    container[i].addEventListener("dragenter", containerEvent);
+                    drag[i].addEventListener("dragstart", dragStart);
+                    drag[i].addEventListener("dragend", dragEnd);
+                }
+            }
+        }
+
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                log("Ativa Mark");
+                markAllIsActive = true;
+            }
+            else
+            {
+                log("Desativa Mark");
+                markAllIsActive = false;
+
+            }
+        }
+        function Reset(callback)
+        {
+            if(callback === "reset")
+            {
+                log("Ativa Reset");
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+
     //#endregion
 }
 //#endregion
@@ -834,10 +914,37 @@ function createRowOrderer(obj)
 function createDrawline(obj)
 {
     let id = obj.id;
+    let startPoint = [];
+    let endPoint = [];
     let currentAnswer = [];
     let currentStartPoint = null;
     let currentMousePosition = [];
     let pointsContainerOrientation = (obj.orientation == "vertical") ? "horizontal" : "vertical";
+
+
+    let startPointEvent = function(e)
+    {
+        e.preventDefault();
+        this.style.cssText = "background-color: rgb(135, 136, 157);";
+        currentStartPoint = this;
+        currentMousePosition = [e.pageX, e.pageY];
+
+        let m_startPositions = GetPointArrayPosition(currentStartPoint);
+
+        // Clear Endpoint connected
+        if(currentStartPoint.firstChild != null)
+        {
+            if(currentAnswer[m_startPositions] !== "")
+            {
+                let m_endPosition = document.getElementById("--drawline-endpoint-" + id + "-" + currentAnswer[m_startPositions]);
+                m_endPosition.style.cssText = "background-color: none;";
+                currentAnswer[m_startPositions] = "";
+            }
+        }
+
+        RemoveGhost();
+        CreateGhost();
+    }
 
     let drawlineContainer = create('',"#--inner-drawline-" + id, "--drawline-drawlineContainer-" + id, "--drawline-drawlineContainer");
     drawlineContainer.classList.add("--drawline-" + obj.orientation);
@@ -856,50 +963,28 @@ function createDrawline(obj)
         currentAnswer[i] = "";
 
         create('',"#--drawline-startpointContainer-" + id, "--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpointBorder");
-        let startPoint = create('',"#--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpoint-" + id + "-" + i, "--drawline-startpoint");
+        startPoint[i] = create('',"#--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpoint-" + id + "-" + i, "--drawline-startpoint");
         
         create('',"#--drawline-endpointContainer-" + id, "--drawline-endpointBorder-" + id + "-" + i, "--drawline-endpointBorder");
-        let endPoint = create('',"#--drawline-endpointBorder-" + id + "-" + i, "--drawline-endpoint-" + id + "-" + i, "--drawline-endpoint");
+        endPoint[i] = create('',"#--drawline-endpointBorder-" + id + "-" + i, "--drawline-endpoint-" + id + "-" + i, "--drawline-endpoint");
         
-        startPoint.addEventListener("mousedown", function(e)
-        {
-            e.preventDefault();
-            startPoint.style.cssText = "background-color: rgb(135, 136, 157);";
-            currentStartPoint = this;
-            currentMousePosition = [e.pageX, e.pageY];
+        EnableStartPoint();
 
-            let m_startPositions = GetPointArrayPosition(currentStartPoint);
-
-            // Clear Endpoint connected
-            if(currentStartPoint.firstChild != null)
-            {
-                if(currentAnswer[m_startPositions] !== "")
-                {
-                    let m_endPosition = document.getElementById("--drawline-endpoint-" + id + "-" + currentAnswer[m_startPositions]);
-                    m_endPosition.style.cssText = "background-color: none;";
-                    currentAnswer[m_startPositions] = "";
-                }
-            }
-
-            RemoveGhost();
-            CreateGhost();
-        });
-
-        endPoint.addEventListener("mouseup", function()
+        endPoint[i].addEventListener("mouseup", function()
         {
             RemoveGhost();
 
             // Set end point case its free
-            if(CheckEndPointIsMarked(endPoint))
+            if(CheckEndPointIsMarked(endPoint[i]))
             {
                 if(currentStartPoint != null)
                 {
                     currentStartPoint.style.cssText = "background-color: rgb(135, 136, 157);";
-                    endPoint.style.cssText = "background-color: rgb(135, 136, 157);";
+                    endPoint[i].style.cssText = "background-color: rgb(135, 136, 157);";
                     CreateLine(currentStartPoint, this);
     
                     let m_startPositions = GetPointArrayPosition(currentStartPoint);
-                    let m_endPositions = GetPointArrayPosition(endPoint);
+                    let m_endPositions = GetPointArrayPosition(endPoint[i]);
     
                     // set answer
                     currentAnswer[m_startPositions] = m_endPositions;
@@ -997,6 +1082,90 @@ function createDrawline(obj)
         line.style.transform = "rotate(" + angleDeg + "deg)";
         line.style.width = tan + "px";  
     }
+
+    // #region Functions
+    function EnableStartPoint()
+    {
+        for(let i = 0 ; i < startPoint.length; i++)
+        {
+            startPoint[i].addEventListener("mousedown", startPointEvent);
+        }
+    }
+    function DisableStartPoint()
+    {
+        for(let i = 0 ; i < startPoint.length; i++)
+        {
+            startPoint[i].removeEventListener("mousedown", startPointEvent);
+        }
+    }
+    // #region Pratice Handler
+    let showAnswersIsActive;
+    function ShowAnswer(callback)
+    {
+        if(callback === "show-answers" && !showAnswersIsActive)
+        {
+                showAnswersIsActive = true;
+                DisableStartPoint();
+
+                for(let i = 0; i < startPoint.length; i++)
+                {
+                    CreateLine(startPoint[i], endPoint[obj.correct[i]]);
+                    startPoint[i].style.cssText = "background-color: none; cursor: default;";
+                    endPoint[i].style.cssText = "background-color: none;";
+                }
+            }
+            else
+            {
+                showAnswersIsActive = false;
+                EnableStartPoint();
+
+                for(let i = 0; i < startPoint.length; i++)
+                {
+                    if(currentAnswer[i] !== "")
+                    {
+                        CreateLine(startPoint[i], endPoint[ currentAnswer[i] ]);
+                        startPoint[i].style.cssText = "background-color: rgb(135, 136, 157); cursor: pointer;";
+                        endPoint[currentAnswer[i]].style.cssText = "background-color: rgb(135, 136, 157);";
+                    }
+                    else if( startPoint[i].childElementCount > 0)
+                    {
+                        startPoint[i].removeChild(startPoint[i].firstChild);
+                    }
+                }   
+            }
+        }
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                log("Ativa Mark");
+                markAllIsActive = true;
+            }
+            else
+            {
+                log("Desativa Mark");
+                markAllIsActive = false;
+
+            }
+        }
+        function Reset(callback)
+        {
+            if(callback === "reset")
+            {
+                log("Ativa Reset");
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+
+    //#endregion
 }
 //#endregion
 
@@ -1005,6 +1174,7 @@ function createSentenceInput(obj)
 {
     let id = obj.id;
     let input = [];
+    let savedAnswer = [];
     let text = create("p", "#--inner-sentenceInput-" + id, "--sentenceInput-text" + id, "text gray --sentenceInput-text");
     
     for(let i = 0; i < (obj.text.length - 1); i++)
@@ -1026,16 +1196,6 @@ function createSentenceInput(obj)
 
     text.innerHTML = text.innerHTML + obj.text[obj.text.length - 1];
 
-    //#region Listeners
-    for(let i = 0; i < input.length; i++)
-    {
-        document.getElementById(input[i].id).addEventListener("blur", function(e)
-        {
-            CheckInput(e.target.value, i);
-        });
-    }
-    //#endregion
-
     //#region Functions
     function CheckInput(value, index)
     {
@@ -1051,6 +1211,77 @@ function createSentenceInput(obj)
             console.log("errado");
         }
     }
+
+    // #region Pratice Handler
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+
+                showAnswersIsActive = true;
+                for(let i = 0; i < input.length; i++)
+                {
+                    let currentInput = document.getElementById(input[i].id);
+                    savedAnswer[i] = currentInput.value;
+                    currentInput.value = obj.correct[i];
+                    currentInput.disabled = true;
+                    currentInput.style.cssText = "background-color: lightgray;";
+                }
+            }
+            else
+            {
+                showAnswersIsActive = false;
+                for(let i = 0; i < input.length; i++)
+                {
+                    let currentInput = document.getElementById(input[i].id);
+                    currentInput.value = savedAnswer[i];
+                    currentInput.disabled = false;
+                    currentInput.style.cssText = "background-color: none;";
+                }         
+            }
+        }
+
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                log("Ativa Mark");
+                markAllIsActive = true;
+            }
+            else
+            {
+                log("Desativa Mark");
+                markAllIsActive = false;
+
+            }
+        }
+        function Reset(callback)
+        {
+            if(callback === "reset")
+            {
+                log("Ativa Reset");
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+
+    //#endregion
+
+    // #region Listeners
+        for(let i = 0; i < input.length; i++)
+        {
+            document.getElementById(input[i].id).addEventListener("blur", function(e)
+            {
+                CheckInput(e.target.value, i);
+            });
+        }
     //#endregion
 }
 //#endregion
@@ -1338,3 +1569,59 @@ function createSentenceInput(obj)
 }
 //#endregion
 
+// #region FOOTER BUTTONS
+function createFooterButtons()
+{
+    let footerButtons = [];
+
+    create("", "#--inner-content", "practice-footer-buttons");
+    footerButtons[0] = create("", "#practice-footer-buttons", "mark-all", "mark-all");
+    footerButtons[1] = create("", "#practice-footer-buttons", "show-answers", "show-answers");
+    footerButtons[2] = create("", "#practice-footer-buttons", "reset", "reset");
+
+    let footerButtonEvent = function()
+    {
+        for(let i = 0; i < footerButtons.length; i++)
+        {
+            if(this.id == footerButtons[i].id)
+            {
+                if(!footerButtons[i].classList.contains("active"))
+                {
+                    footerButtons[i].classList.add("active");
+                }
+                else
+                {
+                    footerButtons[i].classList.remove("active");
+                }
+            }
+            else
+            {
+                footerButtons[i].classList.remove("active");
+            }
+        }
+    }
+
+    for(let i = 0; i < footerButtons.length; i ++)
+    {
+        footerButtons[i].addEventListener("click", footerButtonEvent);
+    }
+}
+
+function SignInFooterButton(markFunction, showFunction, resetFunction)
+{
+    let footerButtons= [];
+    footerButtons[0] = document.getElementById("mark-all");
+    footerButtons[1] = document.getElementById("show-answers");
+    footerButtons[2] = document.getElementById("reset");
+
+    for(let i = 0; i < footerButtons.length; i++)
+    {
+        footerButtons[i].addEventListener("click", function()
+        {
+            markFunction(footerButtons[i].id);
+            showFunction(footerButtons[i].id);
+            resetFunction(footerButtons[i].id);
+        });  
+    }
+}
+//#endregion
