@@ -1625,3 +1625,139 @@ function SignInFooterButton(markFunction, showFunction, resetFunction)
     }
 }
 //#endregion
+
+//#region SELECT LIST
+function createSelectList(obj){
+    let currentSelected = null;
+    let buttonInner = [];
+
+    let container = create("", "#--inner-selectList-" + obj.id, "--selectList-selectListContainer-"+ obj.id, "--selectListContainer");
+
+    let input = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-input-"+ obj.id, "--selectListContainer-input");
+    let text = create("p", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-text-"+ obj.id, "--selectListContainer-text text gray");
+    create("", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-button-"+ obj.id, "--selectListContainer-button");
+    
+
+    input.addEventListener("click", function(){
+        let list = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-list-"+ obj.id, "--selectListContainer-list");
+        
+        for(let i = 0; i < obj.text.length; i++){
+            let listItem = create("", "#--selectListContainer-list-"+ obj.id, "--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem");
+            let textOption = create("p", "#--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem-text-"+ obj.id + "-"+ i, "--selectListContainer-listItem-text  text gray");
+
+            textOption.innerHTML = obj.text[i];
+           
+            create("", "#--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem-button-"+ obj.id + "-"+ i, "--selectListContainer-listItem-button  --drawline-startpointBorder");
+            
+            buttonInner[i] = create("", "#--selectListContainer-listItem-button-"+ obj.id + "-"+ i, "--selectListContainer-listItem-buttonInner-"+ obj.id + "-"+ i, "--selectListContainer-listItem-buttonInner  --drawline-startpoint");
+
+            listItem.addEventListener("click", function(){
+                container.removeChild(list);
+                text.innerHTML = obj.text[i];
+                currentSelected = i;
+
+                if(obj.correct == i){
+                    log("CORRETO")
+                }else{
+                    log("INCORRETO")
+                }
+                
+            });
+        }
+        if(currentSelected != null){
+            buttonInner[currentSelected].style.cssText = "background-color: rgb(135, 136, 157);";
+        }
+    });
+}
+//#endregion
+
+// #region SENTENCE CHOICE
+function createSentenceChoice(obj){
+    let buttons = [];
+    let texts = [];
+    let selectedAnswer = "";
+
+    create("", "#--inner-sentenceChoice-0", "--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceContainer  text  gray");
+    
+    texts[0] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-0-"+obj.id, "--sentenceChoice-sentenceChoiceText");
+    texts[0].innerHTML = obj.text[0];
+
+    buttons[0]= create("", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceButton-0-"+obj.id, "--sentenceChoice-sentenceChoiceButton");
+    buttons[0].innerHTML = obj.text[1];
+
+    let slash = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceSlash-"+obj.id, "--sentenceChoice-sentenceChoiceSlash");
+    slash.innerHTML = "/";
+    
+    buttons[1]= create("", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceButton-1-"+obj.id, "--sentenceChoice-sentenceChoiceButton");
+    buttons[1].innerHTML = obj.text[2];
+   
+    texts[1] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-1-"+obj.id, "--sentenceChoice-sentenceChoiceText");
+    texts[1].innerHTML = obj.text[3];
+
+    buttons.forEach(function(element, index) {
+        element.addEventListener("click", function(){
+            if(selectedAnswer === "" || selectedAnswer != index){
+                selectedAnswer = index;
+                buttons.forEach(function(e){
+                    if(e.classList.contains("buttonBackgroundSelected")){
+                        e.classList.remove("buttonBackgroundSelected");
+                    }
+                });
+                element.classList.toggle("buttonBackgroundSelected");
+    
+                if(index === obj.correct){
+                    log("CORRETO")
+                }else{
+                    log("INCORRETO")
+                }
+
+            }else {
+                element.classList.remove("buttonBackgroundSelected");
+                selectedAnswer = "";
+            }           
+        });
+    });
+
+}
+//#endregion
+
+// #region SENTENCE SELECT
+function createSentenceSelect(obj){
+    let buttonsInner = [];
+    let selectedAnswer = "";
+
+    create("", "#--inner-sentenceSelect-0", "--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelectContainer  text gray");
+    for (let i = 0; i < obj.text.length; i++) {
+        
+        create("", "#--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect");
+        create("", "#--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect-button-0-" + obj.id+"-"+i, "--sentenceSelect-sentenceSelect-button  --drawline-startpointBorder");
+      
+        buttonsInner[i] = create("", "#--sentenceSelect-sentenceSelect-button-0-" + obj.id+"-"+i, "--sentenceSelect-sentenceSelect-text-0-"+ obj.id+"-"+i, "--sentenceSelect-sentenceSelect-buttonInner  --drawline-startpoint");
+        
+        let text = create("p", "#--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect-text-0-" + obj.id, "--sentenceSelect-sentenceSelect-text");
+        text.innerHTML = obj.text[i];
+    }
+
+    buttonsInner.forEach(function(element, index){
+        document.getElementById(element.id).addEventListener("click", function(){
+            if(selectedAnswer === "" || selectedAnswer != index){
+                selectedAnswer = index;
+                buttonsInner.forEach(function(e){
+                    if(e.classList.contains("buttonBackgroundSelected")){
+                        e.classList.remove("buttonBackgroundSelected");
+                    }
+                });
+                buttonsInner[index].classList.toggle("buttonBackgroundSelected");
+                if(index === obj.correct){
+                    log("CORRETOOO");
+                }else{
+                    log("INCORRETOOOOO");
+                }
+            }else{
+                buttonsInner[index].classList.remove("buttonBackgroundSelected");
+                selectedAnswer = "";
+            }
+        });
+    });    
+}
+// #endregion

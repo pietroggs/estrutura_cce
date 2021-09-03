@@ -878,3 +878,107 @@ body{
     background: url('../assets/img/components/button_reset.png') -88px 0px / auto 44px no-repeat scroll rgb(230, 56, 143);
 }
 /* #endregion Footer buttons */
+
+/* #region SELECT LIST */
+.--selectListContainer{
+    position: relative;
+    width: 12rem;
+    height: 3rem;
+
+}
+
+.--selectListContainer-input{
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgb(89, 91, 104);
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+.--selectListContainer-text{
+    margin-left: 1rem;
+    align-self: center;
+}
+
+.--selectListContainer-button{
+    background-color: rgb(135, 136, 157);
+    width: 3rem;
+}
+
+.--selectListContainer-button::after{
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 33%;
+    left: 83%;
+    width: 0px;
+    height: 0px;
+    line-height: 0px;
+    background: none;
+    border-style: solid;
+    border-width: 14px 8px 0px;
+    border-color: rgba(255, 255, 255, 0.7) transparent transparent;
+}
+
+.--selectListContainer-list{
+    background-color: white;
+    width: 17rem;
+    position: absolute;
+    top: 0;
+    border: 3px solid gray;
+    border-radius: 6px;
+}
+.--selectListContainer-list p, 
+.--selectListContainer-list .--selectListContainer-listItem-button{
+    margin: 0 1rem;
+}
+
+.--selectListContainer-listItem{
+    width: 100%;
+    height: 5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid gray;
+}
+
+.--selectListContainer-listItem:hover{
+    background-color: lightgray;
+    cursor: pointer;
+}
+/* END SELECT LIST */
+
+/* #region SENTENCE CHOICE */
+.--sentenceChoice-sentenceChoiceContainer{
+    display: flex;
+    gap: 7px;
+    align-items: center;
+}
+.--sentenceChoice-sentenceChoiceContainer p{
+    margin: 1rem 0;
+}
+.--sentenceChoice-sentenceChoiceButton{
+    border: 1px solid gray;
+    height: 2rem;
+    width: auto;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0 0.5rem;
+}
+.buttonBackgroundSelected{
+    background-color: rgb(135, 136, 157);
+    color: white;
+}
+/* END SENTENCE CHOICE */
+
+/* # region SENTENCE SELECT */
+.--sentenceSelect-sentenceSelect{
+    margin: 0.5rem auto;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+/* END SENTENCE SELECT */
