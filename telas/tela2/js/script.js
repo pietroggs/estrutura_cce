@@ -52,6 +52,8 @@ let sentenceInputObj = {
     correct: ["aren't"]
 }
 
+//Use to Create The Footer Buttons
+createFooterButtons();
 
 createAudioCloud(cloudObj);
 createAudioTimeline(timelineObj);

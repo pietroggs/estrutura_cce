@@ -51,8 +51,24 @@ let sentenceInputObj = {
     text: ["You are not a journalist. You are a secretary. You", "a secretary.", "a secretary."],
     correct: ["aren't", "Uh Didiii"]
 }
-
-
+// sentence list object sample
+let selectListObj = {
+    id: 0,
+    text: ["ON", "KJAH", "AFAS"],
+    correct: 1
+}
+// sentence choice object sample
+let sentenceChoiceObj = {
+    id: 0,
+    text: ["ON", "KJAH", "AFAS"],
+    correct: 1
+}
+// sentence select object sample
+let sentenceSelectObj = {
+    id: 0,
+    text: ["Yes, he is.", "No, he isn't."],
+    correct: 1
+}
 
 let sentenceInputObj1 = { 
     id: 1,
@@ -65,7 +81,8 @@ let imageFrameObj1 = {
     zoom: true
 }
 
-let buttonStatus = createFooterButtons();
+//Use to Create The Footer Buttons
+createFooterButtons();
 
 createAudioCloud(cloudObj);
 createAudioTimeline(timelineObj);
@@ -75,7 +92,9 @@ createVideo(videoObj);
 createRowOrderer(rowOrdererObj);
 createDrawline(drawlineObj);
 createSentenceInput(sentenceInputObj);
-
+createSelectList(selectListObj);
+createSentenceChoice(sentenceChoiceObj);
+createSentenceSelect(sentenceSelectObj);
 
 
 // createSentenceInput(sentenceInputObj1);
