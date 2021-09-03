@@ -928,11 +928,12 @@ body{
 .--sentenceChoice-sentenceChoiceButton{
     border: 1px solid gray;
     height: 2rem;
-    width: 2rem;
+    width: auto;
     align-items: center;
     display: flex;
     justify-content: center;
     cursor: pointer;
+    padding: 0 0.5rem;
 }
 .buttonBackgroundSelected{
     background-color: rgb(135, 136, 157);

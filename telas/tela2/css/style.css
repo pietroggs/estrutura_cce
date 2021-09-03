@@ -72,7 +72,7 @@
 
 
 /* sentenceChoice */
-.--sentenceChoice-sentenceChoiceContainer{
+/* .--sentenceChoice-sentenceChoiceContainer{
     display: flex;
     gap: 7px;
     align-items: center;
@@ -94,4 +94,4 @@
 .buttonBackgroundSelected{
     background-color: rgb(135, 136, 157);
     color: white;
-}
+} */

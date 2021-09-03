@@ -122,54 +122,61 @@ let sentenceChoiceObj = {
     id: 0,
     text: ["She's", "a", "an", "photographer."],
     correct: 0
-
 }
+
+let lesson2 = {
+    id: 0,
+    text: ["This is Emma's", "mum", "aunt", "."],
+    correct: 0
+}
+
 createSentenceChoice(sentenceChoiceObj);
+createSentenceChoice(lesson2);
 
-function createSentenceChoice(obj){
-    let buttons = [];
-    let texts = [];
-    let selectedAnswer = "";
+// function createSentenceChoice(obj){
+//     let buttons = [];
+//     let texts = [];
+//     let selectedAnswer = "";
 
-    create("", "#--inner-sentenceChoice-0", "--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceContainer  text  gray");
+//     create("", "#--inner-sentenceChoice-0", "--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceContainer  text  gray");
     
-    texts[0] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-0-"+obj.id, "--sentenceChoice-sentenceChoiceText");
-    texts[0].innerHTML = obj.text[0];
+//     texts[0] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-0-"+obj.id, "--sentenceChoice-sentenceChoiceText");
+//     texts[0].innerHTML = obj.text[0];
 
-    buttons[0]= create("", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceButton-0-"+obj.id, "--sentenceChoice-sentenceChoiceButton");
-    buttons[0].innerHTML = obj.text[1];
+//     buttons[0]= create("", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceButton-0-"+obj.id, "--sentenceChoice-sentenceChoiceButton");
+//     buttons[0].innerHTML = obj.text[1];
 
-    let slash = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceSlash-"+obj.id, "--sentenceChoice-sentenceChoiceSlash");
-    slash.innerHTML = "/";
+//     let slash = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceSlash-"+obj.id, "--sentenceChoice-sentenceChoiceSlash");
+//     slash.innerHTML = "/";
     
-    buttons[1]= create("", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceButton-1-"+obj.id, "--sentenceChoice-sentenceChoiceButton");
-    buttons[1].innerHTML = obj.text[2];
+//     buttons[1]= create("", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceButton-1-"+obj.id, "--sentenceChoice-sentenceChoiceButton");
+//     buttons[1].innerHTML = obj.text[2];
    
-    texts[1] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-1-"+obj.id, "--sentenceChoice-sentenceChoiceText");
-    texts[1].innerHTML = obj.text[3];
+//     texts[1] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-1-"+obj.id, "--sentenceChoice-sentenceChoiceText");
+//     texts[1].innerHTML = obj.text[3];
 
-    buttons.forEach(function(element, index) {
-        element.addEventListener("click", function(){
-            if(selectedAnswer === "" || selectedAnswer != index){
-                selectedAnswer = index;
-                buttons.forEach(function(e){
-                    if(e.classList.contains("buttonBackgroundSelected")){
-                        e.classList.remove("buttonBackgroundSelected");
-                    }
-                });
-                element.classList.toggle("buttonBackgroundSelected");
+//     buttons.forEach(function(element, index) {
+//         element.addEventListener("click", function(){
+//             if(selectedAnswer === "" || selectedAnswer != index){
+//                 selectedAnswer = index;
+//                 buttons.forEach(function(e){
+//                     if(e.classList.contains("buttonBackgroundSelected")){
+//                         e.classList.remove("buttonBackgroundSelected");
+//                     }
+//                 });
+//                 element.classList.toggle("buttonBackgroundSelected");
     
-                if(index === obj.correct){
-                    log("CORRETO")
-                }else{
-                    log("INCORRETO")
-                }
+//                 if(index === obj.correct){
+//                     log("CORRETO")
+//                 }else{
+//                     log("INCORRETO")
+//                 }
 
-            }else {
-                element.classList.remove("buttonBackgroundSelected");
-                selectedAnswer = "";
-            }           
-        });
-    });
+//             }else {
+//                 element.classList.remove("buttonBackgroundSelected");
+//                 selectedAnswer = "";
+//             }           
+//         });
+//     });
 
-}
+// }
