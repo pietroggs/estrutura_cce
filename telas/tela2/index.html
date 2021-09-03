@@ -1,147 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="../../css/fonts.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- AUDIO LISTENER -->
+    <audio id="audio"></audio>
 
-    <div id="container">
-        <!-- AUDIO LISTENER -->
-        <audio id="audio"></audio>
+    <!-- FIXED CONTAINER -->
+    <div id="--container-outer">
 
-        <!-- FIXED CONTAINER -->
-        <div id="--container-outer">
+        <!-- SCROLLABLE CONTAINER -->
+        <div id="--container-inner">
+            <!-- PAGE CONTENT -->
+            <div id="--inner-content">
 
-            <!-- SCROLLABLE CONTAINER -->
-            <div id="--container-inner">
-                <!-- PAGE TITLE -->
-                <!-- <p id="--inner-title" class="text gray">The animal rights debate <span class="pink">Main input</span></p> -->
-                <!-- PAGE CONTENT -->
-                <div id="--inner-content">
-                    <div id="--inner-cloud-0" class="--inner-cloud"></div>
+                <div id="--inner-cloud-0" class="--inner-cloud"></div>
+                
+                <div id="--inner-timeline-0" class="--inner-timeline"></div>
 
-                    <div id="--inner-timeline-0" class="--inner-timeline"></div>
+                <div id="--inner-grammarbox-0" class="--inner-grammarbox"></div>
+                
+                <div id="--inner-imageFrame-0"></div>
+                
+                <div id="--inner-rowOrderer-0" class="--inner-rowOrderer"></div>
+                
+                <div id="--inner-video-0" class="--inner-video"></div>
 
-                    <div id="--inner-grammarbox-0" class="--inner-grammarbox"></div>
+                <div id="--inner-drawline-0" class="--inner-video"></div>
 
-                    <div id="--inner-imageFrame-0"></div>
-                    
-                    <div id="--inner-rowOrderer-0" class="--inner-rowOrderer"></div>
+                <div id="--inner-sentenceInput-0" class="--inner-video"></div>
+                
+                <div id="--inner-selectList-0" class="--inner-selectList"></div>
 
-                     <!-- <div id="--inner-rowOrderer-1" class="--inner-rowOrderer"></div> -->
-                </div>
+                <!-- <input type="text" name="" id="" onblur=""> -->
+
             </div>
-
         </div>
     </div>
 
-    <script src="script/libs/pi.js"></script>
-    <script src="script/libs/components.js"></script>
-
-    <script>
-        let cloudObj =
-        {
-            0:{
-                id: 0,
-                text: "Texto moderno",
-                audio: "01"
-            },
-            1:{
-                id: 1,
-                text: "Jose",
-                audio: "02"
-            },
-            2:{
-                id: 2,
-                text: "Jose",
-                audio: "02"
-            },
-            3:{
-                id: 3,
-                text: "Jose",
-                audio: "02"
-            },
-            4:{
-                id: 4,
-                text: "Jose",
-                audio: "02"
-            }
-        }
-
-        let timelineObj =
-        {
-            0:{
-                id: 0,
-                audio: "01"
-            },
-            1:{
-                id: 1,
-                audio: "02"
-            }
-        }
-
-        let grammarBoxObj =
-        {
-            0:{
-                id: 0,
-                title: "Title",
-                icon: "icon_lamp",
-                text0: "<span class='bg-blue subtitle'>Subtitle</span>",
-                text1: "rene <span class='pink'>testeRosa</span>",
-                text2: "<hr>",
-                text3: "Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo ",
-                text5: "Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo ",
-                text4: "<hr>",
-                text6: "Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo Olavo "
-            },
-        }
-
-        let imageFrameObj =
-        {
-            0:{
-                id: 0,
-                square: false,
-                image: "image_00"
-            }
-        }
-
-        let rowOrdererObj =
-        {
-            0:{
-                id: 0,
-                0:{
-                    text: "Rene"
-                },
-                1:{
-                    text: "false"
-                },
-                2:{
-                    text: "dois"
-                }
-            }
-        }
-
-        let rowOrdererResult =
-        {
-            0: [1,0,2]
-        }
-
-        createAudioCloud(cloudObj[0]);
-
-        createAudioTimeline(timelineObj[0]);
-
-        createGrammarBox(grammarBoxObj[0]);
-
-        createImageFrame(imageFrameObj[0]);
-
-        createRowOrderer(rowOrdererObj[0]);
-
-    </script>
+    <script src="../../js/pi.js"></script>
+    <script src="../../js/components.js"></script>
+    <script src="js/script.js"></script>
 
 </body>
 </html>
