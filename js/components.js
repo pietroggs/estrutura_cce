@@ -1338,3 +1338,46 @@ function createSentenceInput(obj)
 }
 //#endregion
 
+//# region SELECT LIST
+function createSelectList(obj){
+    let currentSelected = null;
+    let buttonInner = [];
+
+    let container = create("", "#--inner-selectList-" + obj.id, "--selectList-selectListContainer-"+ obj.id, "--selectListContainer");
+
+    let input = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-input-"+ obj.id, "--selectListContainer-input");
+    let text = create("p", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-text-"+ obj.id, "--selectListContainer-text text gray");
+    create("", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-button-"+ obj.id, "--selectListContainer-button");
+    
+
+    input.addEventListener("click", function(){
+        let list = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-list-"+ obj.id, "--selectListContainer-list");
+        
+        for(let i = 0; i < obj.text.length; i++){
+            let listItem = create("", "#--selectListContainer-list-"+ obj.id, "--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem");
+            let textOption = create("p", "#--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem-text-"+ obj.id + "-"+ i, "--selectListContainer-listItem-text  text gray");
+
+            textOption.innerHTML = obj.text[i];
+           
+            create("", "#--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem-button-"+ obj.id + "-"+ i, "--selectListContainer-listItem-button  --drawline-startpointBorder");
+            
+            buttonInner[i] = create("", "#--selectListContainer-listItem-button-"+ obj.id + "-"+ i, "--selectListContainer-listItem-buttonInner-"+ obj.id + "-"+ i, "--selectListContainer-listItem-buttonInner  --drawline-startpoint");
+
+            listItem.addEventListener("click", function(){
+                container.removeChild(list);
+                text.innerHTML = obj.text[i];
+                currentSelected = i;
+
+                if(obj.correct == i){
+                    log("CORRETO")
+                }else{
+                    log("INCORRETO")
+                }
+                
+            });
+        }
+        if(currentSelected != null){
+            buttonInner[currentSelected].style.cssText = "background-color: rgb(135, 136, 157);";
+        }
+    });
+}
