@@ -5,7 +5,7 @@ var EST = {
         // Tela inicial
         content: {
             text_skill: 'Skills: Listening and speaking',
-            text_learning: 'Recognising and using a range of devices for changing the topic of conversation and politely interrupting speakers',
+            text_learning: '<li>Recognising and using a range of devices for changing the topic of conversation and politely interrupting speakers</li>',
             text_title: 'The animal rights debate'
         },
         // Telas do curso
@@ -72,7 +72,7 @@ function config() {
 function loadContentScreen(telas) {
     // Setando text
     document.querySelector('.--desc-title').innerText = EST.telas.content.text_skill;
-    document.querySelector('.--desc-learning').innerText = EST.telas.content.text_learning;
+    document.querySelector('.--desc-learning').innerHTML = EST.telas.content.text_learning;
     document.querySelector('.--content-title').innerText = EST.telas.content.text_title;
     document.querySelector('.--topbar-title').innerText = EST.telas.content.text_title;
 

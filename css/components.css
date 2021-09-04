@@ -232,6 +232,10 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 99;
+}
+.--imageFrame-popupMask *{
+    /* max-width: 80%; */
 }
 .--imageFrame-popupBg{
     position: relative;
@@ -530,6 +534,9 @@ body{
 }
 .--inner-rowOrderer-horizontal{
     flex-direction: row;
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
     /* justify-content: space-between; */
 }
 .--inner-rowOrderer-vertical{
@@ -537,11 +544,15 @@ body{
 }
 .--inner-rowOrderer-horizontal .--rowOrderer-bg{
     min-width: 3rem;
+    height: auto;
 }
 .--rowOrderer-bg{
     height: 3rem;
     /* border: 1px solid #87889D; */
     /* margin-bottom: 0.2rem; */
+}
+.--inner-rowOrderer-horizontal .--rowOrderer-drag{
+    height: auto;
 }
 .--rowOrderer-drag{
     height: 3rem;
@@ -554,6 +565,12 @@ body{
 }
 .--rowOrderer-drag *{
     pointer-events: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 .--rowOrderer-arrow{
     right: 1rem;
@@ -645,6 +662,29 @@ body{
     text-align: center;
 }
 /*#endregion SENTENCE INPUT */
+
+/* #region SIDE BY SIDE */
+.--inner-verticalline{
+    width: 1px;
+    height: 100%;
+    background-color: #87889D;
+}
+.--inner-sidebyside{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.--inner-sidebyside .--sidebyside-container-2{
+    width: 45%;
+}
+.--inner-sidebyside .--sidebyside-container-3{
+    width: 30%;
+}
+.--inner-sidebyside .--sidebyside-container-4{
+    width: 15%;
+}
+/* #endregion VERTICAL LINE */
 
 /* #region PRACTICE - MP2 */
 .practice {
@@ -784,7 +824,9 @@ body{
     right: 4vw;
 }
 
-/* Footer buttons */
+/* #endregion PRACTICE - MP2 */
+
+/* #region Footer buttons */
 #practice-footer-buttons {
     bottom: 94px;
     float: right;
@@ -810,6 +852,7 @@ body{
     border-style: solid;
     border-color: rgb(94, 199, 203);
     border-image: initial;
+    border-radius: 10px;
 }
 
 #practice-footer-buttons .mark-all.active {
@@ -824,6 +867,7 @@ body{
     border-style: solid;
     border-color: rgb(135, 136, 157);
     border-image: initial;
+    border-radius: 10px;
 }
 
 #practice-footer-buttons .show-answers.active {
@@ -838,13 +882,13 @@ body{
     border-style: solid;
     border-color: rgb(230, 56, 143);
     border-image: initial;
+    border-radius: 10px;
 }
 
 #practice-footer-buttons .reset.active {
     background: url('../assets/img/components/button_reset.png') -88px 0px / auto 44px no-repeat scroll rgb(230, 56, 143);
 }
-
-/* #endregion PRACTICE - MP2 */
+/* #endregion Footer buttons */
 
 /* #region SELECT LIST */
 .--selectListContainer{
@@ -871,18 +915,13 @@ body{
 .--selectListContainer-button{
     background-color: rgb(135, 136, 157);
     width: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .--selectListContainer-button::after{
     content: "";
-    display: inline-block;
-    position: absolute;
-    top: 33%;
-    left: 83%;
-    width: 0px;
-    height: 0px;
-    line-height: 0px;
-    background: none;
     border-style: solid;
     border-width: 14px 8px 0px;
     border-color: rgba(255, 255, 255, 0.7) transparent transparent;
@@ -895,6 +934,7 @@ body{
     top: 0;
     border: 3px solid gray;
     border-radius: 6px;
+    z-index: 89;
 }
 .--selectListContainer-list p, 
 .--selectListContainer-list .--selectListContainer-listItem-button{
@@ -914,7 +954,7 @@ body{
     background-color: lightgray;
     cursor: pointer;
 }
-/* END SELECT LIST */
+/* endregion SELECT LIST */
 
 /* #region SENTENCE CHOICE */
 .--sentenceChoice-sentenceChoiceContainer{
@@ -935,6 +975,15 @@ body{
     cursor: pointer;
     padding: 0 0.5rem;
 }
+.--sentenceChoice-sentenceChoiceButton *{
+    pointer-events: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 .buttonBackgroundSelected{
     background-color: rgb(135, 136, 157);
     color: white;
@@ -949,3 +998,22 @@ body{
     align-items: center;
 }
 /* END SENTENCE SELECT */
+
+
+
+.--pratice-correct{
+    background-color: rgb(94, 499, 203) !important;
+    color: white !important;
+}
+.--pratice-incorrect{
+    background-color: rgb(230, 56, 143) !important;
+    color: white !important;
+}
+.--pratice-selected{
+    background-color: rgb(135, 136, 157);
+    color: white;
+}
+.--pratice-blocked{
+    background-color: lightgray !important;
+}
+    

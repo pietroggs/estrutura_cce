@@ -26,7 +26,6 @@ function createAudioCloud(obj)
 
     //#region Audio
         let audio = document.querySelector("audio");
-        audio.id = "audio-cl-" + id;
     //#endregion
 
     //#region Button Listener
@@ -122,8 +121,6 @@ function createAudioTimeline(obj)
     //#region Audio
         // Audio
         let audio = document.querySelector("audio");
-        audio.src = "./assets/audios/" + obj.audio + ".mp3";
-        audio.id = "audio-tl-" + id;
 
         // Temp Audio
         let m_audio = new Audio();
@@ -339,7 +336,7 @@ function createImageFrame(obj)
 
     //Image
     let img = create('img',"#--imageFrame-frameBg-" + id, "--imageFrame-image-" + id, "--imageFrame-image");
-    img.src = "./assets/img/" + obj.image + ".png";
+    img.src = "./assets/img/" + obj.image + ".jpg";
 
     //#region Frame Container
         create('',"#--imageFrame-frameBg-" + id, "--imageFrame-frameContainer-" + id, "--imageFrame-frameContainer");
@@ -376,7 +373,7 @@ function createImageFrame(obj)
 
             // Image
             popImage = create('img', "#--imageFrame-popupBg", "--imageFrame-popupImage", "--imageFrame-popupImage");
-            popImage.src = "./assets/img/" + obj.image + ".png";
+            popImage.src = "./assets/img/" + obj.image + ".jpg";
 
             // Close button
             let popClose = create('img', "#--imageFrame-popupBg", "--imageFrame-popupClose", "--imageFrame-popupClose");
@@ -432,7 +429,7 @@ function createVideo(obj)
         // Video Player
         let video = create("video", "#--videoBg-videoContainer-" + id, "--videoContainer-video-" + id, "--videoContainer-video");
         video.src = "./videos/" + obj.video + ".mp4";
-        if(obj.poster != "") video.poster="./assets/img/" + obj.poster + ".png";
+        if(obj.poster != "") video.poster="./assets/img/" + obj.poster + ".jpg";
 
         // Video HUD
         let hud = create("", "#--videoBg-videoContainer-" + id, "--videoContainer-hud-" + id, "--videoContainer-hud");
@@ -752,11 +749,42 @@ function createVideo(obj)
 //#region ROW ORDERER
 function createRowOrderer(obj)
 {
+    let newOrder;
     let drag = [];
     let container = [];
     let draggedItem = null;
     let draggedItemParent = null;
     let currentAnswer = [];
+    let startOrder = [];
+
+    let containerEvent = function()
+    {
+        if(this.firstChild != null)
+        {
+            draggedItemParent.append(this.firstChild);
+            this.append(draggedItem);
+            draggedItemParent = this;
+        }
+    }
+    let dragStart = function(e)
+    {
+        draggedItem = e.target;
+        draggedItemParent = e.target.parentNode;
+        setTimeout(function()
+        {
+            draggedItem.style.display = "none";
+        }, 0);
+    }
+    let dragEnd = function(e)
+    {
+        setTimeout(function()
+        {
+            draggedItem.style.display = "flex";
+            draggedItemParent = null;
+            draggedItem = null;
+            CheckResult();
+        }, 0);
+    }
 
     let id = obj.id;
 
@@ -769,15 +797,7 @@ function createRowOrderer(obj)
         // Backgound Container
         container[i] = create('',"#--inner-rowOrderer-" + id, "--rowOrderer-bg-" + id + "-" + i, "--rowOrderer-bg");
 
-        container[i].addEventListener("dragenter", function(e)
-        {
-            if(this.firstChild != null)
-            {
-                draggedItemParent.append(this.firstChild);
-                this.append(draggedItem);
-                draggedItemParent = this;
-            }
-        });
+        container[i].addEventListener("dragenter", containerEvent);
 
         // Draggable Element
         drag[i] = create('',"#--rowOrderer-bg-" + id + "-" + i, "--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-drag");
@@ -785,29 +805,38 @@ function createRowOrderer(obj)
         // Text
         let text = create('p',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-text-" + id + "-" + i, "--rowOrderer-text text white");
         text.innerHTML = obj.text[i];
+
         // Arrow
         create('',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-arrow-" + id + "-" + i, "--rowOrderer-arrow");
 
-        drag[i].addEventListener("dragstart", function(e)
-        {
-            draggedItem = e.target;
-            draggedItemParent = e.target.parentNode;
-            setTimeout(function()
-            {
-                draggedItem.style.display = "none";
-            }, 0);
-        });
-        drag[i].addEventListener("dragend", function(e)
-        {
-            setTimeout(function()
-            {
-                draggedItem.style.display = "flex";
-                draggedItemParent = null;
-                draggedItem = null;
-                CheckResult();
-            }, 0);
-        });
+        drag[i].addEventListener("dragstart", dragStart);
+        drag[i].addEventListener("dragend", dragEnd);
+
+        currentAnswer[i] = i;
+        startOrder[i] = i;
     }
+
+    function RandomizeOrder()
+    {
+        let temp_newOrder = shuffle(currentAnswer);
+
+        if(JSON.stringify(temp_newOrder) === JSON.stringify( startOrder ) )
+        {
+            log("Embaralhar novamente: " + temp_newOrder);
+            RandomizeOrder();
+            return;
+        }
+
+        newOrder = temp_newOrder;
+
+        for(let i = 0; i < container.length; i ++)
+        {
+            container[i].append(drag[ newOrder[i] ]);
+            currentAnswer[i] = newOrder[i];
+        }
+    }
+
+    RandomizeOrder();
 
     // #region Functions
     function CheckResult()
@@ -816,6 +845,7 @@ function createRowOrderer(obj)
         {
             currentAnswer[i] = parseInt(container[i].firstChild.id.split("-")[5]);
         }
+
         for(let i = 0; i < container.length; i++)
         {
             if(currentAnswer[i] != obj.correct[i])
@@ -826,6 +856,115 @@ function createRowOrderer(obj)
         }
         console.log("Correto");
     }
+
+    function EnableDrag(index)
+    {
+        drag[index].setAttribute("draggable", "true");
+        container[index].addEventListener("dragenter", containerEvent);
+        drag[index].addEventListener("dragstart", dragStart);
+        drag[index].addEventListener("dragend", dragEnd);
+    }
+    function DisableDrag(index)
+    {
+        drag[index].setAttribute("draggable", "false");
+        container[index].removeEventListener("dragenter", containerEvent);
+        drag[index].removeEventListener("dragstart", dragStart);
+        drag[index].removeEventListener("dragend", dragEnd);
+    }
+
+    // #region Pratice Handler
+
+        function DefaultState()
+        {
+            for(let i = 0; i < drag.length; i++)
+            {
+                EnableDrag(i);
+
+                if(currentAnswer.length == 0)
+                {
+                    container[i].append( drag[i] );
+                }
+                else
+                {
+                    container[i].append( drag[ currentAnswer[i] ] );
+                }
+
+                drag[i].setAttribute("draggable", "true");
+                container[i].addEventListener("dragenter", containerEvent);
+                drag[i].addEventListener("dragstart", dragStart);
+                drag[i].addEventListener("dragend", dragEnd);
+                drag[i].classList.remove("--pratice-blocked");
+                drag[i].classList.remove("--pratice-correct");
+                drag[i].classList.remove("--pratice-incorrect");
+            }
+        }
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                markAllIsActive = true;
+
+                for(let i = 0; i < drag.length; i++)
+                {
+                    DisableDrag(i);
+
+                    if(currentAnswer[i] == obj.correct[i])
+                    {
+                        drag[newOrder[i]].classList.add("--pratice-correct");
+                    }
+                    else
+                    {
+                        drag[newOrder[i]].classList.add("--pratice-incorrect");
+                    }
+                }
+            }
+            // Disable MarkAll
+            else markAllIsActive = false;
+        }
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                showAnswersIsActive = true;
+
+                for(let i = 0; i < drag.length; i++)
+                {
+                    DisableDrag(i);
+                    container[i].append( drag[obj.correct[i]] );
+                    drag[i].classList.add("--pratice-blocked");
+                }
+            }
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+            // Enable Reset
+            if(callback === "reset")
+            {
+                RandomizeOrder();
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+
     //#endregion
 }
 //#endregion
@@ -834,10 +973,36 @@ function createRowOrderer(obj)
 function createDrawline(obj)
 {
     let id = obj.id;
+    let startPoint = [];
+    let endPoint = [];
     let currentAnswer = [];
     let currentStartPoint = null;
     let currentMousePosition = [];
     let pointsContainerOrientation = (obj.orientation == "vertical") ? "horizontal" : "vertical";
+
+
+    let startPointEvent = function(e)
+    {
+        e.preventDefault();
+        this.classList.add("--pratice-selected");
+        currentStartPoint = this;
+        currentMousePosition = [e.pageX, e.pageY];
+
+        let m_startPositions = GetPointArrayPosition(currentStartPoint);
+
+        // Clear Endpoint connected
+        if(currentStartPoint.firstChild != null)
+        {
+            if(currentAnswer[m_startPositions] !== "")
+            {
+                let m_endPosition = document.getElementById("--drawline-endpoint-" + id + "-" + currentAnswer[m_startPositions]);
+                m_endPosition.classList.remove("--pratice-selected");
+                currentAnswer[m_startPositions] = "";
+            }
+        }
+        RemoveGhost();
+        CreateGhost();
+    }
 
     let drawlineContainer = create('',"#--inner-drawline-" + id, "--drawline-drawlineContainer-" + id, "--drawline-drawlineContainer");
     drawlineContainer.classList.add("--drawline-" + obj.orientation);
@@ -856,51 +1021,29 @@ function createDrawline(obj)
         currentAnswer[i] = "";
 
         create('',"#--drawline-startpointContainer-" + id, "--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpointBorder");
-        let startPoint = create('',"#--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpoint-" + id + "-" + i, "--drawline-startpoint");
-        
+        startPoint[i] = create('',"#--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpoint-" + id + "-" + i, "--drawline-startpoint");
+
         create('',"#--drawline-endpointContainer-" + id, "--drawline-endpointBorder-" + id + "-" + i, "--drawline-endpointBorder");
-        let endPoint = create('',"#--drawline-endpointBorder-" + id + "-" + i, "--drawline-endpoint-" + id + "-" + i, "--drawline-endpoint");
-        
-        startPoint.addEventListener("mousedown", function(e)
-        {
-            e.preventDefault();
-            startPoint.style.cssText = "background-color: rgb(135, 136, 157);";
-            currentStartPoint = this;
-            currentMousePosition = [e.pageX, e.pageY];
+        endPoint[i] = create('',"#--drawline-endpointBorder-" + id + "-" + i, "--drawline-endpoint-" + id + "-" + i, "--drawline-endpoint");
 
-            let m_startPositions = GetPointArrayPosition(currentStartPoint);
+        EnableStartPoint();
 
-            // Clear Endpoint connected
-            if(currentStartPoint.firstChild != null)
-            {
-                if(currentAnswer[m_startPositions] !== "")
-                {
-                    let m_endPosition = document.getElementById("--drawline-endpoint-" + id + "-" + currentAnswer[m_startPositions]);
-                    m_endPosition.style.cssText = "background-color: none;";
-                    currentAnswer[m_startPositions] = "";
-                }
-            }
-
-            RemoveGhost();
-            CreateGhost();
-        });
-
-        endPoint.addEventListener("mouseup", function()
+        endPoint[i].addEventListener("mouseup", function()
         {
             RemoveGhost();
 
             // Set end point case its free
-            if(CheckEndPointIsMarked(endPoint))
+            if(CheckEndPointIsMarked(endPoint[i]))
             {
                 if(currentStartPoint != null)
                 {
-                    currentStartPoint.style.cssText = "background-color: rgb(135, 136, 157);";
-                    endPoint.style.cssText = "background-color: rgb(135, 136, 157);";
+                    currentStartPoint.classList.add("--pratice-selected");
+                    endPoint[i].classList.add("--pratice-selected");
                     CreateLine(currentStartPoint, this);
-    
+
                     let m_startPositions = GetPointArrayPosition(currentStartPoint);
-                    let m_endPositions = GetPointArrayPosition(endPoint);
-    
+                    let m_endPositions = GetPointArrayPosition(endPoint[i]);
+
                     // set answer
                     currentAnswer[m_startPositions] = m_endPositions;
                     console.log(currentAnswer);
@@ -908,7 +1051,7 @@ function createDrawline(obj)
             }
             else
             {
-                currentStartPoint.style.cssText = "background-color: none;";
+                currentStartPoint.classList.remove("--pratice-selected");
                 currentStartPoint.removeChild(currentStartPoint.firstChild);
             }
 
@@ -936,15 +1079,15 @@ function createDrawline(obj)
         let position = parseInt( point.id.split("-")[5] );
         return position;
     }
-    
+
     // Line follow the cursor
     let ghost = null;
 
     function CreateGhost()
     {
         ghost = create('',"#--drawline-drawlineContainer-" + id, "--drawline-ghost", "--drawline-ghost");
-       
-        window.onmousemove = function(e) { 
+
+        window.onmousemove = function(e) {
 
             let left = e.pageX;
             let top = e.pageY;
@@ -962,8 +1105,8 @@ function createDrawline(obj)
                 if(currentStartPoint.firstChild != null)
                 {
                     currentStartPoint.removeChild(currentStartPoint.firstChild);
-                    currentStartPoint.style.cssText = "background-color: none";
-                } 
+                    currentStartPoint.classList.remove("--pratice-selected");
+                }
             }
         });
     }
@@ -995,8 +1138,137 @@ function createDrawline(obj)
         let angleDeg = Math.atan2( m_height, m_width) * 180 / Math.PI;
 
         line.style.transform = "rotate(" + angleDeg + "deg)";
-        line.style.width = tan + "px";  
+        line.style.width = tan + "px";
     }
+
+    // #region Functions
+    function EnableStartPoint()
+    {
+        for(let i = 0 ; i < startPoint.length; i++)
+        {
+            startPoint[i].addEventListener("mousedown", startPointEvent);
+            startPoint[i].style.cssText = "cursor: pointer;";
+        }
+    }
+    function DisableStartPoint()
+    {
+        for(let i = 0 ; i < startPoint.length; i++)
+        {
+            startPoint[i].removeEventListener("mousedown", startPointEvent);
+            startPoint[i].style.cssText = "cursor: default;";
+        }
+    }
+    // #region Pratice Handler
+
+        function DefaultState()
+        {
+            EnableStartPoint();
+
+            for(let i = 0; i < startPoint.length; i++)
+            {
+                if(currentAnswer[i] !== "")
+                {
+                    CreateLine(startPoint[i], endPoint[ currentAnswer[i] ]);
+                    startPoint[i].classList.add("--pratice-selected");
+                    endPoint[ currentAnswer[i] ].classList.add("--pratice-selected");
+                }
+                else if( startPoint[i].childElementCount > 0)
+                {
+                    startPoint[i].removeChild(startPoint[i].firstChild);
+                }
+
+                startPoint[i].classList.remove("--pratice-correct");
+                startPoint[i].classList.remove("--pratice-incorrect");
+                endPoint[i].classList.remove("--pratice-correct");
+                endPoint[i].classList.remove("--pratice-incorrect");
+            }
+        }
+
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                markAllIsActive = true;
+
+                for(let i = 0; i < startPoint.length; i++)
+                {
+                    DisableStartPoint();
+                    if( startPoint[i].childElementCount > 0)
+                    {
+                        if(currentAnswer[i] == obj.correct[i])
+                        {
+                            startPoint[i].classList.add("--pratice-correct");
+                            startPoint[i].firstChild.classList.add("--pratice-correct");
+                            endPoint[currentAnswer[i]].classList.add("--pratice-correct");
+                        }
+                        else
+                        {
+                            startPoint[i].classList.add("--pratice-incorrect");
+                            startPoint[i].firstChild.classList.add("--pratice-incorrect");
+                            endPoint[currentAnswer[i]].classList.add("--pratice-incorrect");
+                        }
+                    }
+                }
+            }
+            // Disable Mark All
+            else markAllIsActive = false;
+        }
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                showAnswersIsActive = true;
+                DisableStartPoint();
+
+                for(let i = 0; i < startPoint.length; i++)
+                {
+                    CreateLine(startPoint[i], endPoint[obj.correct[i]]);
+                    startPoint[i].classList.remove("--pratice-selected");
+                    endPoint[i].classList.remove("--pratice-selected");
+                }
+            }
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+
+            // Enable Reset
+            if(callback === "reset")
+            {
+                for(let i = 0; i < startPoint.length; i++)
+                {
+                    startPoint[i].classList.remove("--pratice-selected");
+                    endPoint[i].classList.remove("--pratice-selected");
+
+                    if( startPoint[i].childElementCount > 0)
+                    {
+                        startPoint[i].removeChild(startPoint[i].firstChild);
+                    }
+
+                    currentAnswer[i] = "";
+                }
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+
+    //#endregion
 }
 //#endregion
 
@@ -1005,36 +1277,23 @@ function createSentenceInput(obj)
 {
     let id = obj.id;
     let input = [];
+    let savedAnswer = [];
     let text = create("p", "#--inner-sentenceInput-" + id, "--sentenceInput-text" + id, "text gray --sentenceInput-text");
-    
+
     for(let i = 0; i < (obj.text.length - 1); i++)
     {
         text.innerHTML = text.innerHTML + obj.text[i] + " ";
 
         input[i] = create("input", "#--inner-sentenceInput-" + id, "--sentenceInput-input" + id + "-" + i, "text gray --sentenceInput-input");
         input[i].setAttribute("autocomplete", "off");
-        
+
         text.append(input[i]);
 
         text.innerHTML = text.innerHTML + " ";
 
-        document.getElementById(input[i].id).addEventListener("blur", function()
-        {
-            console.log(input[i].id);
-        });
     }
 
     text.innerHTML = text.innerHTML + obj.text[obj.text.length - 1];
-
-    //#region Listeners
-    for(let i = 0; i < input.length; i++)
-    {
-        document.getElementById(input[i].id).addEventListener("blur", function(e)
-        {
-            CheckInput(e.target.value, i);
-        });
-    }
-    //#endregion
 
     //#region Functions
     function CheckInput(value, index)
@@ -1051,6 +1310,112 @@ function createSentenceInput(obj)
             console.log("errado");
         }
     }
+
+    // #region Pratice Handler
+
+        function DefaultState()
+        {
+            for(let i = 0; i < input.length; i++)
+            {
+                let currentInput = document.getElementById(input[i].id);
+                currentInput.value = savedAnswer[i];
+                currentInput.disabled = false;
+                currentInput.style.cssText = "background-color: none;";
+                currentInput.classList.remove("--pratice-correct");
+                currentInput.classList.remove("--pratice-incorrect");
+                currentInput.classList.remove("--pratice-blocked");
+            }
+        }
+
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                markAllIsActive = true;
+
+                for(let i = 0; i < input.length; i++)
+                {
+                    let currentInput = document.getElementById(input[i].id);
+
+                    currentInput.disabled = true;
+
+                    if(currentInput.value === obj.correct[i])
+                    {
+                        currentInput.classList.add("--pratice-correct");
+                    }
+                    else if(currentInput.value != "")
+                    {
+                        currentInput.classList.add("--pratice-incorrect");
+                    }
+                }
+            }
+            // Disable Mark All
+            else markAllIsActive = false;
+        }
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                showAnswersIsActive = true;
+                for(let i = 0; i < input.length; i++)
+                {
+                    let currentInput = document.getElementById(input[i].id);
+                    savedAnswer[i] = currentInput.value;
+                    currentInput.value = obj.correct[i];
+                    currentInput.disabled = true;
+                    currentInput.classList.add("--pratice-blocked");
+                }
+            }
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+
+            // Enable Reset
+            if(callback === "reset")
+            {
+                for(let i = 0; i < input.length; i++)
+                {
+                    let currentInput = document.getElementById(input[i].id);
+                    currentInput.value = "";
+                    savedAnswer[i] = "";
+                }
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+
+    //#endregion
+
+    // #region Listeners
+        for(let i = 0; i < input.length; i++)
+        {
+            let currentInput = document.getElementById(input[i].id);
+
+            savedAnswer[i] = (currentInput.value != undefined) ? currentInput.value : "";
+
+            document.getElementById(input[i].id).addEventListener("blur", function(e)
+            {
+                savedAnswer[i] = (e.target.value != undefined) ? e.target.value : "";
+                CheckInput(e.target.value, i);
+            });
+        }
     //#endregion
 }
 //#endregion
@@ -1060,7 +1425,7 @@ function createSentenceInput(obj)
  * @author Flavio Martins
  * @version 1.2 (2021-08-31)
  * 2021-08-20
- * 
+ *
  * @description multiple choice 2 - dynamic activity (one item selection per line)
  */
 
@@ -1338,7 +1703,64 @@ function createSentenceInput(obj)
 }
 //#endregion
 
-//# region SELECT LIST
+// #region FOOTER BUTTONS
+function createFooterButtons()
+{
+    let footerButtons = [];
+
+    create("", "#--inner-content", "practice-footer-buttons");
+    footerButtons[0] = create("", "#practice-footer-buttons", "mark-all", "mark-all");
+    footerButtons[1] = create("", "#practice-footer-buttons", "show-answers", "show-answers");
+    footerButtons[2] = create("", "#practice-footer-buttons", "reset", "reset");
+
+    let footerButtonEvent = function()
+    {
+        for(let i = 0; i < footerButtons.length; i++)
+        {
+            if(this.id == footerButtons[i].id)
+            {
+                if(!footerButtons[i].classList.contains("active"))
+                {
+                    footerButtons[i].classList.add("active");
+                }
+                else
+                {
+                    footerButtons[i].classList.remove("active");
+                }
+            }
+            else
+            {
+                footerButtons[i].classList.remove("active");
+            }
+        }
+    }
+
+    for(let i = 0; i < footerButtons.length; i ++)
+    {
+        footerButtons[i].addEventListener("click", footerButtonEvent);
+    }
+}
+
+function SignInFooterButton(markFunction, showFunction, resetFunction)
+{
+    let footerButtons= [];
+    footerButtons[0] = document.getElementById("mark-all");
+    footerButtons[1] = document.getElementById("show-answers");
+    footerButtons[2] = document.getElementById("reset");
+
+    for(let i = 0; i < footerButtons.length; i++)
+    {
+        footerButtons[i].addEventListener("click", function()
+        {
+            resetFunction(footerButtons[i].id);
+            markFunction(footerButtons[i].id);
+            showFunction(footerButtons[i].id);
+        });
+    }
+}
+//#endregion
+
+//#region SELECT LIST
 function createSelectList(obj){
     let currentSelected = null;
     let buttonInner = [];
@@ -1348,19 +1770,25 @@ function createSelectList(obj){
     let input = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-input-"+ obj.id, "--selectListContainer-input");
     let text = create("p", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-text-"+ obj.id, "--selectListContainer-text text gray");
     create("", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-button-"+ obj.id, "--selectListContainer-button");
-    
+
 
     input.addEventListener("click", function(){
+        let previewListOpened = document.querySelector(".--selectListContainer-list");
+        if(previewListOpened != null)
+        {
+            previewListOpened.parentNode.removeChild(previewListOpened);
+        }
+
         let list = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-list-"+ obj.id, "--selectListContainer-list");
-        
+
         for(let i = 0; i < obj.text.length; i++){
             let listItem = create("", "#--selectListContainer-list-"+ obj.id, "--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem");
             let textOption = create("p", "#--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem-text-"+ obj.id + "-"+ i, "--selectListContainer-listItem-text  text gray");
 
             textOption.innerHTML = obj.text[i];
-           
+
             create("", "#--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem-button-"+ obj.id + "-"+ i, "--selectListContainer-listItem-button  --drawline-startpointBorder");
-            
+
             buttonInner[i] = create("", "#--selectListContainer-listItem-button-"+ obj.id + "-"+ i, "--selectListContainer-listItem-buttonInner-"+ obj.id + "-"+ i, "--selectListContainer-listItem-buttonInner  --drawline-startpoint");
 
             listItem.addEventListener("click", function(){
@@ -1373,23 +1801,83 @@ function createSelectList(obj){
                 }else{
                     log("INCORRETO")
                 }
-                
+
             });
         }
         if(currentSelected != null){
             buttonInner[currentSelected].style.cssText = "background-color: rgb(135, 136, 157);";
         }
     });
-}
 
-// # region SENTENCE CHOICE
+    // #region Pratice Handler
+
+    function DefaultState()
+    {
+        console.log(input);
+        input.classList.remove("--pratice-correct");
+        // currentInput.style.cssText = "background-color: none;";
+        // currentInput.classList.remove("--pratice-correct");
+        // currentInput.classList.remove("--pratice-incorrect");
+        // currentInput.classList.remove("--pratice-blocked");
+    }
+
+    // Show Correct Markeds
+    let markAllIsActive;
+    function MarkAll(callback)
+    {
+        // Enable Mark All
+        if(callback === "mark-all" && !markAllIsActive)
+        {
+            markAllIsActive = true;
+            input.classList.add("--pratice-correct");
+
+        }
+        // Disable Mark All
+        else markAllIsActive = false;
+    }
+
+    // Show All
+    let showAnswersIsActive;
+    function ShowAnswer(callback)
+    {
+        // Enable Show All
+        if(callback === "show-answers" && !showAnswersIsActive)
+        {
+            showAnswersIsActive = true;
+
+        }
+        // Disable Show All
+        else showAnswersIsActive = false;
+    }
+
+    // Reset All
+    function Reset(callback)
+    {
+        DefaultState();
+
+        // Enable Reset
+        if(callback === "reset")
+        {
+
+
+            setTimeout(function()
+            {
+                document.getElementById("reset").classList.remove("active");
+            }, 200);
+        }
+    }
+    SignInFooterButton(MarkAll, ShowAnswer, Reset);
+}
+//#endregion
+
+// #region SENTENCE CHOICE
 function createSentenceChoice(obj){
     let buttons = [];
     let texts = [];
     let selectedAnswer = "";
 
     create("", "#--inner-sentenceChoice-0", "--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceContainer  text  gray");
-    
+
     texts[0] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-0-"+obj.id, "--sentenceChoice-sentenceChoiceText");
     texts[0].innerHTML = obj.text[0];
 
@@ -1398,10 +1886,10 @@ function createSentenceChoice(obj){
 
     let slash = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceSlash-"+obj.id, "--sentenceChoice-sentenceChoiceSlash");
     slash.innerHTML = "/";
-    
+
     buttons[1]= create("", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceButton-1-"+obj.id, "--sentenceChoice-sentenceChoiceButton");
     buttons[1].innerHTML = obj.text[2];
-   
+
     texts[1] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-1-"+obj.id, "--sentenceChoice-sentenceChoiceText");
     texts[1].innerHTML = obj.text[3];
 
@@ -1415,7 +1903,7 @@ function createSentenceChoice(obj){
                     }
                 });
                 element.classList.toggle("buttonBackgroundSelected");
-    
+
                 if(index === obj.correct){
                     log("CORRETO")
                 }else{
@@ -1425,25 +1913,26 @@ function createSentenceChoice(obj){
             }else {
                 element.classList.remove("buttonBackgroundSelected");
                 selectedAnswer = "";
-            }           
+            }
         });
     });
 
 }
+//#endregion
 
-// # region SENTENCE SELECT
+// #region SENTENCE SELECT
 function createSentenceSelect(obj){
     let buttonsInner = [];
     let selectedAnswer = "";
 
     create("", "#--inner-sentenceSelect-0", "--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelectContainer  text gray");
     for (let i = 0; i < obj.text.length; i++) {
-        
+
         create("", "#--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect");
         create("", "#--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect-button-0-" + obj.id+"-"+i, "--sentenceSelect-sentenceSelect-button  --drawline-startpointBorder");
-      
+
         buttonsInner[i] = create("", "#--sentenceSelect-sentenceSelect-button-0-" + obj.id+"-"+i, "--sentenceSelect-sentenceSelect-text-0-"+ obj.id+"-"+i, "--sentenceSelect-sentenceSelect-buttonInner  --drawline-startpoint");
-        
+
         let text = create("p", "#--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect-text-0-" + obj.id, "--sentenceSelect-sentenceSelect-text");
         text.innerHTML = obj.text[i];
     }
@@ -1468,5 +1957,6 @@ function createSentenceSelect(obj){
                 selectedAnswer = "";
             }
         });
-    });    
+    });
 }
+// #endregion
