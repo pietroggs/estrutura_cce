@@ -73,51 +73,6 @@ let selectListObj = {
 
 createSelectList(selectListObj);
 
-function createSelectList(obj){
-    let currentSelected = null;
-    let buttonInner = [];
-
-    let container = create("", "#--inner-selectList-" + obj.id, "--selectList-selectListContainer-"+ obj.id, "--selectListContainer");
-
-    let input = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-input-"+ obj.id, "--selectListContainer-input");
-    let text = create("p", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-text-"+ obj.id, "--selectListContainer-text text gray");
-    create("", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-button-"+ obj.id, "--selectListContainer-button");
-    
-
-    input.addEventListener("click", function(){
-        let list = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-list-"+ obj.id, "--selectListContainer-list");
-        
-        for(let i = 0; i < obj.text.length; i++){
-            let listItem = create("", "#--selectListContainer-list-"+ obj.id, "--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem");
-            let textOption = create("p", "#--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem-text-"+ obj.id + "-"+ i, "--selectListContainer-listItem-text  text gray");
-
-            textOption.innerHTML = obj.text[i];
-           
-            create("", "#--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem-button-"+ obj.id + "-"+ i, "--selectListContainer-listItem-button  --drawline-startpointBorder");
-            
-            buttonInner[i] = create("", "#--selectListContainer-listItem-button-"+ obj.id + "-"+ i, "--selectListContainer-listItem-buttonInner-"+ obj.id + "-"+ i, "--selectListContainer-listItem-buttonInner  --drawline-startpoint");
-
-            listItem.addEventListener("click", function(){
-                container.removeChild(list);
-                text.innerHTML = obj.text[i];
-                currentSelected = i;
-
-                if(obj.correct == i){
-                    log("CORRETO")
-                }else{
-                    log("INCORRETO")
-                }
-                
-            });
-        }
-        if(currentSelected != null){
-            buttonInner[currentSelected].style.cssText = "background-color: rgb(135, 136, 157);";
-        }
-    });
-}
-
-
-
 let sentenceChoiceObj = {
     id: 0,
     text: ["She's", "a", "an", "photographer."],
@@ -142,3 +97,106 @@ let sentenceSelectObj = {
 }
 
 createSentenceSelect(sentenceSelectObj);
+
+
+let dragDropObj = {
+    0:{
+        id: 0,
+        text:["she", "your uncle a dentist?", "jsdf"],
+        dragText: ["he", "she"]
+    }
+}
+createDragDrop(dragDropObj[0]);
+// createDragDrop(dragDropObj[1]);
+
+function createDragDrop(obj){
+    let divs = [];
+    let dragDrop = [];
+    let text = [];
+    let verification = {
+        key: "",
+        value: ""
+    }
+
+    // text[0] = create("p", "#--inner-sentenceDragDrop-" + obj.id, "--sentenceDropped-text" + obj.id, "text gray --sentenceDropped-text");
+    // text.innerHTML = text.innerHTML + obj.text[index] + " ";
+    for (let index = 0; index < (obj.text.length - 1); index++) {
+        text[index] = create("p", "#--inner-sentenceDragDrop-" + obj.id, "--sentenceDropped-text" + obj.id + "-" + index, "text gray --sentenceDropped-text");
+
+        text[index].innerHTML = obj.text[index];
+
+        divs[index] = create("", "#--inner-sentenceDragDrop-" + obj.id, "--sentenceDropped-container-" + obj.id + "-" + index, "--sentenceDropped-container");
+
+        dragDrop[index] = create("", "#--inner-dragDrop-sentenceContainer-0", "--sentenceDragged-"+ obj.id + "-" + index, "--sentenceDragged");
+        dragDrop[index].setAttribute("draggable", true);
+        let dragText = create("p", "#--sentenceDragged-"+ obj.id + "-" + index, "--sentenceDragged-text-" + obj.id, "text gray --sentenceDragged-text");
+        dragText.innerHTML = obj.dragText[index];
+    }
+    let lastId = obj.text.length - 1;
+    text[lastId] = create("p", "#--inner-sentenceDragDrop-" + obj.id, "--sentenceDropped-text" + obj.id + "-" + lastId, "text gray --sentenceDropped-text");
+    text[lastId].innerHTML = obj.text[lastId];    
+
+    const dragContainer = document.querySelector(".--inner-dragDrop-sentenceContainer");
+    let draggedItem = null;
+    for (let index = 0; index < (obj.text.length - 1); index++) {
+        
+        //DRAG
+        dragDrop[index].addEventListener("dragstart", function(e){
+            draggedItem = dragDrop[index];
+            let idDropContainer = this.id.split("-")[3] + this.id.split("-")[4];
+            verification.key = idDropContainer;
+            // console.log(this)
+        });
+
+        dragDrop[index].addEventListener("dragend", function(e){
+            setTimeout(function(){
+                draggedItem.style.display = "flex";
+                draggedItem = null;
+            },0);
+        });
+
+        // container dragged
+        dragContainer.addEventListener("dragover", function(e){
+            e.preventDefault();
+            this.style.backgroundColor = "#536fc3";
+        });
+        dragContainer.addEventListener("dragenter", function(e){
+            e.preventDefault();
+        });
+        dragContainer.addEventListener("dragleave", function(e){
+            e.preventDefault();
+            this.style.backgroundColor = "#a7b4da21";
+        });
+        dragContainer.addEventListener("drop", function(e){
+            this.append(draggedItem);
+            this.style.backgroundColor = "#a7b4da21";
+        });
+
+        //DROP
+        divs[index].addEventListener("dragover", function(e){
+            e.preventDefault();
+        });
+
+        divs[index].addEventListener("dragenter", function(e){
+            e.preventDefault();
+            this.style.backgroundColor = "#536fc3";
+        });
+
+        divs[index].addEventListener("dragleave", function(e){
+            e.preventDefault();
+            this.style.backgroundColor = "white";
+        });
+
+        divs[index].addEventListener("drop", function(){
+            this.append(draggedItem);
+            let idDrag = this.id.split("-")[4] + this.id.split("-")[5]
+            verification.value = idDrag;
+            if(verification.key === verification.value){
+                log("ACERTOUUU");
+            }else{
+                log("ERRROUUUU")
+            }
+        });
+
+    }
+}
