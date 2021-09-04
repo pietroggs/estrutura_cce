@@ -81,16 +81,14 @@ function createAudioCloud(obj) {
 //#endregion
 
 //#region AUDIO TIMELINE
-let timelineProgressInterval,
-    timelineTimerInterval,
-    timelineProgressBarEvent;
+let timelineProgressBarEvent;
 
 function createAudioTimeline(obj) {
     let m_totalTime;
     let id = obj.id;
 
     // Button Container
-    create('', "#--inner-timeline-" + id, "--timeline-buttonContainer-" + id);
+    let audioContainer = create('', "#--inner-timeline-" + id, "--timeline-buttonContainer-" + id);
 
     // Play Button
     let btn = create('', "#--timeline-buttonContainer-" + id, "--timeline-button-" + id, "--timeline-button --audio-btn");
@@ -98,14 +96,12 @@ function createAudioTimeline(obj) {
     //#region ProgressBar Container
     create('', "#--inner-timeline-" + id, "--timeline-progressbarcontainer-" + id, "--timeline-progressbarcontainer");
     // Timer
-    let txt = create('p', "#--timeline-progressbarcontainer-" + id, "--timeline-text-" + id, "text gray --timeline-text");
-    txt.innerHTML = "00:00 / 00:00";
+    var txt = create('p', "#--timeline-progressbarcontainer-" + id, "--timeline-text-" + id, "text gray --timeline-text");
+    // txt.innerHTML = "00:00 / 00:00";
+
     // ProgressBar
-    let progressBar = create('progress', "#--timeline-progressbarcontainer-" + id, "--timeline-progressbar-" + id, "--timeline-progressbar");
-    progressBar.value = 0;
-    progressBar.max = 100;
-    // Slider
-    let slider = create('', "#--timeline-progressbarcontainer-" + id, "--timeline-slider-bg-slider-" + id, "--timeline-slider-bg-slider");
+    let progressBarAudio = create('', "#--timeline-progressbarcontainer-" + id, "--timeline-progressbar-" + id, "--timeline-progressbar");
+    let progressFilledAudio = create('', "#--timeline-progressbar-" + id, "--timeline-progress-filled-audio-" + id, "--timeline-progress-filled-audio");
     //#endregion
 
     //#region Audio
@@ -119,16 +115,25 @@ function createAudioTimeline(obj) {
     m_audio.src = "./assets/audios/" + obj.audio + ".mp3";
     //#endregion
 
-    //#region Event Listeners
-    // Button Listener
-    btn.addEventListener("mousedown", function () {
+    /* Get Toggle Element */
+    const toggleAudio = audioContainer.querySelector('.--audio-btn');
+
+    // Play/Pause
+    function togglePlayAudio() {
         ResetAudioButtons();
         ResetProgressBarEvents();
         StopAllMediaOfType("video");
 
         if (audio.id == "audio-tl-" + id) {
-            if (audio.paused) {
-                PlayAudioTimeline();
+            if (audio.paused || audio.ended) {
+                SetTotalTimeAudio();
+                audio.play();
+
+                audio.removeEventListener("pause", audioCloudPauseEvent);
+                audio.removeEventListener("ended", audioCloudPauseEvent);
+                audio.addEventListener('play', updateButtonAudio);
+                audio.addEventListener('pause', updateButtonAudio);
+                toggleAudio.addEventListener('click', togglePlayAudio);
             }
             else {
                 audio.pause();
@@ -137,54 +142,62 @@ function createAudioTimeline(obj) {
         else {
             audio.id = "audio-tl-" + id;
             audio.src = "./assets/audios/" + obj.audio + ".mp3";
-            PlayAudioTimeline();
+            SetTotalTimeAudio();
+            audio.play();
+
+            audio.removeEventListener("pause", audioCloudPauseEvent);
+            audio.removeEventListener("ended", audioCloudPauseEvent);
+            audio.addEventListener('play', updateButtonAudio);
+            audio.addEventListener('pause', updateButtonAudio);
+            toggleAudio.addEventListener('click', togglePlayAudio);
         }
-        progressBar.addEventListener("mousedown", timelineProgressBarEvent);
-    });
-
-    // ProgressBar Event
-    timelineProgressBarEvent = function (e) {
-        let clickedValue = e.offsetX / e.target.clientWidth;
-
-        clickedValue = Math.floor(clickedValue * 100);
-        clickedValue = (audio.duration * clickedValue) / 100;
-
-        audio.currentTime = clickedValue;
-    };
-
-    //#endregion
-
-    //#region Functions
-    // Play Audio
-    function PlayAudioTimeline() {
-        audio.play();
-        audio.removeEventListener("pause", audioCloudPauseEvent);
-        audio.removeEventListener("ended", audioCloudPauseEvent);
-        EnableAudioEvents();
-        btn.classList.add("--audio-button-active");
-        btn.classList.add("--timeline-button-active");
-        StartInterval();
     }
-    // Intervals
-    function StartInterval() {
-        timelineProgressInterval = setInterval(function () {
-            RefreshProgreesBar();
-        }, 100);
 
-        timelineTimerInterval = setInterval(function () {
-            RefreshTimer();
-        }, 1000);
+    // Play/Pause Buttons
+    function updateButtonAudio() {
+        if (audio.id == "audio-tl-" + id) {
+            let icon = this.paused ? btn.classList.remove("--timeline-button-active", "--audio-button-active") : btn.classList.add("--timeline-button-active", "--audio-button-active");
+            toggleAudio.textContent = icon;
+        }
     }
+
+    // Progress bar
+    function handleProgressAudio() {
+        if (audio.id == "audio-tl-" + id) {
+            let percent = (audio.currentTime / audio.duration) * 100;
+            percent = percent - 1;
+            progressFilledAudio.style.width = `${percent}%`;
+
+            // Delay to apply time
+            setTimeout(function () {
+                RefreshTimerAudio();
+            }, 200);
+        }
+        else {
+            progressFilledAudio.style.width = '0px';
+        }
+    }
+
+    // Mouse event
+    function scrubAudio(e) {
+        if (audio.id == "audio-tl-" + id) {
+            const scrubTime = (e.offsetX / progressBarAudio.offsetWidth) * audio.duration;
+            audio.currentTime = scrubTime;
+        }
+    }
+
     // Timer
-    function SetTotalTime() {
-        m_totalTime = CalculateTime(m_audio.duration);
+    function SetTotalTimeAudio() {
+        m_totalTime = CalculateTimeAudio(m_audio.duration);
         txt.innerHTML = "00:00 / " + m_totalTime[0] + ":" + m_totalTime[1];
     }
-    function RefreshTimer() {
-        let m_currentTime = CalculateTime(audio.currentTime);
+
+    function RefreshTimerAudio() {
+        let m_currentTime = CalculateTimeAudio(audio.currentTime);
         txt.innerHTML = m_currentTime[0] + ":" + m_currentTime[1] + " / " + m_totalTime[0] + ":" + m_totalTime[1];
     }
-    function CalculateTime(amount) {
+
+    function CalculateTimeAudio(amount) {
         let sec = Math.floor(amount % 60);
         let min = Math.floor(amount / 60);
 
@@ -193,52 +206,37 @@ function createAudioTimeline(obj) {
 
         return m_timer = [min, sec];
     }
-    // Progrees Bar
-    function RefreshProgreesBar() {
-        let position = (audio.currentTime / audio.duration) * 100;
-        progressBar.value = position;
-        slider.style.left = (position - 0.5) + "%";
-    }
-    function EnableAudioEvents() {
-        audio.addEventListener("pause", audioTimelinePauseEvent);
-        audio.addEventListener("ended", audioTimelineEndEvent);
-    }
-    function DisableAudioEvents() {
-        audio.addEventListener("pause", audioTimelinePauseEvent);
-        audio.addEventListener("ended", audioTimelineEndEvent);
-    }
-    //#endregion
 
-    //#region Audio Events
-    // Audio Pause Event
-    audioTimelinePauseEvent = function () {
-        DisableAudioEvents();
-        ResetAudioButtons();
-    }
+    /* Hook up the event listeners */
+    btn.addEventListener('click', togglePlayAudio);
+    audio.addEventListener('timeupdate', handleProgressAudio);
+
+    let mousedown = false;
+    // Progress bar
+    progressBarAudio.addEventListener('click', scrubAudio);
+    progressBarAudio.addEventListener('mousemove', (e) => mousedown && scrubAudio(e));
+    progressBarAudio.addEventListener('mousedown', () => mousedown = true);
+    progressBarAudio.addEventListener('mouseup', () => mousedown = false);
+
+    //#endregion
 
     // Audio End Event
-    audioTimelineEndEvent = function () {
+    audio.onended = function () {
+        progressFilledAudio.style.width = '0px';
         audio.currentTime = 0;
     }
-    //#endregion
-
-    // Delay To Set Audio Total Time
-    setTimeout(function () {
-        SetTotalTime();
-    }, 500);
+    // //#endregion
 }
 //#endregion
 
 //#region Audio Generic Functions
 function ResetAudioButtons() {
     let btns = document.querySelectorAll(".--audio-btn");
-    clearInterval(timelineProgressInterval);
-    clearInterval(timelineTimerInterval);
 
     for (let i = 0; i < btns.length; i++) {
         btns[i].classList.remove("--audio-button-active");
         btns[i].classList.remove("--cloud-button-active");
-        btns[i].classList.remove("--timeline-button-active");
+        btns[i].classList.remove("--timeline-button-active", "--audio-button-active");
     }
 }
 function ResetProgressBarEvents() {
@@ -459,9 +457,10 @@ function createVideo(obj) {
     // Play Block
     function ToggleHUD() {
         if (!isShowingHUD) {
-            SetTotalTime();
+            StopAllMediaOfType("audio");
             hud.style.display = "flex";
             playBlock.style.display = "none";
+            SetTotalTime();
 
             // Delay to video
             setTimeout(function () {

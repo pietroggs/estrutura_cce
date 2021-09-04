@@ -121,13 +121,35 @@ body {
     align-self: flex-end;
 }
 
-.--timeline-slider-bg-slider {
-    position: absolute;
-    height: 0.8rem;
-    width: 0.8rem;
+.--timeline-progress-filled-audio {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: #E6388F;
+    transform: translate(0, 0);
+    -webkit-transform: translate(0, 0);
+    -moz-transform: translate(0, 0);
+    -o-transform: translate(0, 0);
+}
+
+.--timeline-progress-filled-audio::before {
+    content: '';
+    position: relative;
+    display: inline-block;
+    top: 50%;
+    left: 100%;
+    width: 1.2rem;
+    height: 1.2rem;
+    -moz-border-radius: 1rem;
+    -webkit-border-radius: 1rem;
+    border-radius: 1rem;
     background-color: #87889D;
-    border-radius: 100%;
-    left: -0.5%;
+    transform: translate(0, -50%);
+    -webkit-transform: translate(0, -50%);
+    -moz-transform: translate(0, -50%);
+    -o-transform: translate(0, -50%);
 }
 
 .--timeline-progressbar::-moz-progress-bar {
