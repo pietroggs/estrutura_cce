@@ -57,6 +57,11 @@ let selectListObj = {
     text: ["ON", "KJAH", "AFAS"],
     correct: 1
 }
+let selectListObj2 = {
+    id: 1,
+    text: ["ON", "KJAH", "AFAS"],
+    correct: 1
+}
 // sentence choice object sample
 let sentenceChoiceObj = {
     id: 0,
@@ -93,6 +98,9 @@ createRowOrderer(rowOrdererObj);
 createDrawline(drawlineObj);
 createSentenceInput(sentenceInputObj);
 createSelectList(selectListObj);
+createSelectList(selectListObj2);
+
+
 createSentenceChoice(sentenceChoiceObj);
 createSentenceSelect(sentenceSelectObj);
 

@@ -755,6 +755,7 @@ function createRowOrderer(obj)
     let draggedItem = null;
     let draggedItemParent = null;
     let currentAnswer = [];
+    let startOrder = [];
 
     let containerEvent = function()
     {
@@ -812,12 +813,22 @@ function createRowOrderer(obj)
         drag[i].addEventListener("dragend", dragEnd);
 
         currentAnswer[i] = i;
+        startOrder[i] = i;
     }
 
     function RandomizeOrder()
     {
-        newOrder = shuffle(currentAnswer);
-        
+        let temp_newOrder = shuffle(currentAnswer);
+
+        if(JSON.stringify(temp_newOrder) === JSON.stringify( startOrder ) )
+        {
+            log("Embaralhar novamente: " + temp_newOrder);
+            RandomizeOrder();
+            return;
+        }
+
+        newOrder = temp_newOrder;
+
         for(let i = 0; i < container.length; i ++)
         {
             container[i].append(drag[ newOrder[i] ]);
@@ -845,7 +856,7 @@ function createRowOrderer(obj)
         }
         console.log("Correto");
     }
-    
+
     function EnableDrag(index)
     {
         drag[index].setAttribute("draggable", "true");
@@ -908,7 +919,7 @@ function createRowOrderer(obj)
                     {
                         drag[newOrder[i]].classList.add("--pratice-incorrect");
                     }
-                }      
+                }
             }
             // Disable MarkAll
             else markAllIsActive = false;
@@ -1011,10 +1022,10 @@ function createDrawline(obj)
 
         create('',"#--drawline-startpointContainer-" + id, "--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpointBorder");
         startPoint[i] = create('',"#--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpoint-" + id + "-" + i, "--drawline-startpoint");
-        
+
         create('',"#--drawline-endpointContainer-" + id, "--drawline-endpointBorder-" + id + "-" + i, "--drawline-endpointBorder");
         endPoint[i] = create('',"#--drawline-endpointBorder-" + id + "-" + i, "--drawline-endpoint-" + id + "-" + i, "--drawline-endpoint");
-        
+
         EnableStartPoint();
 
         endPoint[i].addEventListener("mouseup", function()
@@ -1029,10 +1040,10 @@ function createDrawline(obj)
                     currentStartPoint.classList.add("--pratice-selected");
                     endPoint[i].classList.add("--pratice-selected");
                     CreateLine(currentStartPoint, this);
-    
+
                     let m_startPositions = GetPointArrayPosition(currentStartPoint);
                     let m_endPositions = GetPointArrayPosition(endPoint[i]);
-    
+
                     // set answer
                     currentAnswer[m_startPositions] = m_endPositions;
                     console.log(currentAnswer);
@@ -1068,15 +1079,15 @@ function createDrawline(obj)
         let position = parseInt( point.id.split("-")[5] );
         return position;
     }
-    
+
     // Line follow the cursor
     let ghost = null;
 
     function CreateGhost()
     {
         ghost = create('',"#--drawline-drawlineContainer-" + id, "--drawline-ghost", "--drawline-ghost");
-       
-        window.onmousemove = function(e) { 
+
+        window.onmousemove = function(e) {
 
             let left = e.pageX;
             let top = e.pageY;
@@ -1095,7 +1106,7 @@ function createDrawline(obj)
                 {
                     currentStartPoint.removeChild(currentStartPoint.firstChild);
                     currentStartPoint.classList.remove("--pratice-selected");
-                } 
+                }
             }
         });
     }
@@ -1127,7 +1138,7 @@ function createDrawline(obj)
         let angleDeg = Math.atan2( m_height, m_width) * 180 / Math.PI;
 
         line.style.transform = "rotate(" + angleDeg + "deg)";
-        line.style.width = tan + "px";  
+        line.style.width = tan + "px";
     }
 
     // #region Functions
@@ -1181,7 +1192,7 @@ function createDrawline(obj)
             if(callback === "mark-all" && !markAllIsActive)
             {
                 markAllIsActive = true;
-                
+
                 for(let i = 0; i < startPoint.length; i++)
                 {
                     DisableStartPoint();
@@ -1268,14 +1279,14 @@ function createSentenceInput(obj)
     let input = [];
     let savedAnswer = [];
     let text = create("p", "#--inner-sentenceInput-" + id, "--sentenceInput-text" + id, "text gray --sentenceInput-text");
-    
+
     for(let i = 0; i < (obj.text.length - 1); i++)
     {
         text.innerHTML = text.innerHTML + obj.text[i] + " ";
 
         input[i] = create("input", "#--inner-sentenceInput-" + id, "--sentenceInput-input" + id + "-" + i, "text gray --sentenceInput-input");
         input[i].setAttribute("autocomplete", "off");
-        
+
         text.append(input[i]);
 
         text.innerHTML = text.innerHTML + " ";
@@ -1313,7 +1324,7 @@ function createSentenceInput(obj)
                 currentInput.classList.remove("--pratice-correct");
                 currentInput.classList.remove("--pratice-incorrect");
                 currentInput.classList.remove("--pratice-blocked");
-            }    
+            }
         }
 
         // Show Correct Markeds
@@ -1379,7 +1390,7 @@ function createSentenceInput(obj)
                     let currentInput = document.getElementById(input[i].id);
                     currentInput.value = "";
                     savedAnswer[i] = "";
-                }    
+                }
 
                 setTimeout(function()
                 {
@@ -1414,7 +1425,7 @@ function createSentenceInput(obj)
  * @author Flavio Martins
  * @version 1.2 (2021-08-31)
  * 2021-08-20
- * 
+ *
  * @description multiple choice 2 - dynamic activity (one item selection per line)
  */
 
@@ -1744,7 +1755,7 @@ function SignInFooterButton(markFunction, showFunction, resetFunction)
             resetFunction(footerButtons[i].id);
             markFunction(footerButtons[i].id);
             showFunction(footerButtons[i].id);
-        });  
+        });
     }
 }
 //#endregion
@@ -1759,19 +1770,25 @@ function createSelectList(obj){
     let input = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-input-"+ obj.id, "--selectListContainer-input");
     let text = create("p", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-text-"+ obj.id, "--selectListContainer-text text gray");
     create("", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-button-"+ obj.id, "--selectListContainer-button");
-    
+
 
     input.addEventListener("click", function(){
+        let previewListOpened = document.querySelector(".--selectListContainer-list");
+        if(previewListOpened != null)
+        {
+            previewListOpened.parentNode.removeChild(previewListOpened);
+        }
+
         let list = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-list-"+ obj.id, "--selectListContainer-list");
-        
+
         for(let i = 0; i < obj.text.length; i++){
             let listItem = create("", "#--selectListContainer-list-"+ obj.id, "--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem");
             let textOption = create("p", "#--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem-text-"+ obj.id + "-"+ i, "--selectListContainer-listItem-text  text gray");
 
             textOption.innerHTML = obj.text[i];
-           
+
             create("", "#--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem-button-"+ obj.id + "-"+ i, "--selectListContainer-listItem-button  --drawline-startpointBorder");
-            
+
             buttonInner[i] = create("", "#--selectListContainer-listItem-button-"+ obj.id + "-"+ i, "--selectListContainer-listItem-buttonInner-"+ obj.id + "-"+ i, "--selectListContainer-listItem-buttonInner  --drawline-startpoint");
 
             listItem.addEventListener("click", function(){
@@ -1784,13 +1801,72 @@ function createSelectList(obj){
                 }else{
                     log("INCORRETO")
                 }
-                
+
             });
         }
         if(currentSelected != null){
             buttonInner[currentSelected].style.cssText = "background-color: rgb(135, 136, 157);";
         }
     });
+
+    // #region Pratice Handler
+
+    function DefaultState()
+    {
+        console.log(input);
+        input.classList.remove("--pratice-correct");
+        // currentInput.style.cssText = "background-color: none;";
+        // currentInput.classList.remove("--pratice-correct");
+        // currentInput.classList.remove("--pratice-incorrect");
+        // currentInput.classList.remove("--pratice-blocked");
+    }
+
+    // Show Correct Markeds
+    let markAllIsActive;
+    function MarkAll(callback)
+    {
+        // Enable Mark All
+        if(callback === "mark-all" && !markAllIsActive)
+        {
+            markAllIsActive = true;
+            input.classList.add("--pratice-correct");
+
+        }
+        // Disable Mark All
+        else markAllIsActive = false;
+    }
+
+    // Show All
+    let showAnswersIsActive;
+    function ShowAnswer(callback)
+    {
+        // Enable Show All
+        if(callback === "show-answers" && !showAnswersIsActive)
+        {
+            showAnswersIsActive = true;
+
+        }
+        // Disable Show All
+        else showAnswersIsActive = false;
+    }
+
+    // Reset All
+    function Reset(callback)
+    {
+        DefaultState();
+
+        // Enable Reset
+        if(callback === "reset")
+        {
+
+
+            setTimeout(function()
+            {
+                document.getElementById("reset").classList.remove("active");
+            }, 200);
+        }
+    }
+    SignInFooterButton(MarkAll, ShowAnswer, Reset);
 }
 //#endregion
 
@@ -1801,7 +1877,7 @@ function createSentenceChoice(obj){
     let selectedAnswer = "";
 
     create("", "#--inner-sentenceChoice-0", "--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceContainer  text  gray");
-    
+
     texts[0] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-0-"+obj.id, "--sentenceChoice-sentenceChoiceText");
     texts[0].innerHTML = obj.text[0];
 
@@ -1810,10 +1886,10 @@ function createSentenceChoice(obj){
 
     let slash = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceSlash-"+obj.id, "--sentenceChoice-sentenceChoiceSlash");
     slash.innerHTML = "/";
-    
+
     buttons[1]= create("", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceButton-1-"+obj.id, "--sentenceChoice-sentenceChoiceButton");
     buttons[1].innerHTML = obj.text[2];
-   
+
     texts[1] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-1-"+obj.id, "--sentenceChoice-sentenceChoiceText");
     texts[1].innerHTML = obj.text[3];
 
@@ -1827,7 +1903,7 @@ function createSentenceChoice(obj){
                     }
                 });
                 element.classList.toggle("buttonBackgroundSelected");
-    
+
                 if(index === obj.correct){
                     log("CORRETO")
                 }else{
@@ -1837,7 +1913,7 @@ function createSentenceChoice(obj){
             }else {
                 element.classList.remove("buttonBackgroundSelected");
                 selectedAnswer = "";
-            }           
+            }
         });
     });
 
@@ -1851,12 +1927,12 @@ function createSentenceSelect(obj){
 
     create("", "#--inner-sentenceSelect-0", "--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelectContainer  text gray");
     for (let i = 0; i < obj.text.length; i++) {
-        
+
         create("", "#--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect");
         create("", "#--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect-button-0-" + obj.id+"-"+i, "--sentenceSelect-sentenceSelect-button  --drawline-startpointBorder");
-      
+
         buttonsInner[i] = create("", "#--sentenceSelect-sentenceSelect-button-0-" + obj.id+"-"+i, "--sentenceSelect-sentenceSelect-text-0-"+ obj.id+"-"+i, "--sentenceSelect-sentenceSelect-buttonInner  --drawline-startpoint");
-        
+
         let text = create("p", "#--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect-text-0-" + obj.id, "--sentenceSelect-sentenceSelect-text");
         text.innerHTML = obj.text[i];
     }
@@ -1881,6 +1957,6 @@ function createSentenceSelect(obj){
                 selectedAnswer = "";
             }
         });
-    });    
+    });
 }
 // #endregion

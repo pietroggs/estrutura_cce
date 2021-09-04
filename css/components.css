@@ -915,18 +915,13 @@ body{
 .--selectListContainer-button{
     background-color: rgb(135, 136, 157);
     width: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .--selectListContainer-button::after{
     content: "";
-    display: inline-block;
-    position: absolute;
-    top: 33%;
-    left: 83%;
-    width: 0px;
-    height: 0px;
-    line-height: 0px;
-    background: none;
     border-style: solid;
     border-width: 14px 8px 0px;
     border-color: rgba(255, 255, 255, 0.7) transparent transparent;
