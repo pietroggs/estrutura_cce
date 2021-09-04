@@ -749,6 +749,7 @@ function createVideo(obj)
 //#region ROW ORDERER
 function createRowOrderer(obj)
 {
+    let newOrder;
     let drag = [];
     let container = [];
     let draggedItem = null;
@@ -809,7 +810,22 @@ function createRowOrderer(obj)
 
         drag[i].addEventListener("dragstart", dragStart);
         drag[i].addEventListener("dragend", dragEnd);
+
+        currentAnswer[i] = i;
     }
+
+    function RandomizeOrder()
+    {
+        newOrder = shuffle(currentAnswer);
+        
+        for(let i = 0; i < container.length; i ++)
+        {
+            container[i].append(drag[ newOrder[i] ]);
+            currentAnswer[i] = newOrder[i];
+        }
+    }
+
+    RandomizeOrder();
 
     // #region Functions
     function CheckResult()
@@ -818,6 +834,7 @@ function createRowOrderer(obj)
         {
             currentAnswer[i] = parseInt(container[i].firstChild.id.split("-")[5]);
         }
+
         for(let i = 0; i < container.length; i++)
         {
             if(currentAnswer[i] != obj.correct[i])
@@ -828,9 +845,48 @@ function createRowOrderer(obj)
         }
         console.log("Correto");
     }
+    
+    function EnableDrag(index)
+    {
+        drag[index].setAttribute("draggable", "true");
+        container[index].addEventListener("dragenter", containerEvent);
+        drag[index].addEventListener("dragstart", dragStart);
+        drag[index].addEventListener("dragend", dragEnd);
+    }
+    function DisableDrag(index)
+    {
+        drag[index].setAttribute("draggable", "false");
+        container[index].removeEventListener("dragenter", containerEvent);
+        drag[index].removeEventListener("dragstart", dragStart);
+        drag[index].removeEventListener("dragend", dragEnd);
+    }
 
     // #region Pratice Handler
 
+        function DefaultState()
+        {
+            for(let i = 0; i < drag.length; i++)
+            {
+                EnableDrag(i);
+
+                if(currentAnswer.length == 0)
+                {
+                    container[i].append( drag[i] );
+                }
+                else
+                {
+                    container[i].append( drag[ currentAnswer[i] ] );
+                }
+
+                drag[i].setAttribute("draggable", "true");
+                container[i].addEventListener("dragenter", containerEvent);
+                drag[i].addEventListener("dragstart", dragStart);
+                drag[i].addEventListener("dragend", dragEnd);
+                drag[i].classList.remove("--pratice-blocked");
+                drag[i].classList.remove("--pratice-correct");
+                drag[i].classList.remove("--pratice-incorrect");
+            }
+        }
         // Show Correct Markeds
         let markAllIsActive;
         function MarkAll(callback)
@@ -838,16 +894,24 @@ function createRowOrderer(obj)
             // Enable Mark All
             if(callback === "mark-all" && !markAllIsActive)
             {
-                log("Ativa Mark");
                 markAllIsActive = true;
+
+                for(let i = 0; i < drag.length; i++)
+                {
+                    DisableDrag(i);
+
+                    if(currentAnswer[i] == obj.correct[i])
+                    {
+                        drag[newOrder[i]].classList.add("--pratice-correct");
+                    }
+                    else
+                    {
+                        drag[newOrder[i]].classList.add("--pratice-incorrect");
+                    }
+                }      
             }
             // Disable MarkAll
-            else
-            {
-                log("Desativa Mark");
-                markAllIsActive = false;
-
-            }
+            else markAllIsActive = false;
         }
 
         // Show All
@@ -857,54 +921,28 @@ function createRowOrderer(obj)
             // Enable Show All
             if(callback === "show-answers" && !showAnswersIsActive)
             {
-                log("Ativa show");
-
                 showAnswersIsActive = true;
 
                 for(let i = 0; i < drag.length; i++)
                 {
+                    DisableDrag(i);
                     container[i].append( drag[obj.correct[i]] );
-                    drag[i].setAttribute("draggable", "false");
-                    drag[i].style.cssText = "background-color: lightgray;";
-                    container[i].removeEventListener("dragenter", containerEvent);
-                    drag[i].removeEventListener("dragstart", dragStart);
-                    drag[i].removeEventListener("dragend", dragEnd);
+                    drag[i].classList.add("--pratice-blocked");
                 }
             }
             // Disable Show All
-            else
-            {
-                log("Desativa show");
-
-                showAnswersIsActive = false;
-
-                for(let i = 0; i < drag.length; i++)
-                {
-                    if(currentAnswer.length == 0)
-                    {
-                        container[i].append( drag[i] );
-                    }
-                    else
-                    {
-                        container[i].append( drag[ currentAnswer[i] ] );
-                    }
-
-                    drag[i].setAttribute("draggable", "true");
-                    drag[i].style.cssText = "background-color: #87889D;";
-                    container[i].addEventListener("dragenter", containerEvent);
-                    drag[i].addEventListener("dragstart", dragStart);
-                    drag[i].addEventListener("dragend", dragEnd);
-                }
-            }
+            else showAnswersIsActive = false;
         }
+
 
         // Reset All
         function Reset(callback)
         {
+            DefaultState();
             // Enable Reset
             if(callback === "reset")
             {
-                log("Ativa Reset");
+                RandomizeOrder();
 
                 setTimeout(function()
                 {
@@ -1142,7 +1180,6 @@ function createDrawline(obj)
             // Enable Mark All
             if(callback === "mark-all" && !markAllIsActive)
             {
-                log("Ativa Mark");
                 markAllIsActive = true;
                 
                 for(let i = 0; i < startPoint.length; i++)
@@ -1275,6 +1312,7 @@ function createSentenceInput(obj)
                 currentInput.style.cssText = "background-color: none;";
                 currentInput.classList.remove("--pratice-correct");
                 currentInput.classList.remove("--pratice-incorrect");
+                currentInput.classList.remove("--pratice-blocked");
             }    
         }
 
@@ -1285,14 +1323,12 @@ function createSentenceInput(obj)
             // Enable Mark All
             if(callback === "mark-all" && !markAllIsActive)
             {
-                log("Ativa Mark");
                 markAllIsActive = true;
 
                 for(let i = 0; i < input.length; i++)
                 {
                     let currentInput = document.getElementById(input[i].id);
 
-                    console.log(currentInput.value);
                     currentInput.disabled = true;
 
                     if(currentInput.value === obj.correct[i])
@@ -1323,7 +1359,7 @@ function createSentenceInput(obj)
                     savedAnswer[i] = currentInput.value;
                     currentInput.value = obj.correct[i];
                     currentInput.disabled = true;
-                    currentInput.style.cssText = "background-color: lightgray;";
+                    currentInput.classList.add("--pratice-blocked");
                 }
             }
             // Disable Show All
@@ -1338,7 +1374,6 @@ function createSentenceInput(obj)
             // Enable Reset
             if(callback === "reset")
             {
-                log("Ativa RESET")
                 for(let i = 0; i < input.length; i++)
                 {
                     let currentInput = document.getElementById(input[i].id);
