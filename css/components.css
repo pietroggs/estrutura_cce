@@ -959,7 +959,7 @@ body{
     background-color: lightgray;
     cursor: pointer;
 }
-/* END SELECT LIST */
+/* endregion SELECT LIST */
 
 /* #region SENTENCE CHOICE */
 .--sentenceChoice-sentenceChoiceContainer{
@@ -1003,3 +1003,18 @@ body{
     align-items: center;
 }
 /* END SENTENCE SELECT */
+
+
+
+.--pratice-correct{
+    background-color: rgb(94, 499, 203) !important;
+    color: white !important;
+}
+.--pratice-incorrect{
+    background-color: rgb(230, 56, 143) !important;
+    color: white !important;
+}
+.--pratice-selected{
+    background-color: rgb(135, 136, 157);
+    color: white;
+}

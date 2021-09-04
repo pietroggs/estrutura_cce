@@ -830,9 +830,31 @@ function createRowOrderer(obj)
     }
 
     // #region Pratice Handler
+
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                log("Ativa Mark");
+                markAllIsActive = true;
+            }
+            // Disable MarkAll
+            else
+            {
+                log("Desativa Mark");
+                markAllIsActive = false;
+
+            }
+        }
+
+        // Show All
         let showAnswersIsActive;
         function ShowAnswer(callback)
         {
+            // Enable Show All
             if(callback === "show-answers" && !showAnswersIsActive)
             {
                 log("Ativa show");
@@ -849,6 +871,7 @@ function createRowOrderer(obj)
                     drag[i].removeEventListener("dragend", dragEnd);
                 }
             }
+            // Disable Show All
             else
             {
                 log("Desativa show");
@@ -875,23 +898,10 @@ function createRowOrderer(obj)
             }
         }
 
-        let markAllIsActive;
-        function MarkAll(callback)
-        {
-            if(callback === "mark-all" && !markAllIsActive)
-            {
-                log("Ativa Mark");
-                markAllIsActive = true;
-            }
-            else
-            {
-                log("Desativa Mark");
-                markAllIsActive = false;
-
-            }
-        }
+        // Reset All
         function Reset(callback)
         {
+            // Enable Reset
             if(callback === "reset")
             {
                 log("Ativa Reset");
@@ -925,7 +935,7 @@ function createDrawline(obj)
     let startPointEvent = function(e)
     {
         e.preventDefault();
-        this.style.cssText = "background-color: rgb(135, 136, 157);";
+        this.classList.add("--pratice-selected");
         currentStartPoint = this;
         currentMousePosition = [e.pageX, e.pageY];
 
@@ -937,11 +947,10 @@ function createDrawline(obj)
             if(currentAnswer[m_startPositions] !== "")
             {
                 let m_endPosition = document.getElementById("--drawline-endpoint-" + id + "-" + currentAnswer[m_startPositions]);
-                m_endPosition.style.cssText = "background-color: none;";
+                m_endPosition.classList.remove("--pratice-selected");
                 currentAnswer[m_startPositions] = "";
             }
         }
-
         RemoveGhost();
         CreateGhost();
     }
@@ -979,8 +988,8 @@ function createDrawline(obj)
             {
                 if(currentStartPoint != null)
                 {
-                    currentStartPoint.style.cssText = "background-color: rgb(135, 136, 157);";
-                    endPoint[i].style.cssText = "background-color: rgb(135, 136, 157);";
+                    currentStartPoint.classList.add("--pratice-selected");
+                    endPoint[i].classList.add("--pratice-selected");
                     CreateLine(currentStartPoint, this);
     
                     let m_startPositions = GetPointArrayPosition(currentStartPoint);
@@ -993,7 +1002,7 @@ function createDrawline(obj)
             }
             else
             {
-                currentStartPoint.style.cssText = "background-color: none;";
+                currentStartPoint.classList.remove("--pratice-selected");
                 currentStartPoint.removeChild(currentStartPoint.firstChild);
             }
 
@@ -1047,7 +1056,7 @@ function createDrawline(obj)
                 if(currentStartPoint.firstChild != null)
                 {
                     currentStartPoint.removeChild(currentStartPoint.firstChild);
-                    currentStartPoint.style.cssText = "background-color: none";
+                    currentStartPoint.classList.remove("--pratice-selected");
                 } 
             }
         });
@@ -1089,6 +1098,7 @@ function createDrawline(obj)
         for(let i = 0 ; i < startPoint.length; i++)
         {
             startPoint[i].addEventListener("mousedown", startPointEvent);
+            startPoint[i].style.cssText = "cursor: pointer;";
         }
     }
     function DisableStartPoint()
@@ -1096,65 +1106,110 @@ function createDrawline(obj)
         for(let i = 0 ; i < startPoint.length; i++)
         {
             startPoint[i].removeEventListener("mousedown", startPointEvent);
+            startPoint[i].style.cssText = "cursor: default;";
         }
     }
     // #region Pratice Handler
-    let showAnswersIsActive;
-    function ShowAnswer(callback)
-    {
-        if(callback === "show-answers" && !showAnswersIsActive)
+
+        function DefaultState()
         {
+            EnableStartPoint();
+
+            for(let i = 0; i < startPoint.length; i++)
+            {
+                if(currentAnswer[i] !== "")
+                {
+                    CreateLine(startPoint[i], endPoint[ currentAnswer[i] ]);
+                    startPoint[i].classList.add("--pratice-selected");
+                    endPoint[ currentAnswer[i] ].classList.add("--pratice-selected");
+                }
+                else if( startPoint[i].childElementCount > 0)
+                {
+                    startPoint[i].removeChild(startPoint[i].firstChild);
+                }
+
+                startPoint[i].classList.remove("--pratice-correct");
+                startPoint[i].classList.remove("--pratice-incorrect");
+                endPoint[i].classList.remove("--pratice-correct");
+                endPoint[i].classList.remove("--pratice-incorrect");
+            }
+        }
+
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                log("Ativa Mark");
+                markAllIsActive = true;
+                
+                for(let i = 0; i < startPoint.length; i++)
+                {
+                    DisableStartPoint();
+                    if( startPoint[i].childElementCount > 0)
+                    {
+                        if(currentAnswer[i] == obj.correct[i])
+                        {
+                            startPoint[i].classList.add("--pratice-correct");
+                            startPoint[i].firstChild.classList.add("--pratice-correct");
+                            endPoint[currentAnswer[i]].classList.add("--pratice-correct");
+                        }
+                        else
+                        {
+                            startPoint[i].classList.add("--pratice-incorrect");
+                            startPoint[i].firstChild.classList.add("--pratice-incorrect");
+                            endPoint[currentAnswer[i]].classList.add("--pratice-incorrect");
+                        }
+                    }
+                }
+            }
+            // Disable Mark All
+            else markAllIsActive = false;
+        }
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
                 showAnswersIsActive = true;
                 DisableStartPoint();
 
                 for(let i = 0; i < startPoint.length; i++)
                 {
                     CreateLine(startPoint[i], endPoint[obj.correct[i]]);
-                    startPoint[i].style.cssText = "background-color: none; cursor: default;";
-                    endPoint[i].style.cssText = "background-color: none;";
+                    startPoint[i].classList.remove("--pratice-selected");
+                    endPoint[i].classList.remove("--pratice-selected");
                 }
             }
-            else
-            {
-                showAnswersIsActive = false;
-                EnableStartPoint();
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
 
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+
+            // Enable Reset
+            if(callback === "reset")
+            {
                 for(let i = 0; i < startPoint.length; i++)
                 {
-                    if(currentAnswer[i] !== "")
-                    {
-                        CreateLine(startPoint[i], endPoint[ currentAnswer[i] ]);
-                        startPoint[i].style.cssText = "background-color: rgb(135, 136, 157); cursor: pointer;";
-                        endPoint[currentAnswer[i]].style.cssText = "background-color: rgb(135, 136, 157);";
-                    }
-                    else if( startPoint[i].childElementCount > 0)
+                    startPoint[i].classList.remove("--pratice-selected");
+                    endPoint[i].classList.remove("--pratice-selected");
+
+                    if( startPoint[i].childElementCount > 0)
                     {
                         startPoint[i].removeChild(startPoint[i].firstChild);
                     }
-                }   
-            }
-        }
-        let markAllIsActive;
-        function MarkAll(callback)
-        {
-            if(callback === "mark-all" && !markAllIsActive)
-            {
-                log("Ativa Mark");
-                markAllIsActive = true;
-            }
-            else
-            {
-                log("Desativa Mark");
-                markAllIsActive = false;
 
-            }
-        }
-        function Reset(callback)
-        {
-            if(callback === "reset")
-            {
-                log("Ativa Reset");
-
+                    currentAnswer[i] = "";
+                }
                 setTimeout(function()
                 {
                     document.getElementById("reset").classList.remove("active");
@@ -1188,10 +1243,6 @@ function createSentenceInput(obj)
 
         text.innerHTML = text.innerHTML + " ";
 
-        document.getElementById(input[i].id).addEventListener("blur", function()
-        {
-            console.log(input[i].id);
-        });
     }
 
     text.innerHTML = text.innerHTML + obj.text[obj.text.length - 1];
@@ -1213,12 +1264,58 @@ function createSentenceInput(obj)
     }
 
     // #region Pratice Handler
+
+        function DefaultState()
+        {
+            for(let i = 0; i < input.length; i++)
+            {
+                let currentInput = document.getElementById(input[i].id);
+                currentInput.value = savedAnswer[i];
+                currentInput.disabled = false;
+                currentInput.style.cssText = "background-color: none;";
+                currentInput.classList.remove("--pratice-correct");
+                currentInput.classList.remove("--pratice-incorrect");
+            }    
+        }
+
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                log("Ativa Mark");
+                markAllIsActive = true;
+
+                for(let i = 0; i < input.length; i++)
+                {
+                    let currentInput = document.getElementById(input[i].id);
+
+                    console.log(currentInput.value);
+                    currentInput.disabled = true;
+
+                    if(currentInput.value === obj.correct[i])
+                    {
+                        currentInput.classList.add("--pratice-correct");
+                    }
+                    else if(currentInput.value != "")
+                    {
+                        currentInput.classList.add("--pratice-incorrect");
+                    }
+                }
+            }
+            // Disable Mark All
+            else markAllIsActive = false;
+        }
+
+        // Show All
         let showAnswersIsActive;
         function ShowAnswer(callback)
         {
+            // Enable Show All
             if(callback === "show-answers" && !showAnswersIsActive)
             {
-
                 showAnswersIsActive = true;
                 for(let i = 0; i < input.length; i++)
                 {
@@ -1229,38 +1326,25 @@ function createSentenceInput(obj)
                     currentInput.style.cssText = "background-color: lightgray;";
                 }
             }
-            else
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+
+            // Enable Reset
+            if(callback === "reset")
             {
-                showAnswersIsActive = false;
+                log("Ativa RESET")
                 for(let i = 0; i < input.length; i++)
                 {
                     let currentInput = document.getElementById(input[i].id);
-                    currentInput.value = savedAnswer[i];
-                    currentInput.disabled = false;
-                    currentInput.style.cssText = "background-color: none;";
-                }         
-            }
-        }
-
-        let markAllIsActive;
-        function MarkAll(callback)
-        {
-            if(callback === "mark-all" && !markAllIsActive)
-            {
-                log("Ativa Mark");
-                markAllIsActive = true;
-            }
-            else
-            {
-                log("Desativa Mark");
-                markAllIsActive = false;
-            }
-        }
-        function Reset(callback)
-        {
-            if(callback === "reset")
-            {
-                log("Ativa Reset");
+                    currentInput.value = "";
+                    savedAnswer[i] = "";
+                }    
 
                 setTimeout(function()
                 {
@@ -1276,8 +1360,13 @@ function createSentenceInput(obj)
     // #region Listeners
         for(let i = 0; i < input.length; i++)
         {
+            let currentInput = document.getElementById(input[i].id);
+
+            savedAnswer[i] = (currentInput.value != undefined) ? currentInput.value : "";
+
             document.getElementById(input[i].id).addEventListener("blur", function(e)
             {
+                savedAnswer[i] = (e.target.value != undefined) ? e.target.value : "";
                 CheckInput(e.target.value, i);
             });
         }
@@ -1617,9 +1706,9 @@ function SignInFooterButton(markFunction, showFunction, resetFunction)
     {
         footerButtons[i].addEventListener("click", function()
         {
+            resetFunction(footerButtons[i].id);
             markFunction(footerButtons[i].id);
             showFunction(footerButtons[i].id);
-            resetFunction(footerButtons[i].id);
         });  
     }
 }
