@@ -1016,4 +1016,43 @@ body{
 .--pratice-blocked{
     background-color: lightgray !important;
 }
-    
+
+
+/* #region DRAGDROP */
+.--hiddenDrag{
+    opacity: 0;
+}
+.--inner-dragDrop-sentenceContainer{
+    border: 1px solid;
+    width: 20rem;
+    height: 15rem;
+    background: #a7b4da21;
+}
+.--sentenceDropped-container{
+    border: 1px solid;
+    width: 5.1rem;
+    height: 2.5rem;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+.--sentenceDragged{
+    border: 1px solid transparent;
+    width: 5rem;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #E9E9ED;
+    box-shadow: 1px 1px 0px 0 rgb(0 0 0 / 20%);
+    color: #595b68;
+}
+.--inner-sentenceDragDrop{
+    gap: 0.5rem;
+    align-items: center;
+    display: flex;
+}
+.--sentenceDropped-text-answer{
+    position: absolute;
+}
+/* END DRAGDROP */
