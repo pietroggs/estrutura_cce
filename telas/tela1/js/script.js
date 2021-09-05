@@ -65,7 +65,7 @@ let selectListObj2 = {
 // sentence choice object sample
 let sentenceChoiceObj = {
     id: 0,
-    text: ["ON", "KJAH", "AFAS"],
+    text: ["ON", "KJAH", "AFAS", "Rene"],
     correct: 1
 }
 // sentence select object sample

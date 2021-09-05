@@ -854,6 +854,7 @@ function createRowOrderer(obj)
                 return;
             }
         }
+        parent.playSoundFx("success");
         console.log("Correto");
     }
 
@@ -1033,23 +1034,20 @@ function createDrawline(obj)
             RemoveGhost();
 
             // Set end point case its free
-            if(CheckEndPointIsMarked(endPoint[i]))
+            if(CheckEndPointIsMarked(endPoint[i]) && currentStartPoint != null)
             {
-                if(currentStartPoint != null)
-                {
-                    currentStartPoint.classList.add("--pratice-selected");
-                    endPoint[i].classList.add("--pratice-selected");
-                    CreateLine(currentStartPoint, this);
+                currentStartPoint.classList.add("--pratice-selected");
+                endPoint[i].classList.add("--pratice-selected");
+                CreateLine(currentStartPoint, this);
 
-                    let m_startPositions = GetPointArrayPosition(currentStartPoint);
-                    let m_endPositions = GetPointArrayPosition(endPoint[i]);
+                let m_startPositions = GetPointArrayPosition(currentStartPoint);
+                let m_endPositions = GetPointArrayPosition(endPoint[i]);
 
-                    // set answer
-                    currentAnswer[m_startPositions] = m_endPositions;
-                    console.log(currentAnswer);
-                }
+                // set answer
+                currentAnswer[m_startPositions] = m_endPositions;
+                CheckAnswer(m_startPositions);
             }
-            else
+            else if(currentStartPoint != null && currentStartPoint.childElementCount > 0)
             {
                 currentStartPoint.classList.remove("--pratice-selected");
                 currentStartPoint.removeChild(currentStartPoint.firstChild);
@@ -1057,6 +1055,22 @@ function createDrawline(obj)
 
             currentStartPoint = null;
         });
+    }
+
+    function CheckAnswer(arrayPosition)
+    {
+        console.log(currentAnswer);
+
+        if(currentAnswer[arrayPosition] === obj.correct[arrayPosition])
+        {
+            console.log("correto");
+            parent.playSoundFx("correct");
+        }
+        else
+        {
+            console.log("incorreto");
+            parent.playSoundFx("incorrect");
+        }
     }
 
     function CheckEndPointIsMarked(endPoint)
@@ -1290,7 +1304,6 @@ function createSentenceInput(obj)
         text.append(input[i]);
 
         text.innerHTML = text.innerHTML + " ";
-
     }
 
     text.innerHTML = text.innerHTML + obj.text[obj.text.length - 1];
@@ -1304,10 +1317,12 @@ function createSentenceInput(obj)
         if(m_value === m_index)
         {
             console.log("correto");
+            parent.playSoundFx("correct");
         }
         else
         {
             console.log("errado");
+            parent.playSoundFx("incorrect");
         }
     }
 
@@ -1762,22 +1777,29 @@ function SignInFooterButton(markFunction, showFunction, resetFunction)
 
 //#region SELECT LIST
 function createSelectList(obj){
-    let currentSelected = null;
+    let currentSelected = "";
     let buttonInner = [];
+
+    let windowEvent = function()
+    {
+        let previewListOpened = document.querySelector(".--selectListContainer-list");
+
+        if(previewListOpened != null)
+        {
+            previewListOpened.parentNode.removeChild(previewListOpened);
+        }
+
+        window.removeEventListener("click", windowEvent);
+    }
 
     let container = create("", "#--inner-selectList-" + obj.id, "--selectList-selectListContainer-"+ obj.id, "--selectListContainer");
 
     let input = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-input-"+ obj.id, "--selectListContainer-input");
     let text = create("p", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-text-"+ obj.id, "--selectListContainer-text text gray");
+    text.innerHTML = "";
     create("", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-button-"+ obj.id, "--selectListContainer-button");
 
-
-    input.addEventListener("click", function(){
-        let previewListOpened = document.querySelector(".--selectListContainer-list");
-        if(previewListOpened != null)
-        {
-            previewListOpened.parentNode.removeChild(previewListOpened);
-        }
+    let inputEvent = function(){
 
         let list = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-list-"+ obj.id, "--selectListContainer-list");
 
@@ -1797,76 +1819,99 @@ function createSelectList(obj){
                 currentSelected = i;
 
                 if(obj.correct == i){
-                    log("CORRETO")
+                    log("CORRETO");
+                    parent.playSoundFx("correct");
                 }else{
+                    parent.playSoundFx("incorrect");
                     log("INCORRETO")
                 }
 
             });
         }
-        if(currentSelected != null){
+        if(currentSelected != ""){
             buttonInner[currentSelected].style.cssText = "background-color: rgb(135, 136, 157);";
         }
-    });
+   
+        setTimeout(function() {
+            window.addEventListener("click", windowEvent);
+        }, 100);
+    }
+
+    input.addEventListener("mousedown", inputEvent);
 
     // #region Pratice Handler
 
-    function DefaultState()
-    {
-        console.log(input);
-        input.classList.remove("--pratice-correct");
-        // currentInput.style.cssText = "background-color: none;";
-        // currentInput.classList.remove("--pratice-correct");
-        // currentInput.classList.remove("--pratice-incorrect");
-        // currentInput.classList.remove("--pratice-blocked");
-    }
-
-    // Show Correct Markeds
-    let markAllIsActive;
-    function MarkAll(callback)
-    {
-        // Enable Mark All
-        if(callback === "mark-all" && !markAllIsActive)
+        function DefaultState()
         {
-            markAllIsActive = true;
-            input.classList.add("--pratice-correct");
-
+            input.classList.remove("--pratice-correct");
+            input.classList.remove("--pratice-incorrect");
+            text.classList.remove("--pratice-text-blocked");
+            text.innerHTML = (currentSelected !== "") ? obj.text[currentSelected] : "";
+            input.addEventListener("mousedown", inputEvent);
         }
-        // Disable Mark All
-        else markAllIsActive = false;
-    }
 
-    // Show All
-    let showAnswersIsActive;
-    function ShowAnswer(callback)
-    {
-        // Enable Show All
-        if(callback === "show-answers" && !showAnswersIsActive)
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
         {
-            showAnswersIsActive = true;
-
-        }
-        // Disable Show All
-        else showAnswersIsActive = false;
-    }
-
-    // Reset All
-    function Reset(callback)
-    {
-        DefaultState();
-
-        // Enable Reset
-        if(callback === "reset")
-        {
-
-
-            setTimeout(function()
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
             {
-                document.getElementById("reset").classList.remove("active");
-            }, 200);
+                markAllIsActive = true;
+                input.removeEventListener("mousedown", inputEvent);
+
+                if(text.innerHTML !== "")
+                {
+                    if(text.innerHTML === obj.text[obj.correct])
+                    {
+                        input.classList.add("--pratice-correct");
+                    }
+                    else
+                    {
+                        input.classList.add("--pratice-incorrect");
+                    }
+                }
+            }
+            // Disable Mark All
+            else markAllIsActive = false;
         }
-    }
-    SignInFooterButton(MarkAll, ShowAnswer, Reset);
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                showAnswersIsActive = true;
+                input.removeEventListener("mousedown", inputEvent);
+
+                text.innerHTML = obj.text[obj.correct];
+                text.classList.add("--pratice-text-blocked");
+            }
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+
+            // Enable Reset
+            if(callback === "reset")
+            {
+                text.innerHTML = "";
+                currentSelected = "";
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
 }
 //#endregion
 

@@ -1016,4 +1016,7 @@ body{
 .--pratice-blocked{
     background-color: lightgray !important;
 }
+.--pratice-text-blocked{
+    color: rgb(162, 164, 192) !important;
+}
     
