@@ -101,8 +101,8 @@ createSentenceSelect(sentenceSelectObj);
 let dragDropObj = {
   0: {
     id: 0,
-    text: ["she", "your uncle a dentist?", "jsdf"],
-    dragText: ["he", "she"],
+    text: ["", "your uncle a dentist?"],
+    dragText: ["he"],
   },
 };
 createDragDrop(dragDropObj[0]);
