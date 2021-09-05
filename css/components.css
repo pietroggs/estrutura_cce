@@ -1024,7 +1024,7 @@ body{
 }
 .--inner-dragDrop-sentenceContainer{
     border: 1px solid;
-    width: 20rem;
+    width: 100%;
     height: 15rem;
     background: #a7b4da21;
 }
@@ -1046,6 +1046,12 @@ body{
     background-color: #E9E9ED;
     box-shadow: 1px 1px 0px 0 rgb(0 0 0 / 20%);
     color: #595b68;
+    cursor: pointer;
+}
+.--sentenceDragged:active{
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
 }
 .--inner-sentenceDragDrop{
     gap: 0.5rem;

@@ -1967,11 +1967,7 @@ function createDragDrop(obj) {
     let text = [];
     let answer = [];
     let changes = [];
-    let verification = {
-      key: "",
-      value: "",
-    };
-  
+    
     for (let index = 0; index < obj.text.length - 1; index++) {
       text[index] = create("p","#--inner-sentenceDragDrop-" + obj.id,"--sentenceDropped-text" + obj.id + "-" + index,"text gray --sentenceDropped-text");
   
@@ -1991,12 +1987,12 @@ function createDragDrop(obj) {
     text[lastId].innerHTML = obj.text[lastId];
   
     const dragContainer = document.querySelector(".--inner-dragDrop-sentenceContainer");
-    let draggedItem = null;
+    // var draggedItem = null;
     for (let index = 0; index < obj.text.length - 1; index++) {
       //DRAG
       dragDrop[index].addEventListener("dragstart", function (e) {
         draggedItem = dragDrop[index];
-        let idDropContainer = this.id.split("-")[3] + this.id.split("-")[4];
+        let idDropContainer = dragDrop[index].id.split("-")[3] + this.id.split("-")[4];
         verification.key = idDropContainer;
       });
   
@@ -2040,10 +2036,15 @@ function createDragDrop(obj) {
       });
   
       divs[index].addEventListener("drop", function () {
-      
         if(divs[index].childElementCount < 2){
-          this.append(draggedItem);
-          changes[index] = draggedItem;
+            this.append(draggedItem);
+            changes[index] = draggedItem;
+            verification.value = divs[index].id.split("-")[4] + this.id.split("-")[5];
+            if (verification.key === verification.value) {
+                log("ACERTOUUU");
+            } else {
+                log("ERRROUUUU");
+            }
         }else{
           changes[index + 1] = this.lastChild;
           this.removeChild(this.lastChild);
@@ -2051,52 +2052,42 @@ function createDragDrop(obj) {
           dragContainer.append(changes[index + 1])
         }
         
-        verification.value = this.id.split("-")[4] + this.id.split("-")[5];
-        if (verification.key === verification.value) {
-          log("ACERTOUUU");
-        } else {
-          log("ERRROUUUU");
-        }
-        
       });
     }
-  
     // #region Pratice Handler
-  
     function DefaultState() {
-      for (let i = 0; i < divs.length; i++) {
-        dragDrop[i].classList.remove("--pratice-blocked");
-        dragDrop[i].classList.remove("--pratice-correct");
-        dragDrop[i].classList.remove("--pratice-incorrect");
-  
-        answer[i].innerHTML = "";
-        divs[i].classList.remove("--pratice-blocked");
-        divs[i].lastChild.classList.remove("--hiddenDrag");
-        divs[i].style.backgroundColor = "white";
-        divs[i].lastChild.setAttribute("draggable", true);
-      }
+        for (let i = 0; i < divs.length; i++) {
+            dragDrop[i].classList.remove("--pratice-blocked");
+            divs[i].lastChild.classList.remove("--pratice-correct");
+            divs[i].lastChild.classList.remove("--pratice-incorrect");
+            
+            answer[i].innerHTML = "";
+            divs[i].classList.remove("--pratice-blocked");
+            divs[i].style.backgroundColor = "white";
+            divs[i].lastChild.classList.remove("--hiddenDrag");
+            divs[i].lastChild.setAttribute("draggable", true);
+        }
     }
     // Show Correct Markeds
     let markAllIsActive;
     function MarkAll(callback) {
-      // Enable Mark All
+        // Enable Mark All
       if (callback === "mark-all" && !markAllIsActive) {
-        markAllIsActive = true;
-  
-        for (let i = 0; i < divs.length; i++) {
-          if(divs[i].childElementCount > 1){
-              let childDropped = divs[i].lastChild;
-              if(verification.key === verification.value){
-                  childDropped.classList.add("--pratice-correct");
-              }else{
-                  childDropped.classList.add("--pratice-incorrect");
-              }
-              childDropped.setAttribute("draggable", false);
-          }  
+          markAllIsActive = true;
+          for (let i = 0; i < divs.length; i++) {
+              if(divs[i].childElementCount > 1){
+                let childDropped = divs[i].lastChild;
+                if(childDropped.firstChild.innerHTML === obj.dragText[i]){
+                    childDropped.classList.add("--pratice-correct");
+                }else{
+                    childDropped.classList.add("--pratice-incorrect");
+                }
+                childDropped.setAttribute("draggable", false);
+            }  
         }
-      }
-      // Disable MarkAll
-      else markAllIsActive = false;
+    }
+    // Disable MarkAll
+    else markAllIsActive = false;
     }
   
     // Show All
@@ -2123,12 +2114,12 @@ function createDragDrop(obj) {
       DefaultState();
       // Enable Reset
       if (callback === "reset") {
-        for (let index = 0; index < dragDrop.length; index++) {
-          dragContainer.append(dragDrop[index]);
-        }
-  
+          
         setTimeout(function () {
-          document.getElementById("reset").classList.remove("active");
+            document.getElementById("reset").classList.remove("active");
+            for (let index = 0; index < dragDrop.length; index++) {  
+                dragContainer.append(dragDrop[index]);
+            }
         }, 200);
       }
     }

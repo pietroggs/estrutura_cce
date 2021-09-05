@@ -104,6 +104,32 @@ let dragDropObj = {
     text: ["", "your uncle a dentist?"],
     dragText: ["he"],
   },
+  1: {
+    id: 1,
+    text: ["Is your", "a waiter?"],
+    dragText: ["brother"],
+  },
+  2: {
+    id: 2,
+    text: ["Yes,", "is"],
+    dragText: ["she"],
+  },
+  3: {
+    id: 3,
+    text: ["Yes,", "is", "fdkj"],
+    dragText: ["she", "fsd"],
+  }
 };
-createDragDrop(dragDropObj[0]);
+
+var draggedItem = null;
+let verification = {
+  key: "",
+  value: "",
+};
+
+for (const index in dragDropObj) {
+  createDragDrop(dragDropObj[index])
+}
+
+// createDragDrop(dragDropObj[0]);
 // createDragDrop(dragDropObj[1]);
