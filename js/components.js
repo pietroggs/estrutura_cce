@@ -1921,6 +1921,11 @@ function createSentenceChoice(obj){
     let texts = [];
     let selectedAnswer = "";
 
+    let buttonEvent = function()
+    {
+        
+    }
+
     create("", "#--inner-sentenceChoice-0", "--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceContainer  text  gray");
 
     texts[0] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-0-"+obj.id, "--sentenceChoice-sentenceChoiceText");
@@ -1943,25 +1948,110 @@ function createSentenceChoice(obj){
             if(selectedAnswer === "" || selectedAnswer != index){
                 selectedAnswer = index;
                 buttons.forEach(function(e){
-                    if(e.classList.contains("buttonBackgroundSelected")){
-                        e.classList.remove("buttonBackgroundSelected");
+                    if(e.classList.contains("--pratice-selected")){
+                        e.classList.remove("--pratice-selected");
                     }
                 });
-                element.classList.toggle("buttonBackgroundSelected");
+                element.classList.toggle("--pratice-selected");
 
                 if(index === obj.correct){
+                    parent.playSoundFx("correct");
                     log("CORRETO")
                 }else{
+                    parent.playSoundFx("incorrect");
                     log("INCORRETO")
                 }
 
             }else {
-                element.classList.remove("buttonBackgroundSelected");
+                element.classList.remove("--pratice-selected");
                 selectedAnswer = "";
             }
         });
     });
 
+
+    // #region Pratice Handler
+        function DefaultState()
+        {
+            for(let i = 0; i < buttons.length; i++)
+            {
+                if(selectedAnswer === i)
+                    buttons[i].classList.add("--pratice-selected");
+                else
+                    buttons[i].classList.remove("--pratice-selected");
+
+                buttons[i].classList.remove("--pratice-correct");
+                buttons[i].classList.remove("--pratice-incorrect");
+                buttons[i].classList.remove("--pratice-border-blocked");
+                buttons[i].classList.remove("--pratice-text-blocked");
+            }
+        }
+
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                markAllIsActive = true;
+                if(selectedAnswer !== "")
+                {
+                    if(selectedAnswer === obj.correct)
+                    {
+                        buttons[selectedAnswer].classList.add("--pratice-correct");
+                    }
+                    else
+                    {
+                        buttons[selectedAnswer].classList.add("--pratice-incorrect");
+                    }
+                }
+            }
+            // Disable Mark All
+            else markAllIsActive = false;
+        }
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                showAnswersIsActive = true;
+                for(let i = 0; i < buttons.length; i++)
+                {
+                    buttons[i].classList.add("--pratice-border-blocked");
+                    buttons[i].classList.add("--pratice-text-blocked");
+                    buttons[i].classList.remove("--pratice-selected");
+                }
+
+                buttons[obj.correct].classList.add("--pratice-selected");
+                buttons[obj.correct].classList.remove("--pratice-text-blocked");
+            }
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+
+            // Enable Reset
+            if(callback === "reset")
+            {
+                selectedAnswer = "";
+                DefaultState();
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
 }
 //#endregion
 

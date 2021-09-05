@@ -49,7 +49,7 @@ let drawlineObj = {
 let sentenceInputObj = { 
     id: 0,
     text: ["You are not a journalist. You are a secretary. You", "a secretary.", "a secretary."],
-    correct: ["aren't", "Uh Didiii"]
+    correct: ["are", "U"]
 }
 // sentence list object sample
 let selectListObj = {

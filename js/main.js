@@ -166,7 +166,6 @@ var points = []
 
 function playSoundFx(sound){
     let audio = document.getElementById("sound-" + sound);
-    
     if(audio != null) audio.play();    
 }
 

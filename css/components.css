@@ -984,10 +984,10 @@ body{
     -ms-user-select: none;
     user-select: none;
 }
-.buttonBackgroundSelected{
+/* .buttonBackgroundSelected{
     background-color: rgb(135, 136, 157);
     color: white;
-}
+} */
 /* END SENTENCE CHOICE */
 
 /* # region SENTENCE SELECT */
@@ -1018,5 +1018,8 @@ body{
 }
 .--pratice-text-blocked{
     color: rgb(162, 164, 192) !important;
+}
+.--pratice-border-blocked{
+    border-color: lightgray !important;
 }
     
