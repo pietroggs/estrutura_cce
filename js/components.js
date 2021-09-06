@@ -1923,7 +1923,30 @@ function createSentenceChoice(obj){
 
     let buttonEvent = function()
     {
-        
+        let index = buttons.indexOf(this);
+
+        if(selectedAnswer === "" || selectedAnswer != index){
+            selectedAnswer = index;
+            buttons.forEach(function(e){
+                if(e.classList.contains("--pratice-selected")){
+                    e.classList.remove("--pratice-selected");
+                }
+            });
+
+            this.classList.add("--pratice-selected");
+
+            if(index === obj.correct){
+                parent.playSoundFx("correct");
+                log("CORRETO")
+            }else{
+                parent.playSoundFx("incorrect");
+                log("INCORRETO")
+            }
+
+        }else {
+            this.classList.remove("--pratice-selected");
+            selectedAnswer = "";
+        }
     }
 
     create("", "#--inner-sentenceChoice-0", "--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceContainer  text  gray");
@@ -1943,30 +1966,8 @@ function createSentenceChoice(obj){
     texts[1] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-1-"+obj.id, "--sentenceChoice-sentenceChoiceText");
     texts[1].innerHTML = obj.text[3];
 
-    buttons.forEach(function(element, index) {
-        element.addEventListener("click", function(){
-            if(selectedAnswer === "" || selectedAnswer != index){
-                selectedAnswer = index;
-                buttons.forEach(function(e){
-                    if(e.classList.contains("--pratice-selected")){
-                        e.classList.remove("--pratice-selected");
-                    }
-                });
-                element.classList.toggle("--pratice-selected");
-
-                if(index === obj.correct){
-                    parent.playSoundFx("correct");
-                    log("CORRETO")
-                }else{
-                    parent.playSoundFx("incorrect");
-                    log("INCORRETO")
-                }
-
-            }else {
-                element.classList.remove("--pratice-selected");
-                selectedAnswer = "";
-            }
-        });
+    buttons.forEach(function(element) {
+        element.addEventListener("click", buttonEvent);
     });
 
 
@@ -1984,6 +1985,8 @@ function createSentenceChoice(obj){
                 buttons[i].classList.remove("--pratice-incorrect");
                 buttons[i].classList.remove("--pratice-border-blocked");
                 buttons[i].classList.remove("--pratice-text-blocked");
+
+                buttons[i].addEventListener("click", buttonEvent);
             }
         }
 
@@ -2005,6 +2008,11 @@ function createSentenceChoice(obj){
                     {
                         buttons[selectedAnswer].classList.add("--pratice-incorrect");
                     }
+
+                    for(let i = 0; i < buttons.length; i++)
+                    {
+                        buttons[i].removeEventListener("click", buttonEvent);
+                    }
                 }
             }
             // Disable Mark All
@@ -2024,6 +2032,7 @@ function createSentenceChoice(obj){
                     buttons[i].classList.add("--pratice-border-blocked");
                     buttons[i].classList.add("--pratice-text-blocked");
                     buttons[i].classList.remove("--pratice-selected");
+                    buttons[i].removeEventListener("click", buttonEvent);
                 }
 
                 buttons[obj.correct].classList.add("--pratice-selected");
