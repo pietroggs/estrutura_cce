@@ -2177,71 +2177,72 @@ function createDragDrop(obj) {
     const dragContainer = document.querySelector(".--inner-dragDrop-sentenceContainer");
     // var draggedItem = null;
     for (let index = 0; index < obj.text.length - 1; index++) {
-      //DRAG
-      dragDrop[index].addEventListener("dragstart", function (e) {
-        draggedItem = dragDrop[index];
-        let idDropContainer = dragDrop[index].id.split("-")[3] + this.id.split("-")[4];
-        verification.key = idDropContainer;
-      });
-  
-      dragDrop[index].addEventListener("dragend", function (e) {
-        setTimeout(function () {
-          draggedItem.style.display = "flex";
-          draggedItem = null;
-        }, 0);
-      });
-  
-      // container dragged
-      dragContainer.addEventListener("dragover", function (e) {
-        e.preventDefault();
-        this.style.backgroundColor = "#536fc3";
-      });
-      dragContainer.addEventListener("dragenter", function (e) {
-        e.preventDefault();
-      });
-      dragContainer.addEventListener("dragleave", function (e) {
-        e.preventDefault();
-        this.style.backgroundColor = "#a7b4da21";
-      });
-      dragContainer.addEventListener("drop", function (e) {
-        this.append(draggedItem);
-        this.style.backgroundColor = "#a7b4da21";
-      });
-  
-      //DROP
-      divs[index].addEventListener("dragover", function (e) {
-        e.preventDefault();
-      });
-  
-      divs[index].addEventListener("dragenter", function (e) {
-        e.preventDefault();
-        this.style.backgroundColor = "#536fc3";
-      });
-  
-      divs[index].addEventListener("dragleave", function (e) {
-        e.preventDefault();
-        this.style.backgroundColor = "white";
-      });
-  
-      divs[index].addEventListener("drop", function () {
-        if(divs[index].childElementCount < 2){
-            this.append(draggedItem);
-            changes[index] = draggedItem;
-            verification.value = divs[index].id.split("-")[4] + this.id.split("-")[5];
-            if (verification.key === verification.value) {
-                log("ACERTOUUU");
-            } else {
-                log("ERRROUUUU");
-            }
-        }else{
-          changes[index + 1] = this.lastChild;
-          this.removeChild(this.lastChild);
+        //DRAG
+        dragDrop[index].addEventListener("dragstart", function (e) {
+          draggedItem = dragDrop[index];
+          let idDropContainer = dragDrop[index].id.split("-")[3] + this.id.split("-")[4];
+          verification.key = idDropContainer;
+        });
+    
+        dragDrop[index].addEventListener("dragend", function (e) {
+          setTimeout(function () {
+            draggedItem.style.display = "flex";
+            draggedItem = null;
+          }, 0);
+        });
+    
+        // container dragged
+        dragContainer.addEventListener("dragover", function (e) {
+          e.preventDefault();
+          this.classList.add("--dragBackgroundColor");
+        });
+        dragContainer.addEventListener("dragenter", function (e) {
+          e.preventDefault();
+        });
+        dragContainer.addEventListener("dragleave", function (e) {
+          e.preventDefault();
+          this.classList.remove("--dragBackgroundColor");
+        });
+        dragContainer.addEventListener("drop", function (e) {
           this.append(draggedItem);
-          dragContainer.append(changes[index + 1])
-        }
-        
-      });
-    }
+          this.classList.remove("--dragBackgroundColor");
+        });
+    
+        //DROP
+        divs[index].addEventListener("dragover", function (e) {
+          e.preventDefault();
+        });
+    
+        divs[index].addEventListener("dragenter", function (e) {
+          e.preventDefault();
+          this.classList.add("--dragBackgroundColor");
+        });
+    
+        divs[index].addEventListener("dragleave", function (e) {
+          e.preventDefault();
+          // this.style.backgroundColor = "white";
+          this.classList.remove("--dragBackgroundColor");
+        });
+    
+        divs[index].addEventListener("drop", function () {
+          if(divs[index].childElementCount < 2){
+              this.append(draggedItem);
+              changes[index] = draggedItem;
+              verification.value = divs[index].id.split("-")[4] + this.id.split("-")[5];
+              if (verification.key === verification.value) {
+                  log("ACERTOUUU");
+              } else {
+                  log("ERRROUUUU");
+              }
+          }else{
+            changes[index + 1] = this.lastChild;
+            this.removeChild(this.lastChild);
+            this.append(draggedItem);
+            dragContainer.append(changes[index + 1])
+          }
+          
+        });
+      }
     // #region Pratice Handler
     function DefaultState() {
         for (let i = 0; i < divs.length; i++) {
