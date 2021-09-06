@@ -2104,3 +2104,171 @@ function createSentenceSelect(obj){
     });
 }
 // #endregion
+
+// #region DRAGDROP
+function createDragDrop(obj) {
+    let divs = [];
+    let dragDrop = [];
+    let text = [];
+    let answer = [];
+    let changes = [];
+    
+    for (let index = 0; index < obj.text.length - 1; index++) {
+      text[index] = create("p","#--inner-sentenceDragDrop-" + obj.id,"--sentenceDropped-text" + obj.id + "-" + index,"text gray --sentenceDropped-text");
+  
+      text[index].innerHTML = obj.text[index];
+  
+      divs[index] = create("","#--inner-sentenceDragDrop-" + obj.id,"--sentenceDropped-container-" + obj.id + "-" + index,"--sentenceDropped-container");
+  
+      answer[index] = create("p","#--sentenceDropped-container-" + obj.id + "-" + index,"--sentenceDropped-text-answer-" + obj.id + "-" + index,"text gray --sentenceDropped-text-answer");
+  
+      dragDrop[index] = create("","#--inner-dragDrop-sentenceContainer-0","--sentenceDragged-" + obj.id + "-" + index,"--sentenceDragged");
+      dragDrop[index].setAttribute("draggable", true);
+      let dragText = create("p","#--sentenceDragged-" + obj.id + "-" + index,"--sentenceDragged-text-" + obj.id,"text gray --sentenceDragged-text");
+      dragText.innerHTML = obj.dragText[index];
+    }
+    let lastId = obj.text.length - 1;
+    text[lastId] = create("p","#--inner-sentenceDragDrop-" + obj.id,"--sentenceDropped-text" + obj.id + "-" + lastId,"text gray --sentenceDropped-text");
+    text[lastId].innerHTML = obj.text[lastId];
+  
+    const dragContainer = document.querySelector(".--inner-dragDrop-sentenceContainer");
+    // var draggedItem = null;
+    for (let index = 0; index < obj.text.length - 1; index++) {
+      //DRAG
+      dragDrop[index].addEventListener("dragstart", function (e) {
+        draggedItem = dragDrop[index];
+        let idDropContainer = dragDrop[index].id.split("-")[3] + this.id.split("-")[4];
+        verification.key = idDropContainer;
+      });
+  
+      dragDrop[index].addEventListener("dragend", function (e) {
+        setTimeout(function () {
+          draggedItem.style.display = "flex";
+          draggedItem = null;
+        }, 0);
+      });
+  
+      // container dragged
+      dragContainer.addEventListener("dragover", function (e) {
+        e.preventDefault();
+        this.style.backgroundColor = "#536fc3";
+      });
+      dragContainer.addEventListener("dragenter", function (e) {
+        e.preventDefault();
+      });
+      dragContainer.addEventListener("dragleave", function (e) {
+        e.preventDefault();
+        this.style.backgroundColor = "#a7b4da21";
+      });
+      dragContainer.addEventListener("drop", function (e) {
+        this.append(draggedItem);
+        this.style.backgroundColor = "#a7b4da21";
+      });
+  
+      //DROP
+      divs[index].addEventListener("dragover", function (e) {
+        e.preventDefault();
+      });
+  
+      divs[index].addEventListener("dragenter", function (e) {
+        e.preventDefault();
+        this.style.backgroundColor = "#536fc3";
+      });
+  
+      divs[index].addEventListener("dragleave", function (e) {
+        e.preventDefault();
+        this.style.backgroundColor = "white";
+      });
+  
+      divs[index].addEventListener("drop", function () {
+        if(divs[index].childElementCount < 2){
+            this.append(draggedItem);
+            changes[index] = draggedItem;
+            verification.value = divs[index].id.split("-")[4] + this.id.split("-")[5];
+            if (verification.key === verification.value) {
+                log("ACERTOUUU");
+            } else {
+                log("ERRROUUUU");
+            }
+        }else{
+          changes[index + 1] = this.lastChild;
+          this.removeChild(this.lastChild);
+          this.append(draggedItem);
+          dragContainer.append(changes[index + 1])
+        }
+        
+      });
+    }
+    // #region Pratice Handler
+    function DefaultState() {
+        for (let i = 0; i < divs.length; i++) {
+            dragDrop[i].classList.remove("--pratice-blocked");
+            divs[i].lastChild.classList.remove("--pratice-correct");
+            divs[i].lastChild.classList.remove("--pratice-incorrect");
+            
+            answer[i].innerHTML = "";
+            divs[i].classList.remove("--pratice-blocked");
+            divs[i].style.backgroundColor = "white";
+            divs[i].lastChild.classList.remove("--hiddenDrag");
+            divs[i].lastChild.setAttribute("draggable", true);
+        }
+    }
+    // Show Correct Markeds
+    let markAllIsActive;
+    function MarkAll(callback) {
+        // Enable Mark All
+      if (callback === "mark-all" && !markAllIsActive) {
+          markAllIsActive = true;
+          for (let i = 0; i < divs.length; i++) {
+              if(divs[i].childElementCount > 1){
+                let childDropped = divs[i].lastChild;
+                if(childDropped.firstChild.innerHTML === obj.dragText[i]){
+                    childDropped.classList.add("--pratice-correct");
+                }else{
+                    childDropped.classList.add("--pratice-incorrect");
+                }
+                childDropped.setAttribute("draggable", false);
+            }  
+        }
+    }
+    // Disable MarkAll
+    else markAllIsActive = false;
+    }
+  
+    // Show All
+    let showAnswersIsActive;
+    function ShowAnswer(callback) {
+      // Enable Show All
+      if (callback === "show-answers" && !showAnswersIsActive) {
+        showAnswersIsActive = true;
+  
+        for (let i = 0; i < divs.length; i++) {
+            answer[i].innerHTML = obj.dragText[i];
+            divs[i].classList.add("--pratice-blocked");
+            if(divs[i].lastChild.tagName.toLowerCase() === "div"){
+                divs[i].lastChild.classList.add("--hiddenDrag");
+            }
+        }
+      }
+      // Disable Show All
+      else showAnswersIsActive = false;
+    }
+  
+    // Reset All
+    function Reset(callback) {
+      DefaultState();
+      // Enable Reset
+      if (callback === "reset") {
+          
+        setTimeout(function () {
+            document.getElementById("reset").classList.remove("active");
+            for (let index = 0; index < dragDrop.length; index++) {  
+                dragContainer.append(dragDrop[index]);
+            }
+        }, 200);
+      }
+    }
+  
+    SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+} 
