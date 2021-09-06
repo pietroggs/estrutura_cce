@@ -227,14 +227,12 @@ function createAudioTimeline(obj) {
     progressBarAudio.addEventListener('mousedown', () => mousedown = true);
     progressBarAudio.addEventListener('mouseup', () => mousedown = false);
 
-    //#endregion
 
     // Audio End Event
     audio.onended = function () {
         progressFilledAudio.style.width = '0px';
         audio.currentTime = 0;
     }
-    //#endregion
 }
 //#endregion
 
@@ -297,7 +295,6 @@ function createGrammarBox(obj)
 
     //#region White box
         create('',"#--grammarbox-bg-" + id, "--grammarbox-whitebox-" + id, "--grammarbox-whitebox");
-
         // Texts
         for(let i = 0; i < obj.text.length; i++)
         {
