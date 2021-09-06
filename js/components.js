@@ -1949,7 +1949,7 @@ function createSentenceChoice(obj){
         }
     }
 
-    create("", "#--inner-sentenceChoice-0", "--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceContainer  text  gray");
+    create("", "#--inner-sentenceChoice-" + obj.id, "--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceContainer  text  gray");
 
     texts[0] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-0-"+obj.id, "--sentenceChoice-sentenceChoiceText");
     texts[0].innerHTML = obj.text[0];
