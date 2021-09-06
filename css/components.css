@@ -984,10 +984,6 @@ body{
     -ms-user-select: none;
     user-select: none;
 }
-/* .buttonBackgroundSelected{
-    background-color: rgb(135, 136, 157);
-    color: white;
-} */
 /* END SENTENCE CHOICE */
 
 /* # region SENTENCE SELECT */
@@ -1014,13 +1010,13 @@ body{
     color: white;
 }
 .--pratice-blocked{
-    background-color: lightgray !important;
+    background-color: rgb(182, 182, 182) !important;
 }
 .--pratice-text-blocked{
     color: rgb(162, 164, 192) !important;
 }
 .--pratice-border-blocked{
-    border-color: lightgray !important;
+    border-color: rgb(175, 175, 175) !important;
 }
     
 

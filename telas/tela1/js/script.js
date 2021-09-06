@@ -1,4 +1,7 @@
 // audio cloud object sample
+let audioButtonObj = { id: 0, audio: "01" }
+
+// audio cloud object sample
 let cloudObj = { id: 0, text: "Texto moderno", audio: "01" }
 
 // audio timeline object sample
@@ -104,6 +107,7 @@ createSelectList(selectListObj2);
 createSentenceChoice(sentenceChoiceObj);
 createSentenceSelect(sentenceSelectObj);
 
+createAudioButton(audioButtonObj);
 
 // createSentenceInput(sentenceInputObj1);
 // createImageFrame(imageFrameObj1);

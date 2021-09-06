@@ -2069,6 +2069,32 @@ function createSentenceSelect(obj){
     let buttonsInner = [];
     let selectedAnswer = "";
 
+
+    buttonInnerEvent = function(){
+
+        let index = buttonsInner.indexOf(this);
+
+        if(selectedAnswer === "" || selectedAnswer != index){
+            selectedAnswer = index;
+            buttonsInner.forEach(function(e){
+                if(e.classList.contains("--pratice-selected")){
+                    e.classList.remove("--pratice-selected");
+                }
+            });
+            buttonsInner[index].classList.toggle("--pratice-selected");
+            if(index === obj.correct){
+                parent.playSoundFx("correct");
+                log("CORRETOOO");
+            }else{
+                parent.playSoundFx("incorrect");
+                log("INCORRETOOOOO");
+            }
+        }else{
+            buttonsInner[index].classList.remove("--pratice-selected");
+            selectedAnswer = "";
+        }
+    }
+
     create("", "#--inner-sentenceSelect-0", "--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelectContainer  text gray");
     for (let i = 0; i < obj.text.length; i++) {
 
@@ -2081,27 +2107,97 @@ function createSentenceSelect(obj){
         text.innerHTML = obj.text[i];
     }
 
-    buttonsInner.forEach(function(element, index){
-        document.getElementById(element.id).addEventListener("click", function(){
-            if(selectedAnswer === "" || selectedAnswer != index){
-                selectedAnswer = index;
-                buttonsInner.forEach(function(e){
-                    if(e.classList.contains("buttonBackgroundSelected")){
-                        e.classList.remove("buttonBackgroundSelected");
-                    }
-                });
-                buttonsInner[index].classList.toggle("buttonBackgroundSelected");
-                if(index === obj.correct){
-                    log("CORRETOOO");
-                }else{
-                    log("INCORRETOOOOO");
+    for(let i = 0; i < buttonsInner.length; i++)
+    {
+        buttonsInner[i].addEventListener("click", buttonInnerEvent);
+    }
+
+    // #region Pratice Handler
+        function DefaultState()
+        {
+            for(let i = 0; i < buttonsInner.length; i++)
+            {
+                if(selectedAnswer === i)
+                    buttonsInner[i].classList.add("--pratice-selected");
+                else
+                    buttonsInner[i].classList.remove("--pratice-selected");
+
+                    buttonsInner[i].classList.remove("--pratice-correct");
+                    buttonsInner[i].classList.remove("--pratice-incorrect");
+                    buttonsInner[i].classList.remove("--pratice-blocked");
+
+                    buttonsInner[i].addEventListener("click", buttonInnerEvent);
                 }
-            }else{
-                buttonsInner[index].classList.remove("buttonBackgroundSelected");
-                selectedAnswer = "";
+        }
+
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                markAllIsActive = true;
+                if(selectedAnswer !== "")
+                {
+                    if(selectedAnswer === obj.correct)
+                    {
+                        buttonsInner[selectedAnswer].classList.add("--pratice-correct");
+                    }
+                    else
+                    {
+                        buttonsInner[selectedAnswer].classList.add("--pratice-incorrect");
+                    }
+
+                    for(let i = 0; i < buttonsInner.length; i++)
+                    {
+                        buttonsInner[i].removeEventListener("click", buttonInnerEvent);
+                    }
+                }
             }
-        });
-    });
+            // Disable Mark All
+            else markAllIsActive = false;
+        }
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                showAnswersIsActive = true;
+                for(let i = 0; i < buttonsInner.length; i++)
+                {
+                    buttonsInner[i].classList.remove("--pratice-selected");
+                    buttonsInner[i].removeEventListener("click", buttonInnerEvent);
+                }
+                
+                buttonsInner[obj.correct].classList.add("--pratice-blocked");
+            }
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+
+            // Enable Reset
+            if(callback === "reset")
+            {
+                selectedAnswer = "";
+                DefaultState();
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
 }
 // #endregion
 
@@ -2271,4 +2367,76 @@ function createDragDrop(obj) {
   
     SignInFooterButton(MarkAll, ShowAnswer, Reset);
     //#endregion
-} 
+}
+// #endregion
+
+//#region AUDIO BUTTON
+function createAudioButton(obj)
+{
+    let id = obj.id;
+
+    let btn = create('', "#--inner-audioButton-" + id, "--audio-button-" + id, "--cloud-button --audio-btn");
+
+    let audio = document.querySelector("audio");
+
+    //#region Button Listener
+        btn.addEventListener("click", function()
+        {
+            ResetAudioButtons();
+            ResetProgressBarEvents();
+            StopAllMediaOfType("video");
+
+            if(audio.id == "audio-au-" + id)
+            {
+                if(audio.paused)
+                {
+                    PlayAudioCloud();
+                }
+                else
+                {
+                    audio.pause();
+                }
+            }
+            else
+            {
+                audio.id = "audio-au-" + id;
+                audio.src = "./assets/audios/" + obj.audio + ".mp3";
+                PlayAudioCloud();
+            }
+        });
+
+    //#endregion
+
+    //#region Functions
+        function PlayAudioCloud()
+        {
+            audio.play();
+            audio.removeEventListener("pause", audioTimelinePauseEvent);
+            audio.removeEventListener("ended", audioTimelineEndEvent);
+            EnableAudioEvents();
+            btn.classList.add("--audio-button-active");
+            btn.classList.add("--cloud-button-active");
+        }
+        function EnableAudioEvents()
+        {
+            audio.addEventListener("pause", audioCloudPauseEvent);
+            audio.addEventListener("ended", audioCloudPauseEvent);
+        }
+        function DisableAudioEvent()
+        {
+            audio.removeEventListener("pause", audioCloudPauseEvent);
+            audio.removeEventListener("ended", audioCloudPauseEvent);
+        }
+    //#endregion
+
+    //#region Audio Events
+        // Audio Pause/End Event
+        audioCloudPauseEvent = function()
+        {
+            DisableAudioEvent();
+            ResetAudioButtons();
+        }
+    //#endregion
+}
+//#endregion
+
