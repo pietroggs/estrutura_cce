@@ -13,6 +13,7 @@ body{
 #--container-outer{
     width: 100%;
     overflow-y: auto;
+    overflow-y: overlay;
     overflow-x: hidden;
     display: flex;
     justify-content: center;
