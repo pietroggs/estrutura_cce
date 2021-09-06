@@ -90,168 +90,151 @@ function createAudioCloud(obj)
 //#endregion
 
 //#region AUDIO TIMELINE
-let timelineProgressInterval,
-    timelineTimerInterval,
-    timelineProgressBarEvent;
+let timelineProgressBarEvent;
 
-function createAudioTimeline(obj)
-{
+function createAudioTimeline(obj) {
     let m_totalTime;
     let id = obj.id;
 
     // Button Container
-    create('', "#--inner-timeline-" + id, "--timeline-buttonContainer-" + id);
+    let audioContainer = create('', "#--inner-timeline-" + id, "--timeline-buttonContainer-" + id);
 
     // Play Button
     let btn = create('', "#--timeline-buttonContainer-" + id, "--timeline-button-" + id, "--timeline-button --audio-btn");
 
     //#region ProgressBar Container
-        create('', "#--inner-timeline-" + id, "--timeline-progressbarcontainer-" + id,"--timeline-progressbarcontainer");
-        // Timer
-        let txt = create('p', "#--timeline-progressbarcontainer-" + id, "--timeline-text-" + id, "text gray --timeline-text");
-        txt.innerHTML = "00:00 / 00:00";
-        // ProgressBar
-        let progressBar = create('progress', "#--timeline-progressbarcontainer-" + id, "--timeline-progressbar-" + id, "--timeline-progressbar");
-        progressBar.value = 0;
-        progressBar.max = 100;
-        // Slider
-        let slider = create('', "#--timeline-progressbarcontainer-" + id, "--timeline-slider-bg-slider-" + id, "--timeline-slider-bg-slider");
+    create('', "#--inner-timeline-" + id, "--timeline-progressbarcontainer-" + id, "--timeline-progressbarcontainer");
+    // Timer
+    var txt = create('p', "#--timeline-progressbarcontainer-" + id, "--timeline-text-" + id, "text gray --timeline-text");
+    // txt.innerHTML = "00:00 / 00:00";
+
+    // ProgressBar
+    let progressBarAudio = create('', "#--timeline-progressbarcontainer-" + id, "--timeline-progressbar-" + id, "--timeline-progressbar");
+    let progressFilledAudio = create('', "#--timeline-progressbar-" + id, "--timeline-progress-filled-audio-" + id, "--timeline-progress-filled-audio");
     //#endregion
 
     //#region Audio
-        // Audio
-        let audio = document.querySelector("audio");
+    // Audio
+    let audio = document.querySelector("audio");
+    audio.src = "./assets/audios/" + obj.audio + ".mp3";
+    audio.id = "audio-tl-" + id;
 
-        // Temp Audio
-        let m_audio = new Audio();
-        m_audio.src = "./assets/audios/" + obj.audio + ".mp3";
+    // Temp Audio
+    let m_audio = new Audio();
+    m_audio.src = "./assets/audios/" + obj.audio + ".mp3";
     //#endregion
 
-    //#region Event Listeners
-        // Button Listener
-        btn.addEventListener("mousedown", function()
-        {
-            ResetAudioButtons();
-            ResetProgressBarEvents();
-            StopAllMediaOfType("video");
+    /* Get Toggle Element */
+    const toggleAudio = audioContainer.querySelector('.--audio-btn');
 
-            if(audio.id == "audio-tl-" + id)
-            {
-                if(audio.paused)
-                {
-                    PlayAudioTimeline();
-                }
-                else
-                {
-                    audio.pause();
-                }
+    // Play/Pause
+    function togglePlayAudio() {
+        ResetAudioButtons();
+        ResetProgressBarEvents();
+        StopAllMediaOfType("video");
+
+        if (audio.id == "audio-tl-" + id) {
+            if (audio.paused || audio.ended) {
+                SetTotalTimeAudio();
+                audio.play();
+
+                audio.removeEventListener("pause", audioCloudPauseEvent);
+                audio.removeEventListener("ended", audioCloudPauseEvent);
+                audio.addEventListener('play', updateButtonAudio);
+                audio.addEventListener('pause', updateButtonAudio);
+                toggleAudio.addEventListener('click', togglePlayAudio);
             }
-            else
-            {
-                audio.id = "audio-tl-" + id;
-                audio.src = "./assets/audios/" + obj.audio + ".mp3";
-                PlayAudioTimeline();
+            else {
+                audio.pause();
             }
-            progressBar.addEventListener("mousedown", timelineProgressBarEvent);
-        });
-
-        // ProgressBar Event
-        timelineProgressBarEvent = function(e){
-            let clickedValue = e.offsetX / e.target.clientWidth;
-
-            clickedValue = Math.floor(clickedValue * 100);
-            clickedValue = (audio.duration * clickedValue) / 100;
-
-            audio.currentTime = clickedValue;
-        };
-
-    //#endregion
-
-    //#region Functions
-        // Play Audio
-        function PlayAudioTimeline()
-        {
+        }
+        else {
+            audio.id = "audio-tl-" + id;
+            audio.src = "./assets/audios/" + obj.audio + ".mp3";
+            SetTotalTimeAudio();
             audio.play();
+
             audio.removeEventListener("pause", audioCloudPauseEvent);
             audio.removeEventListener("ended", audioCloudPauseEvent);
-            EnableAudioEvents();
-            btn.classList.add("--audio-button-active");
-            btn.classList.add("--timeline-button-active");
-            StartInterval();
+            audio.addEventListener('play', updateButtonAudio);
+            audio.addEventListener('pause', updateButtonAudio);
+            toggleAudio.addEventListener('click', togglePlayAudio);
         }
-        // Intervals
-        function StartInterval()
-        {
-            timelineProgressInterval = setInterval(function()
-            {
-                RefreshProgreesBar();
-            }, 100);
+    }
 
-            timelineTimerInterval = setInterval(function()
-            {
-                RefreshTimer();
-            }, 1000);
+    // Play/Pause Buttons
+    function updateButtonAudio() {
+        if (audio.id == "audio-tl-" + id) {
+            let icon = this.paused ? btn.classList.remove("--timeline-button-active", "--audio-button-active") : btn.classList.add("--timeline-button-active", "--audio-button-active");
+            toggleAudio.textContent = icon;
         }
-        // Timer
-        function SetTotalTime()
-        {
-            m_totalTime = CalculateTime(m_audio.duration);
-            txt.innerHTML = "00:00 / " + m_totalTime[0] + ":" + m_totalTime[1];
-        }
-        function RefreshTimer()
-        {
-            let m_currentTime = CalculateTime(audio.currentTime);
-            txt.innerHTML = m_currentTime[0] + ":" + m_currentTime[1] + " / " + m_totalTime[0] + ":" + m_totalTime[1];
-        }
-        function CalculateTime(amount)
-        {
-            let sec = Math.floor(amount % 60);
-            let min = Math.floor(amount / 60);
+    }
 
-            sec = (sec < 10) ? "0" + sec : sec.toString();
-            min = (min < 10) ? "0" + min : min.toString();
+    // Progress bar
+    function handleProgressAudio() {
+        if (audio.id == "audio-tl-" + id) {
+            let percent = (audio.currentTime / audio.duration) * 100;
+            percent = percent - 1;
+            progressFilledAudio.style.width = `${percent}%`;
 
-            return m_timer = [min, sec];
+            // Delay to apply time
+            setTimeout(function () {
+                RefreshTimerAudio();
+            }, 200);
         }
-        // Progrees Bar
-        function RefreshProgreesBar()
-        {
-            let position = (audio.currentTime / audio.duration) * 100;
-            progressBar.value = position;
-            slider.style.left = (position - 0.5) + "%";
+        else {
+            progressFilledAudio.style.width = '0px';
         }
-        function EnableAudioEvents()
-        {
-            audio.addEventListener("pause", audioTimelinePauseEvent);
-            audio.addEventListener("ended", audioTimelineEndEvent);
+    }
+
+    // Mouse event
+    function scrubAudio(e) {
+        if (audio.id == "audio-tl-" + id) {
+            const scrubTime = (e.offsetX / progressBarAudio.offsetWidth) * audio.duration;
+            audio.currentTime = scrubTime;
         }
-        function DisableAudioEvents()
-        {
-            audio.addEventListener("pause", audioTimelinePauseEvent);
-            audio.addEventListener("ended", audioTimelineEndEvent);
-        }
+    }
+
+    // Timer
+    function SetTotalTimeAudio() {
+        m_totalTime = CalculateTimeAudio(m_audio.duration);
+        txt.innerHTML = "00:00 / " + m_totalTime[0] + ":" + m_totalTime[1];
+    }
+
+    function RefreshTimerAudio() {
+        let m_currentTime = CalculateTimeAudio(audio.currentTime);
+        txt.innerHTML = m_currentTime[0] + ":" + m_currentTime[1] + " / " + m_totalTime[0] + ":" + m_totalTime[1];
+    }
+
+    function CalculateTimeAudio(amount) {
+        let sec = Math.floor(amount % 60);
+        let min = Math.floor(amount / 60);
+
+        sec = (sec < 10) ? "0" + sec : sec.toString();
+        min = (min < 10) ? "0" + min : min.toString();
+
+        return m_timer = [min, sec];
+    }
+
+    /* Hook up the event listeners */
+    btn.addEventListener('click', togglePlayAudio);
+    audio.addEventListener('timeupdate', handleProgressAudio);
+
+    let mousedown = false;
+    // Progress bar
+    progressBarAudio.addEventListener('click', scrubAudio);
+    progressBarAudio.addEventListener('mousemove', (e) => mousedown && scrubAudio(e));
+    progressBarAudio.addEventListener('mousedown', () => mousedown = true);
+    progressBarAudio.addEventListener('mouseup', () => mousedown = false);
+
     //#endregion
 
-    //#region Audio Events
-        // Audio Pause Event
-        audioTimelinePauseEvent = function()
-        {
-            DisableAudioEvents();
-            ResetAudioButtons();
-        }
-
-        // Audio End Event
-        audioTimelineEndEvent = function()
-        {
-            audio.currentTime = 0;
-        }
+    // Audio End Event
+    audio.onended = function () {
+        progressFilledAudio.style.width = '0px';
+        audio.currentTime = 0;
+    }
     //#endregion
-
-    // Delay To Set Audio Total Time
-    setTimeout(function()
-    {
-        SetTotalTime();
-    }, 500);
 }
 //#endregion
 
@@ -259,8 +242,8 @@ function createAudioTimeline(obj)
 function ResetAudioButtons()
 {
     let btns = document.querySelectorAll(".--audio-btn");
-    clearInterval(timelineProgressInterval);
-    clearInterval(timelineTimerInterval);
+    // clearInterval(timelineProgressInterval);
+    // clearInterval(timelineTimerInterval);
 
     for(let i = 0; i < btns.length; i++)
     {
@@ -402,347 +385,311 @@ function createImageFrame(obj)
 //#endregion
 
 //#region VIDEO
-let videoProgressInterval,
-    videoTimerInterval,
-    videoProgressBarEvent,
-    videoVolumeBarEvent;
+let videoVolumeBarEvent;
 
-function createVideo(obj)
-{
+function createVideo(obj) {
     let text;
     let body;
     let videoMask;
     let id = obj.id;
     let isFullScreen;
-    let isShowingHUD;
-    let currentVolume;
+    var isShowingHUD;
 
     // Background
-    create('',"#--inner-video-" + id, "--inner-videoBg-" + id, "--inner-videoBg");
+    create('', "#--inner-video-" + id, "--inner-videoBg-" + id, "--inner-videoBg");
 
     // Frame Top
-    create('',"#--inner-videoBg-" + id, "--videoBg-frameTop-" + id, "--videoBg-frameTop");
+    create('', "#--inner-videoBg-" + id, "--videoBg-frameTop-" + id, "--videoBg-frameTop");
 
     //#region Video Container
-        let videoContainer =create('',"#--inner-videoBg-" + id, "--videoBg-videoContainer-" + id, "--videoBg-videoContainer");
+    let videoContainer = create('', "#--inner-videoBg-" + id, "--videoBg-videoContainer-" + id, "--videoBg-videoContainer");
 
-        // Video Player
-        let video = create("video", "#--videoBg-videoContainer-" + id, "--videoContainer-video-" + id, "--videoContainer-video");
-        video.src = "./videos/" + obj.video + ".mp4";
-        if(obj.poster != "") video.poster="./assets/img/" + obj.poster + ".jpg";
+    // Video Player
+    let video = create("video", "#--videoBg-videoContainer-" + id, "--videoContainer-video-" + id, "--videoContainer-video --viewer");
+    video.src = "./videos/" + obj.video + ".mp4";
+    if (obj.poster != "") video.poster = "./assets/img/" + obj.poster + ".jpg";
 
-        // Video HUD
-        let hud = create("", "#--videoBg-videoContainer-" + id, "--videoContainer-hud-" + id, "--videoContainer-hud");
+    // Video HUD
+    let hud = create("", "#--videoBg-videoContainer-" + id, "--videoContainer-hud-" + id, "--videoContainer-hud");
 
-        //#region Subtitles
-            let subtitlesContainer = create("", "#--videoContainer-hud-" + id, "--videoContainer-subtitlesContainer-" + id, "--videoContainer-subtitlesContainer");
-            let subtitle = create("p", "#--videoContainer-subtitlesContainer-" + id, "--subtitlesContainer-subtitles-" + id, "--subtitlesContainer-subtitles text white textOutline");
-            subtitle.innerHTML = "";
-        //#endregion
+    //#region Subtitles
+    let subtitlesContainer = create("", "#--videoContainer-hud-" + id, "--videoContainer-subtitlesContainer-" + id, "--videoContainer-subtitlesContainer");
+    let subtitle = create("p", "#--videoContainer-subtitlesContainer-" + id, "--subtitlesContainer-subtitles-" + id, "--subtitlesContainer-subtitles text white textOutline");
+    subtitle.innerHTML = "";
+    //#endregion
 
-        //#region Progress Bar
-            create('', "#--videoContainer-hud-" + id, "--videoContainer-progressBarContainer-" + id, "--videoContainer-progressBarContainer");
+    //#region Progress Bar
+    create('', "#--videoContainer-hud-" + id, "--videoContainer-progressBarContainer-" + id, "--videoContainer-progressBarContainer");
 
-            let progressBar = create('progress', "#--videoContainer-progressBarContainer-" + id, "--videoContainer-progressBar-" + id, "--videoContainer-progressBar");
-            progressBar.max = 100;
-            progressBar.value = 0;
+    create('', "#--videoContainer-progressBarContainer-" + id, "--videoContainer-progressBar-" + id, "--videoContainer-progressBar");
+    create('', "#--videoContainer-progressBar-" + id, "--videoContainer-progress__filled-" + id, "--videoContainer-progress__filled");
+    //#endregion
 
-            let progressBarSlider = create('', "#--videoContainer-progressBarContainer-" + id, "--videoContainer-progressBarSlider-" + id, "--videoContainer-progressBarSlider");
-        //#endregion
+    //#region Controls
+    let controlsContainerVid = create("", "#--videoContainer-hud-" + id, "--videoContainer-controlsContainer-" + id, "--videoContainer-controlsContainer");
 
-        //#region Controls
-            create("", "#--videoContainer-hud-" + id, "--videoContainer-controlsContainer-" + id, "--videoContainer-controlsContainer");
+    //#region LEFT
+    // Play Button
+    create("", "#--videoContainer-controlsContainer-" + id, "--controlsContainer-left-" + id, "--controlsContainer-left");
+    let btn_play = create("", "#--controlsContainer-left-" + id, "--controlsContainer-play-" + id, "--controlsContainer-play --toggle");
 
-            //#region LEFT
-                // Play Button
-                create("", "#--videoContainer-controlsContainer-" + id, "--controlsContainer-left-" + id, "--controlsContainer-left");
-                let btn_play = create("", "#--controlsContainer-left-" + id, "--controlsContainer-play-" + id, "--controlsContainer-play");
+    // Timer
+    let timer = create("p", "#--controlsContainer-left-" + id, "--controlsContainer-timer-" + id, "--controlsContainer-timer text white");
+    timer.innerHTML = "0:00 / 0:00";
+    // Temp Audio
+    let m_video = document.createElement("video");
+    m_video.src = "./videos/" + obj.video + ".mp4";
+    //#endregion
 
-                // Timer
-                let timer = create("p", "#--controlsContainer-left-" + id, "--controlsContainer-timer-" + id, "--controlsContainer-timer text white");
-                timer.innerHTML = "0:00 / 0:00";
-                // Temp Audio
-                let m_video = document.createElement("video");
-                m_video.src = "./videos/" + obj.video + ".mp4";
-            //#endregion
+    //#region RIGHT
+    // Volume Button
+    create("", "#--videoContainer-controlsContainer-" + id, "--controlsContainer-right-" + id, "--controlsContainer-right");
+    let btn_volume = create("", "#--controlsContainer-right-" + id, "--controlsContainer-volumeContainer-" + id, "--controlsContainer-volumeContainer");
+    create("", "#--controlsContainer-volumeContainer-" + id, "--controlsContainer-volumeIcon-" + id, "--controlsContainer-volumeIcon");
+    let volume_level = create("", "#--controlsContainer-volumeContainer-" + id, "--controlsContainer-level-" + id, "--controlsContainer-level --controlsContainer-level_3");
 
-            //#region RIGHT
-                // Volume Button
-                create("", "#--videoContainer-controlsContainer-" + id, "--controlsContainer-right-" + id, "--controlsContainer-right");
-                let btn_volume = create("", "#--controlsContainer-right-" + id, "--controlsContainer-volumeContainer-" + id, "--controlsContainer-volumeContainer");
-                create("", "#--controlsContainer-volumeContainer-" + id, "--controlsContainer-volumeIcon-" + id, "--controlsContainer-volumeIcon");
-                let volume_level = create("", "#--controlsContainer-volumeContainer-" + id, "--controlsContainer-level-" + id, "--controlsContainer-level --controlsContainer-level_3");
+    // Volume Bar
+    var volumeBar = create('', "#--controlsContainer-right-" + id, "--controlsContainer-volumeBarContainer-" + id, "--controlsContainer-volumeBarContainer");
+    var progressVolumeBar = create('', "#--controlsContainer-volumeBarContainer-" + id, "--controlsContainer-volumeBar-" + id, "--controlsContainer-volumebar");
 
-                // Volume Bar
-                create('', "#--controlsContainer-right-" + id, "--controlsContainer-volumeBarContainer-" + id, "--controlsContainer-volumeBarContainer");
-                let volumeBar = create('progress', "#--controlsContainer-volumeBarContainer-" + id, "--controlsContainer-volumeBar-" + id, "--controlsContainer-volumebar");
-                volumeBar.value = 1;
-                volumeBar.max = 1;
+    // Full Screen
+    let btn_fullScreen = create("", "#--controlsContainer-right-" + id, "--controlsContainer-fullscreen-" + id, "--controlsContainer-fullscreen");
+    //#endregion
 
-                // Slider
-                let volumeSlide = create('', "#--controlsContainer-volumeBarContainer-" + id, "--controlsContainer-volumeSlider-" + id, "--controlsContainer-volumeSlider");
+    //#endregion
 
-                // Full Screen
-                let btn_fullScreen = create("", "#--controlsContainer-right-" + id, "--controlsContainer-fullscreen-" + id, "--controlsContainer-fullscreen");
-            //#endregion
-
-        //#endregion
-
-        //#region Video Play BLock
-            let playBlock = create("", "#--videoBg-videoContainer-" + id, "--videoContainer-playblock-" + id, "--videoContainer-playblock");
-            create("", "#--videoContainer-playblock-" + id, "--playblock-square-" + id, "--playblock-square");
-            let playBlockImg = create("img", "#--playblock-square-" + id, "--playblock-image-" + id, "--playblock-image");
-            playBlockImg.src = "../../assets/img/components/button_play_3.png";
-        //#endregion
+    //#region Video Play BLock
+    let playBlock = create("", "#--videoBg-videoContainer-" + id, "--videoContainer-playblock-" + id, "--videoContainer-playblock");
+    create("", "#--videoContainer-playblock-" + id, "--playblock-square-" + id, "--playblock-square");
+    let playBlockImg = create("img", "#--playblock-square-" + id, "--playblock-image-" + id, "--playblock-image");
+    playBlockImg.src = "../../assets/img/components/button_play_3.png";
+    //#endregion
 
     //#endregion
 
     // Frame Bottom
-    create('',"#--inner-videoBg-" + id, "--videoBg-frameBottom-" + id, "--videoBg-frameBottom");
+    create('', "#--inner-videoBg-" + id, "--videoBg-frameBottom-" + id, "--videoBg-frameBottom");
 
-    //#region Event Listeners
-        // Play
-        btn_play.addEventListener("mousedown", function()
-        {
-            PlayVideo();
-        });
-        // Volume Button
-        btn_volume.addEventListener("mousedown", function()
-        {
-            if(video.volume != 0)
-            {
-                currentVolume = video.volume;
-                video.volume = 0;
-                volume_level.classList.add("--controlsContainer-level-muted");
-            }
-            else
-            {
-                video.volume = currentVolume;
-                volume_level.classList.remove("--controlsContainer-level-muted");
-            }
-        });
-        // VolumeBar Click Event
-        videoVolumeBarEvent = function(e){
-            let clickedValue = e.offsetX / e.target.clientWidth;
+    /* Get Our Elements */
+    const viewer = videoContainer.querySelector('.--viewer');
+    const progress = videoContainer.querySelector('.--videoContainer-progressBar');
+    const progressBar = videoContainer.querySelector('.--videoContainer-progress__filled');
+    const toggle = videoContainer.querySelector('.--toggle');
 
-            clickedValue = Math.floor(clickedValue * 100);
-            clickedValue = (clickedValue <= 5) ?  0 : clickedValue;
+    /* Functions */
 
-            video.volume = clickedValue / 100;
-            volumeBar.value = clickedValue / 100;
-            volumeSlide.style.left = (clickedValue - 1) + "%";
+    // Play Block
+    function ToggleHUD() {
+        if (!isShowingHUD) {
+            StopAllMediaOfType("audio");
+            hud.style.display = "flex";
+            playBlock.style.display = "none";
+            SetTotalTime();
 
-            if(clickedValue <= 0)
-            {
-                volume_level.className = "--controlsContainer-level";
-                volume_level.classList.add("--controlsContainer-level-muted");
-            }
-            else if(clickedValue < 30)
-            {
-                volume_level.className = "--controlsContainer-level";
-                volume_level.classList.add("--controlsContainer-level_1");
-            }
-            else if(clickedValue < 60)
-            {
-                volume_level.className = "--controlsContainer-level";
-                volume_level.classList.add("--controlsContainer-level_2");
-            }
-            else
-            {
-                volume_level.className = "--controlsContainer-level";
-                volume_level.classList.add("--controlsContainer-level_3");
-            }
-        };
-        //Full Screen
-        volumeBar.addEventListener("mousedown", videoVolumeBarEvent);
-        btn_fullScreen.addEventListener("mousedown", function()
-        {
-            if(!isFullScreen) openFullscreen();
-            else closeFullscreen();
-
-            isFullScreen = !isFullScreen;
-        });
-        // ProgressBar Click Event
-        videoProgressBarEvent = function(e){
-            let clickedValue = e.offsetX / e.target.clientWidth;
-
-            clickedValue = Math.floor(clickedValue * 100) - 0.2;
-            clickedValue = (video.duration * clickedValue) / 100;
-
-            video.currentTime = clickedValue;
-        };
-        // Subtitles
-        subtitlesContainer.addEventListener("click", function()
-        {
-            PlayVideo();
-        });
-        // Play Block
-        playBlock.addEventListener("click", function()
-        {
-            ToggleHUD();
-            PlayVideo();
-        });
-    //#endregion
-
-    //#region Functions
-        // Play/Pause
-        function PlayVideo()
-        {
-            if(video.paused)
-            {
-                StopAllMediaOfType("audio");
+            // Delay to video
+            setTimeout(function () {
                 video.play();
-                btn_play.classList.add("--controlsContainer-play-active");
-                StartInterval();
-                progressBar.addEventListener("mousedown", videoProgressBarEvent);
-            }
-            else
-            {
-                PauseVideo();
-            }
+            }, 200);
         }
-        function PauseVideo()
-        {
+        else {
+            hud.style.display = "none";
+            playBlock.style.display = "flex";
+        }
+
+        isShowingHUD = !isShowingHUD;
+    }
+
+    // Play/Pause
+    function togglePlay() {
+        if (video.paused || video.ended) {
+            StopAllMediaOfType("audio");
+            video.play();
+        }
+        else {
             video.pause();
-            btn_play.classList.remove("--controlsContainer-play-active");
         }
-        // Timer
-        function SetTotalTime()
-        {
-            m_totalTime = CalculateTime(m_video.duration);
-            timer.innerHTML = "0:00 / " + m_totalTime[0] + ":" + m_totalTime[1];
+    }
+
+    // Play/Pause Buttons
+    function updateButton() {
+        let icon = this.paused ? btn_play.classList.add("--controlsContainer-play-active") : btn_play.classList.remove("--controlsContainer-play-active");
+        toggle.textContent = icon;
+    }
+
+    // Mute/Unmute Video Buttons
+    function updateButtonVolume() {
+        video.muted = !video.muted;
+
+        switch (true) {
+            case video.muted:
+                volume_level.classList.add("--controlsContainer-level-muted");
+                break;
+            case !video.muted:
+                volume_level.classList.remove("--controlsContainer-level-muted");
+                break;
         }
-        function RefreshTimer()
-        {
-            let m_currentTime = CalculateTime(video.currentTime);
-            timer.innerHTML = m_currentTime[0] + ":" + m_currentTime[1] + " / " + m_totalTime[0] + ":" + m_totalTime[1];
+    }
+
+    // VolumeBar Click Event
+    videoVolumeBarEvent = function (e) {
+        let clickedValue = e.offsetX / volumeBar.clientWidth;
+
+        clickedValue = Math.floor(clickedValue * 100);
+        clickedValue = (clickedValue <= 5) ? 0 : clickedValue;
+
+        try {
+            video.volume = clickedValue / 100;
+        } catch (error) { }
+
+        progressVolumeBar.value = clickedValue / 100;
+
+        // VolumeBar width
+        if (clickedValue >= 100) {
+            progressVolumeBar.style.width = "100%";
         }
-        function CalculateTime(amount)
-        {
-            let sec = Math.floor(amount % 60);
-            let min = Math.floor(amount / 60);
-
-            sec = (sec < 10) ? "0" + sec : sec.toString();
-            min = min.toString();
-
-            return m_timer = [min, sec];
+        else {
+            progressVolumeBar.style.width = clickedValue + "%";
         }
-        // Full Screen
-        function openFullscreen()
-        {
-            let topBar = parent.document.querySelector(".--topbar");
-            topBar.style.cssText = "display: none;";
 
-            body = document.getElementsByTagName("body");
-            body = body[0];
-
-            videoMask = create('',"#--container-outer", "--videoContainer-videoMask", "--videoContainer-videoMask");
-            videoMask.appendChild(videoContainer);
-            btn_fullScreen.classList.add("--controlsContainer-fullscreen-close");
-
-            body.append(videoMask);
+        // VolumeBar level icons
+        if (clickedValue <= 0) {
+            volume_level.className = "--controlsContainer-level";
+            volume_level.classList.remove("--controlsContainer-level-muted");
         }
-        function closeFullscreen()
-        {
-            let topBar = parent.document.querySelector(".--topbar");
-            topBar.style.cssText = "display: block;";
-
-            let videoBg = document.getElementById("--inner-videoBg-" + id);
-            videoBg.insertBefore(videoContainer, videoBg.children[1]);
-            body.removeChild(videoMask);
-            btn_fullScreen.classList.remove("--controlsContainer-fullscreen-close");
+        else if (clickedValue < 30) {
+            volume_level.className = "--controlsContainer-level";
+            volume_level.classList.add("--controlsContainer-level_1");
         }
-        // Progrees Bar
-        function ResetProgressBarEvents()
-        {
-            let videoProgressBar = document.querySelectorAll(".--videoContainer-progressBar");
+        else if (clickedValue < 60) {
+            volume_level.className = "--controlsContainer-level";
+            volume_level.classList.add("--controlsContainer-level_2");
+        }
+        else {
+            volume_level.className = "--controlsContainer-level";
+            volume_level.classList.add("--controlsContainer-level_3");
+        }
+    };
 
-            for(let i = 0; i < videoProgressBar.length; i++)
-            {
-                videoProgressBar[i].removeEventListener("mousedown", videoProgressBarEvent);
+    // Progress bar
+    function handleProgress() {
+        const percent = (viewer.currentTime / viewer.duration) * 100;
+        progressBar.style.width = `${percent}%`;
+
+        RefreshTimer();
+        RefreshSubtitle();
+    }
+
+    // Mouse event
+    function scrub(e) {
+        const scrubTime = (e.offsetX / progress.offsetWidth) * viewer.duration;
+        viewer.currentTime = scrubTime;
+    }
+
+    // Full Screen
+    function openFullscreen() {
+        let topBar = parent.document.querySelector(".--topbar");
+        topBar.style.cssText = "display: none;";
+
+        body = document.getElementsByTagName("body");
+        body = body[0];
+
+        videoMask = create('', "#--container-outer", "--videoContainer-videoMask", "--videoContainer-videoMask");
+        videoMask.appendChild(videoContainer);
+        btn_fullScreen.classList.add("--controlsContainer-fullscreen-close");
+
+        body.append(videoMask);
+    }
+
+    function closeFullscreen() {
+        let topBar = parent.document.querySelector(".--topbar");
+        topBar.style.cssText = "display: block;";
+
+        let videoBg = document.getElementById("--inner-videoBg-" + id);
+        videoBg.insertBefore(videoContainer, videoBg.children[1]);
+        body.removeChild(videoMask);
+        btn_fullScreen.classList.remove("--controlsContainer-fullscreen-close");
+    }
+
+    // Timer
+    function SetTotalTime() {
+        m_totalTime = CalculateTime(m_video.duration);
+        timer.innerHTML = "0:00 / " + m_totalTime[0] + ":" + m_totalTime[1];
+    }
+
+    function RefreshTimer() {
+        let m_currentTime = CalculateTime(video.currentTime);
+        timer.innerHTML = m_currentTime[0] + ":" + m_currentTime[1] + " / " + m_totalTime[0] + ":" + m_totalTime[1];
+    }
+
+    function CalculateTime(amount) {
+        let sec = Math.floor(amount % 60);
+        let min = Math.floor(amount / 60);
+
+        sec = (sec < 10) ? "0" + sec : sec.toString();
+        min = min.toString();
+
+        return m_timer = [min, sec];
+    }
+
+    // Subtitles
+    function RefreshSubtitle() {
+        let cur_Time = CalculateTime(video.currentTime);
+        cur_Time = parseFloat(cur_Time[0] + "." + cur_Time[1]);
+
+        if (obj.keyframe != "" && obj.keyframe != null) {
+            if (cur_Time <= obj.keyframe[0]) text = "";
+
+            for (let i = 0; i < obj.keyframe.length; i++) {
+                if (cur_Time >= obj.keyframe[i]) text = obj.subtitle[i];
             }
         }
-        // Subtitles
-        function RefreshSubtitle()
-        {
-            let cur_Time = CalculateTime(video.currentTime);
-            cur_Time = parseFloat(cur_Time[0] + "." + cur_Time[1]);
-
-            if(obj.keyframe != "" && obj.keyframe != null)
-            {
-                if(cur_Time <= obj.keyframe[0]) text = "";
-
-                for(let i = 0; i < obj.keyframe.length; i++)
-                {
-                    if(cur_Time >= obj.keyframe[i]) text = obj.subtitle[i];
-                }
-            }
-            else
-            {
-                text = "";
-            }
-            subtitle.innerHTML = text;
+        else {
+            text = "";
         }
-        // Play Block
-        function ToggleHUD()
-        {
-            if(!isShowingHUD)
-            {
-                hud.style.display = "flex";
-                playBlock.style.display = "none";
-            }
-            else
-            {
-                hud.style.display = "none";
-                playBlock.style.display = "flex";
-            }
+        subtitle.innerHTML = text;
+    }
 
-            isShowingHUD = !isShowingHUD;
-        }
-        // Intervals
-        function StartInterval()
-        {
-            // Progress Bar
-            videoProgressInterval = setInterval(function()
-            {
-                let position = (video.currentTime / video.duration) * 100;
-                progressBar.value = position;
-                progressBarSlider.style.left = (position - 0.5) + "%";
-            }, 50);
+    /* Hook up the event listeners */
+    playBlock.addEventListener('click', ToggleHUD);
+    subtitlesContainer.addEventListener('click', togglePlay);
+    viewer.addEventListener('play', updateButton);
+    viewer.addEventListener('pause', updateButton);
+    viewer.addEventListener('timeupdate', handleProgress);
+    btn_volume.addEventListener('click', updateButtonVolume);
 
-            // Timer
-            videoTimerInterval = setInterval(function()
-            {
-                RefreshTimer();
-                RefreshSubtitle();
-            }, 1000);
-        }
-    //#endregion
+    // fullScreen
+    btn_fullScreen.addEventListener("click", function () {
+        if (!isFullScreen) openFullscreen();
+        else closeFullscreen();
 
-    //#region Video Events
-        // Video Pause Event
-        video.addEventListener("pause", function()
-        {
-            PauseVideo();
-            clearInterval(videoProgressInterval);
-            clearInterval(videoTimerInterval);
-            ResetProgressBarEvents();
-        });
+        isFullScreen = !isFullScreen;
+    });
 
-        // Video End Event
-        video.onended = function()
-        {
-            video.currentTime = 0;
-            btn_play.classList.remove("--controlsContainer-play-active");
-            ToggleHUD();
-        };
-    //#endregion
+    toggle.addEventListener('click', togglePlay);
 
-    // Delay To Set Audio Total Time
-    setTimeout(function()
-    {
-        SetTotalTime();
-    }, 500);
+    let mousedown = false;
+    // Progress bar
+    progress.addEventListener('click', scrub);
+    progress.addEventListener('mousemove', (e) => mousedown && scrub(e));
+    progress.addEventListener('mousedown', () => mousedown = true);
+    progress.addEventListener('mouseup', () => mousedown = false);
+
+    // Volume bar
+    volumeBar.addEventListener('click', videoVolumeBarEvent);
+    volumeBar.addEventListener('mousemove', (e) => mousedown && videoVolumeBarEvent(e));
+    volumeBar.addEventListener('mousedown', () => mousedown = true);
+    volumeBar.addEventListener('mouseup', () => mousedown = false);
+
+    videoContainer.addEventListener('mouseup', () => mousedown = false);
+    controlsContainerVid.addEventListener('mouseup', () => mousedown = false);
+
+    // Video End Event
+    video.onended = function () {
+        video.currentTime = 0;
+        btn_play.classList.remove("--controlsContainer-play-active");
+        ToggleHUD();
+    };
+    // //#endregion
 }
 //#endregion
 
