@@ -318,7 +318,7 @@ function createGrammarBox(obj)
         // Texts
         for(let i = 0; i < obj.text.length; i++)
         {
-            let text = create('p',"#--grammarbox-whitebox-" + id, "--grammarbox-text-" + id + "-" + i, "--grammarbox-title text gray");
+            let text = create('p',"#--grammarbox-whitebox-" + id, "--grammarbox-text-" + id + "-" + i, "--grammarbox-text text gray");
             text.innerHTML = obj.text[i];
         }
     //#endregion
