@@ -3,79 +3,88 @@ let audioCloudPauseEvent,
     audioTimelinePauseEvent,
     audioTimelineEndEvent;
 
-function createAudioCloud(obj) {
+function createAudioCloud(obj)
+{
     let id = obj.id;
 
     //#region Cloud Container
-    // Cloud Top Container
-    create('', "#--inner-cloud-" + id, "--cloud-top-" + id, "--cloud-top");
-    // Button Container
-    create('', "#--cloud-top-" + id, "--cloud-buttonContainer-" + id, "--cloud-buttonContainer");
-    // Button
-    let btn = create('', "#--cloud-buttonContainer-" + id, "--cloud-button-" + id, "--cloud-button --audio-btn");
-    // Text
-    let txt = create('p', "#--cloud-top-" + id, "--cloud-text-" + id, "text gray --cloud-text");
-    txt.innerHTML = obj.text;
+        // Cloud Top Container
+        create('', "#--inner-cloud-" + id, "--cloud-top-" + id, "--cloud-top");
+        // Button Container
+        create('', "#--cloud-top-" + id, "--cloud-buttonContainer-" + id, "--cloud-buttonContainer");
+        // Button
+        let btn = create('', "#--cloud-buttonContainer-" + id, "--cloud-button-" + id, "--cloud-button --audio-btn");
+        // Text
+        let txt = create('p', "#--cloud-top-" + id, "--cloud-text-" + id, "text gray --cloud-text");
+        txt.innerHTML = obj.text;
 
-    // Cloud Bottom Container
-    create('', "#--inner-cloud-" + id, "--cloud-bottom-" + id, "--cloud-bottom");
-    create('', "#--cloud-bottom-" + id, "--cloud-bottomImg-" + id, "divImg --cloud-bottomImg");
+        // Cloud Bottom Container
+        create('', "#--inner-cloud-" + id, "--cloud-bottom-" + id, "--cloud-bottom");
+        create('', "#--cloud-bottom-" + id, "--cloud-bottomImg-" + id, "divImg --cloud-bottomImg");
 
     //#endregion
 
     //#region Audio
-    let audio = document.querySelector("audio");
-    audio.id = "audio-cl-" + id;
+        let audio = document.querySelector("audio");
     //#endregion
 
     //#region Button Listener
-    btn.addEventListener("click", function () {
-        ResetAudioButtons();
-        ResetProgressBarEvents();
-        StopAllMediaOfType("video");
+        btn.addEventListener("click", function()
+        {
+            ResetAudioButtons();
+            ResetProgressBarEvents();
+            StopAllMediaOfType("video");
 
-        if (audio.id == "audio-cl-" + id) {
-            if (audio.paused) {
+            if(audio.id == "audio-cl-" + id)
+            {
+                if(audio.paused)
+                {
+                    PlayAudioCloud();
+                }
+                else
+                {
+                    audio.pause();
+                }
+            }
+            else
+            {
+                audio.id = "audio-cl-" + id;
+                audio.src = "./assets/audios/" + obj.audio + ".mp3";
                 PlayAudioCloud();
             }
-            else {
-                audio.pause();
-            }
-        }
-        else {
-            audio.id = "audio-cl-" + id;
-            audio.src = "./assets/audios/" + obj.audio + ".mp3";
-            PlayAudioCloud();
-        }
-    });
+        });
 
     //#endregion
 
     //#region Functions
-    function PlayAudioCloud() {
-        audio.play();
-        audio.removeEventListener("pause", audioTimelinePauseEvent);
-        audio.removeEventListener("ended", audioTimelineEndEvent);
-        EnableAudioEvents();
-        btn.classList.add("--audio-button-active");
-        btn.classList.add("--cloud-button-active");
-    }
-    function EnableAudioEvents() {
-        audio.addEventListener("pause", audioCloudPauseEvent);
-        audio.addEventListener("ended", audioCloudPauseEvent);
-    }
-    function DisableAudioEvent() {
-        audio.removeEventListener("pause", audioCloudPauseEvent);
-        audio.removeEventListener("ended", audioCloudPauseEvent);
-    }
+        function PlayAudioCloud()
+        {
+            audio.play();
+            audio.removeEventListener("pause", audioTimelinePauseEvent);
+            audio.removeEventListener("ended", audioTimelineEndEvent);
+            EnableAudioEvents();
+            btn.classList.add("--audio-button-active");
+            btn.classList.add("--cloud-button-active");
+        }
+        function EnableAudioEvents()
+        {
+            audio.addEventListener("pause", audioCloudPauseEvent);
+            audio.addEventListener("ended", audioCloudPauseEvent);
+        }
+        function DisableAudioEvent()
+        {
+            audio.removeEventListener("pause", audioCloudPauseEvent);
+            audio.removeEventListener("ended", audioCloudPauseEvent);
+        }
     //#endregion
 
     //#region Audio Events
-    // Audio Pause/End Event
-    audioCloudPauseEvent = function () {
-        DisableAudioEvent();
-        ResetAudioButtons();
-    }
+        // Audio Pause/End Event
+        audioCloudPauseEvent = function()
+        {
+            DisableAudioEvent();
+            ResetAudioButtons();
+        }
     //#endregion
 }
 //#endregion
@@ -225,99 +234,112 @@ function createAudioTimeline(obj) {
         progressFilledAudio.style.width = '0px';
         audio.currentTime = 0;
     }
-    // //#endregion
+    //#endregion
 }
 //#endregion
 
 //#region Audio Generic Functions
-function ResetAudioButtons() {
+function ResetAudioButtons()
+{
     let btns = document.querySelectorAll(".--audio-btn");
+    // clearInterval(timelineProgressInterval);
+    // clearInterval(timelineTimerInterval);
 
-    for (let i = 0; i < btns.length; i++) {
+    for(let i = 0; i < btns.length; i++)
+    {
         btns[i].classList.remove("--audio-button-active");
         btns[i].classList.remove("--cloud-button-active");
-        btns[i].classList.remove("--timeline-button-active", "--audio-button-active");
+        btns[i].classList.remove("--timeline-button-active");
     }
 }
-function ResetProgressBarEvents() {
+function ResetProgressBarEvents()
+{
     let progressBar = document.querySelectorAll(".--timeline-progressbar");
-    for (let i = 0; i < progressBar.length; i++) {
+    for(let i = 0; i < progressBar.length; i++)
+    {
         progressBar[i].removeEventListener("mousedown", timelineProgressBarEvent);
     }
 }
-function StopAllMediaOfType(type) {
+function StopAllMediaOfType(type)
+{
     ResetAudioButtons();
     let media = document.querySelectorAll(type);
-    for (let i = 0; i < media.length; i++) {
+    for(let i = 0; i < media.length; i++)
+    {
         media[i].pause();
     }
 }
 //#endregion
 
 //#region GRAMMAR BOX
-function createGrammarBox(obj) {
+function createGrammarBox(obj)
+{
     let id = obj.id;
 
-    create('', "#--inner-grammarbox-" + id, "--grammarbox-bg-" + id, "--grammarbox-bg");
+    create('',"#--inner-grammarbox-" + id, "--grammarbox-bg-" + id, "--grammarbox-bg");
 
     //#region Header
-    create('', "#--grammarbox-bg-" + id, "--grammarbox-header-" + id, "--grammarbox-header");
+        create('',"#--grammarbox-bg-" + id, "--grammarbox-header-" + id, "--grammarbox-header");
 
-    // Title
-    let title = create('p', "#--grammarbox-header-" + id, "--grammarbox-title-" + id, "--grammarbox-title title white");
-    title.innerHTML = obj.title;
+        // Title
+        let title = create('p',"#--grammarbox-header-" + id, "--grammarbox-title-" + id, "--grammarbox-title title white");
+        title.innerHTML = obj.title;
 
-    //#region Icon
-    if (obj.icon != "") {
-        let icon = create('img', "#--grammarbox-header-" + id, "--grammarbox-icon-" + id, "--grammarbox-icon");
-        icon.src = "../../assets/img/components/" + obj.icon + ".png";
-    }
-    //#endregion
+        //#region Icon
+            if(obj.icon != "")
+            {
+                let icon = create('img',"#--grammarbox-header-" + id, "--grammarbox-icon-" + id, "--grammarbox-icon");
+                icon.src = "../../assets/img/components/" + obj.icon + ".png";
+            }
+        //#endregion
 
     //#endregion
 
     //#region White box
-    create('', "#--grammarbox-bg-" + id, "--grammarbox-whitebox-" + id, "--grammarbox-whitebox");
+        create('',"#--grammarbox-bg-" + id, "--grammarbox-whitebox-" + id, "--grammarbox-whitebox");
 
-    // Texts
-    for (let i = 0; i < obj.text.length; i++) {
-        let text = create('p', "#--grammarbox-whitebox-" + id, "--grammarbox-text-" + id + "-" + i, "--grammarbox-title text gray");
-        text.innerHTML = obj.text[i];
-    }
+        // Texts
+        for(let i = 0; i < obj.text.length; i++)
+        {
+            let text = create('p',"#--grammarbox-whitebox-" + id, "--grammarbox-text-" + id + "-" + i, "--grammarbox-text text gray");
+            text.innerHTML = obj.text[i];
+        }
     //#endregion
 }
 //#endregion
 
 //#region IMAGE WITH FRAME
-function createImageFrame(obj) {
+function createImageFrame(obj)
+{
     let popImage;
     let id = obj.id;
 
     // Background
-    create('', "#--inner-imageFrame-" + id, "--imageFrame-frameBg-" + id, "--imageFrame-frameBg divImg");
+    create('',"#--inner-imageFrame-" + id, "--imageFrame-frameBg-" + id, "--imageFrame-frameBg divImg");
 
     //Image
-    let img = create('img', "#--imageFrame-frameBg-" + id, "--imageFrame-image-" + id, "--imageFrame-image");
-    img.src = "./assets/img/" + obj.image + ".png";
+    let img = create('img',"#--imageFrame-frameBg-" + id, "--imageFrame-image-" + id, "--imageFrame-image");
+    img.src = "./assets/img/" + obj.image + ".jpg";
 
     //#region Frame Container
-    create('', "#--imageFrame-frameBg-" + id, "--imageFrame-frameContainer-" + id, "--imageFrame-frameContainer");
+        create('',"#--imageFrame-frameBg-" + id, "--imageFrame-frameContainer-" + id, "--imageFrame-frameContainer");
 
-    // Top line
-    create('', "#--imageFrame-frameContainer-" + id, "--imageFrame-frameTop-" + id, "--imageFrame-frameTop");
+        // Top line
+        create('',"#--imageFrame-frameContainer-" + id, "--imageFrame-frameTop-" + id, "--imageFrame-frameTop");
 
-    //Button Container
-    create('', "#--imageFrame-frameContainer-" + id, "--imageFrame-frameButtonContainer-" + id, "--imageFrame-frameButtonContainer");
-    let btn = create('', "#--imageFrame-frameButtonContainer-" + id, "--imageFrame-frameButton-" + id, "--imageFrame-frameButton");
-    if (!obj.zoom) btn.style.cssText = "display: none;";
+        //Button Container
+        create('',"#--imageFrame-frameContainer-" + id, "--imageFrame-frameButtonContainer-" + id, "--imageFrame-frameButtonContainer");
+        let btn = create('',"#--imageFrame-frameButtonContainer-" + id, "--imageFrame-frameButton-" + id, "--imageFrame-frameButton");
+        if(!obj.zoom) btn.style.cssText = "display: none;";
 
-    // Bottom line
-    create('', "#--imageFrame-frameContainer-" + id, "--imageFrame-frameBottom-" + id, "--imageFrame-frameBottom");
+        // Bottom line
+        create('',"#--imageFrame-frameContainer-" + id, "--imageFrame-frameBottom-" + id, "--imageFrame-frameBottom");
 
     //#endregion
 
     //#region Popup
-    function popup() {
+    function popup()
+    {
         let topBar = parent.document.querySelector(".--topbar");
         topBar.style.cssText = "display: none;";
 
@@ -327,23 +349,24 @@ function createImageFrame(obj) {
         body = body[0];
 
         // Mask
-        let popMask = create('', "#--container-outer", "--imageFrame-popupMask", "--imageFrame-popupMask");
+        let popMask = create('',"#--container-outer", "--imageFrame-popupMask", "--imageFrame-popupMask");
 
         //#region Popup Container
-        create('', "#--imageFrame-popupMask", "--imageFrame-popupBg", "--imageFrame-popupBg");
+            create('', "#--imageFrame-popupMask", "--imageFrame-popupBg", "--imageFrame-popupBg");
 
-        // Image
-        popImage = create('img', "#--imageFrame-popupBg", "--imageFrame-popupImage", "--imageFrame-popupImage");
-        popImage.src = "./assets/img/" + obj.image + ".png";
+            // Image
+            popImage = create('img', "#--imageFrame-popupBg", "--imageFrame-popupImage", "--imageFrame-popupImage");
+            popImage.src = "./assets/img/" + obj.image + ".jpg";
 
-        // Close button
-        let popClose = create('img', "#--imageFrame-popupBg", "--imageFrame-popupClose", "--imageFrame-popupClose");
-        popClose.src = "../../assets/img/components/pop_close.png";
-        // Pop Close
-        popClose.addEventListener("click", function () {
-            body.removeChild(popMask);
-            topBar.style.cssText = "display: block;";
-        });
+            // Close button
+            let popClose = create('img', "#--imageFrame-popupBg", "--imageFrame-popupClose", "--imageFrame-popupClose");
+            popClose.src = "../../assets/img/components/pop_close.png";
+                    // Pop Close
+            popClose.addEventListener("click", function()
+            {
+                body.removeChild(popMask);
+                topBar.style.cssText = "display: block;";
+            });
 
         //#endregion
 
@@ -352,10 +375,11 @@ function createImageFrame(obj) {
     //#endregion
 
     // #region Event Listeners
-    //Zoom Button
-    btn.addEventListener("click", function () {
-        popup();
-    });
+        //Zoom Button
+        btn.addEventListener("click", function()
+        {
+            popup();
+        });
     //#endregion
 }
 //#endregion
@@ -383,7 +407,7 @@ function createVideo(obj) {
     // Video Player
     let video = create("video", "#--videoBg-videoContainer-" + id, "--videoContainer-video-" + id, "--videoContainer-video --viewer");
     video.src = "./videos/" + obj.video + ".mp4";
-    if (obj.poster != "") video.poster = "./assets/img/" + obj.poster + ".png";
+    if (obj.poster != "") video.poster = "./assets/img/" + obj.poster + ".jpg";
 
     // Video HUD
     let hud = create("", "#--videoBg-videoContainer-" + id, "--videoContainer-hud-" + id, "--videoContainer-hud");
@@ -670,12 +694,44 @@ function createVideo(obj) {
 //#endregion
 
 //#region ROW ORDERER
-function createRowOrderer(obj) {
+function createRowOrderer(obj)
+{
+    let newOrder;
     let drag = [];
     let container = [];
     let draggedItem = null;
     let draggedItemParent = null;
     let currentAnswer = [];
+    let startOrder = [];
+
+    let containerEvent = function()
+    {
+        if(this.firstChild != null)
+        {
+            draggedItemParent.append(this.firstChild);
+            this.append(draggedItem);
+            draggedItemParent = this;
+        }
+    }
+    let dragStart = function(e)
+    {
+        draggedItem = e.target;
+        draggedItemParent = e.target.parentNode;
+        setTimeout(function()
+        {
+            draggedItem.style.display = "none";
+        }, 0);
+    }
+    let dragEnd = function(e)
+    {
+        setTimeout(function()
+        {
+            draggedItem.style.display = "flex";
+            draggedItemParent = null;
+            draggedItem = null;
+            CheckResult();
+        }, 0);
+    }
 
     let id = obj.id;
 
@@ -683,131 +739,264 @@ function createRowOrderer(obj) {
     let orientationClass = "--inner-rowOrderer-" + obj.orientation;
     rowOrdererContainer.classList.add(orientationClass);
 
-    for (let i = 0; i < obj.text.length; i++) {
+    for(let i = 0; i < obj.text.length; i++)
+    {
         // Backgound Container
-        container[i] = create('', "#--inner-rowOrderer-" + id, "--rowOrderer-bg-" + id + "-" + i, "--rowOrderer-bg");
+        container[i] = create('',"#--inner-rowOrderer-" + id, "--rowOrderer-bg-" + id + "-" + i, "--rowOrderer-bg");
 
-        container[i].addEventListener("dragenter", function (e) {
-            if (this.firstChild != null) {
-                draggedItemParent.append(this.firstChild);
-                this.append(draggedItem);
-                draggedItemParent = this;
-            }
-        });
+        container[i].addEventListener("dragenter", containerEvent);
 
         // Draggable Element
-        drag[i] = create('', "#--rowOrderer-bg-" + id + "-" + i, "--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-drag");
+        drag[i] = create('',"#--rowOrderer-bg-" + id + "-" + i, "--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-drag");
         drag[i].setAttribute("draggable", "true");
         // Text
-        let text = create('p', "#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-text-" + id + "-" + i, "--rowOrderer-text text white");
+        let text = create('p',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-text-" + id + "-" + i, "--rowOrderer-text text white");
         text.innerHTML = obj.text[i];
-        // Arrow
-        create('', "#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-arrow-" + id + "-" + i, "--rowOrderer-arrow");
 
-        drag[i].addEventListener("dragstart", function (e) {
-            draggedItem = e.target;
-            draggedItemParent = e.target.parentNode;
-            setTimeout(function () {
-                draggedItem.style.display = "none";
-            }, 0);
-        });
-        drag[i].addEventListener("dragend", function (e) {
-            setTimeout(function () {
-                draggedItem.style.display = "flex";
-                draggedItemParent = null;
-                draggedItem = null;
-                CheckResult();
-            }, 0);
-        });
+        // Arrow
+        create('',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-arrow-" + id + "-" + i, "--rowOrderer-arrow");
+
+        drag[i].addEventListener("dragstart", dragStart);
+        drag[i].addEventListener("dragend", dragEnd);
+
+        currentAnswer[i] = i;
+        startOrder[i] = i;
     }
 
+    function RandomizeOrder()
+    {
+        let temp_newOrder = shuffle(currentAnswer);
+
+        if(JSON.stringify(temp_newOrder) === JSON.stringify( startOrder ) )
+        {
+            log("Embaralhar novamente: " + temp_newOrder);
+            RandomizeOrder();
+            return;
+        }
+
+        newOrder = temp_newOrder;
+
+        for(let i = 0; i < container.length; i ++)
+        {
+            container[i].append(drag[ newOrder[i] ]);
+            currentAnswer[i] = newOrder[i];
+        }
+    }
+
+    RandomizeOrder();
+
     // #region Functions
-    function CheckResult() {
-        for (let i = 0; i < container.length; i++) {
+    function CheckResult()
+    {
+        for(let i = 0; i < container.length; i++)
+        {
             currentAnswer[i] = parseInt(container[i].firstChild.id.split("-")[5]);
         }
-        for (let i = 0; i < container.length; i++) {
-            if (currentAnswer[i] != obj.correct[i]) {
+
+        for(let i = 0; i < container.length; i++)
+        {
+            if(currentAnswer[i] != obj.correct[i])
+            {
                 console.log("Errou");
                 return;
             }
         }
+        parent.playSoundFx("success");
         console.log("Correto");
     }
+
+    function EnableDrag(index)
+    {
+        drag[index].setAttribute("draggable", "true");
+        container[index].addEventListener("dragenter", containerEvent);
+        drag[index].addEventListener("dragstart", dragStart);
+        drag[index].addEventListener("dragend", dragEnd);
+    }
+    function DisableDrag(index)
+    {
+        drag[index].setAttribute("draggable", "false");
+        container[index].removeEventListener("dragenter", containerEvent);
+        drag[index].removeEventListener("dragstart", dragStart);
+        drag[index].removeEventListener("dragend", dragEnd);
+    }
+
+    // #region Pratice Handler
+
+        function DefaultState()
+        {
+            for(let i = 0; i < drag.length; i++)
+            {
+                EnableDrag(i);
+
+                if(currentAnswer.length == 0)
+                {
+                    container[i].append( drag[i] );
+                }
+                else
+                {
+                    container[i].append( drag[ currentAnswer[i] ] );
+                }
+
+                drag[i].setAttribute("draggable", "true");
+                container[i].addEventListener("dragenter", containerEvent);
+                drag[i].addEventListener("dragstart", dragStart);
+                drag[i].addEventListener("dragend", dragEnd);
+                drag[i].classList.remove("--pratice-blocked");
+                drag[i].classList.remove("--pratice-correct");
+                drag[i].classList.remove("--pratice-incorrect");
+            }
+        }
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                markAllIsActive = true;
+
+                for(let i = 0; i < drag.length; i++)
+                {
+                    DisableDrag(i);
+
+                    if(currentAnswer[i] == obj.correct[i])
+                    {
+                        drag[newOrder[i]].classList.add("--pratice-correct");
+                    }
+                    else
+                    {
+                        drag[newOrder[i]].classList.add("--pratice-incorrect");
+                    }
+                }
+            }
+            // Disable MarkAll
+            else markAllIsActive = false;
+        }
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                showAnswersIsActive = true;
+
+                for(let i = 0; i < drag.length; i++)
+                {
+                    DisableDrag(i);
+                    container[i].append( drag[obj.correct[i]] );
+                    drag[i].classList.add("--pratice-blocked");
+                }
+            }
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+            // Enable Reset
+            if(callback === "reset")
+            {
+                RandomizeOrder();
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+
     //#endregion
 }
 //#endregion
 
 // #region DRAW LINE
-function createDrawline(obj) {
+function createDrawline(obj)
+{
     let id = obj.id;
+    let startPoint = [];
+    let endPoint = [];
     let currentAnswer = [];
     let currentStartPoint = null;
     let currentMousePosition = [];
     let pointsContainerOrientation = (obj.orientation == "vertical") ? "horizontal" : "vertical";
 
-    let drawlineContainer = create('', "#--inner-drawline-" + id, "--drawline-drawlineContainer-" + id, "--drawline-drawlineContainer");
+
+    let startPointEvent = function(e)
+    {
+        e.preventDefault();
+        this.classList.add("--pratice-selected");
+        currentStartPoint = this;
+        currentMousePosition = [e.pageX, e.pageY];
+
+        let m_startPositions = GetPointArrayPosition(currentStartPoint);
+
+        // Clear Endpoint connected
+        if(currentStartPoint.firstChild != null)
+        {
+            if(currentAnswer[m_startPositions] !== "")
+            {
+                let m_endPosition = document.getElementById("--drawline-endpoint-" + id + "-" + currentAnswer[m_startPositions]);
+                m_endPosition.classList.remove("--pratice-selected");
+                currentAnswer[m_startPositions] = "";
+            }
+        }
+        RemoveGhost();
+        CreateGhost();
+    }
+
+    let drawlineContainer = create('',"#--inner-drawline-" + id, "--drawline-drawlineContainer-" + id, "--drawline-drawlineContainer");
     drawlineContainer.classList.add("--drawline-" + obj.orientation);
 
     // Start point Container
-    let startPointContainer = create('', "#--drawline-drawlineContainer-" + id, "--drawline-startpointContainer-" + id, "--drawline-startpointContainer");
+    let startPointContainer = create('',"#--drawline-drawlineContainer-" + id, "--drawline-startpointContainer-" + id, "--drawline-startpointContainer");
     startPointContainer.classList.add("--drawline-" + pointsContainerOrientation);
 
     // End point Container
-    endPointContainer = create('', "#--drawline-drawlineContainer-" + id, "--drawline-endpointContainer-" + id, "--drawline-startpointContainer");
+    endPointContainer = create('',"#--drawline-drawlineContainer-" + id, "--drawline-endpointContainer-" + id, "--drawline-startpointContainer");
     endPointContainer.classList.add("--drawline-" + pointsContainerOrientation);
 
     // Elements
-    for (let i = 0; i < obj.amount; i++) {
+    for(let i = 0; i < obj.amount; i++)
+    {
         currentAnswer[i] = "";
 
-        create('', "#--drawline-startpointContainer-" + id, "--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpointBorder");
-        let startPoint = create('', "#--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpoint-" + id + "-" + i, "--drawline-startpoint");
+        create('',"#--drawline-startpointContainer-" + id, "--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpointBorder");
+        startPoint[i] = create('',"#--drawline-startpointBorder-" + id + "-" + i, "--drawline-startpoint-" + id + "-" + i, "--drawline-startpoint");
 
-        create('', "#--drawline-endpointContainer-" + id, "--drawline-endpointBorder-" + id + "-" + i, "--drawline-endpointBorder");
-        let endPoint = create('', "#--drawline-endpointBorder-" + id + "-" + i, "--drawline-endpoint-" + id + "-" + i, "--drawline-endpoint");
+        create('',"#--drawline-endpointContainer-" + id, "--drawline-endpointBorder-" + id + "-" + i, "--drawline-endpointBorder");
+        endPoint[i] = create('',"#--drawline-endpointBorder-" + id + "-" + i, "--drawline-endpoint-" + id + "-" + i, "--drawline-endpoint");
 
-        startPoint.addEventListener("mousedown", function (e) {
-            e.preventDefault();
-            startPoint.style.cssText = "background-color: rgb(135, 136, 157);";
-            currentStartPoint = this;
-            currentMousePosition = [e.pageX, e.pageY];
+        EnableStartPoint();
 
-            let m_startPositions = GetPointArrayPosition(currentStartPoint);
-
-            // Clear Endpoint connected
-            if (currentStartPoint.firstChild != null) {
-                if (currentAnswer[m_startPositions] !== "") {
-                    let m_endPosition = document.getElementById("--drawline-endpoint-" + id + "-" + currentAnswer[m_startPositions]);
-                    m_endPosition.style.cssText = "background-color: none;";
-                    currentAnswer[m_startPositions] = "";
-                }
-            }
-
-            RemoveGhost();
-            CreateGhost();
-        });
-
-        endPoint.addEventListener("mouseup", function () {
+        endPoint[i].addEventListener("mouseup", function()
+        {
             RemoveGhost();
 
             // Set end point case its free
-            if (CheckEndPointIsMarked(endPoint)) {
-                if (currentStartPoint != null) {
-                    currentStartPoint.style.cssText = "background-color: rgb(135, 136, 157);";
-                    endPoint.style.cssText = "background-color: rgb(135, 136, 157);";
-                    CreateLine(currentStartPoint, this);
+            if(CheckEndPointIsMarked(endPoint[i]) && currentStartPoint != null)
+            {
+                currentStartPoint.classList.add("--pratice-selected");
+                endPoint[i].classList.add("--pratice-selected");
+                CreateLine(currentStartPoint, this);
 
-                    let m_startPositions = GetPointArrayPosition(currentStartPoint);
-                    let m_endPositions = GetPointArrayPosition(endPoint);
+                let m_startPositions = GetPointArrayPosition(currentStartPoint);
+                let m_endPositions = GetPointArrayPosition(endPoint[i]);
 
-                    // set answer
-                    currentAnswer[m_startPositions] = m_endPositions;
-                    console.log(currentAnswer);
-                }
+                // set answer
+                currentAnswer[m_startPositions] = m_endPositions;
+                CheckAnswer(m_startPositions);
             }
-            else {
-                currentStartPoint.style.cssText = "background-color: none;";
+            else if(currentStartPoint != null && currentStartPoint.childElementCount > 0)
+            {
+                currentStartPoint.classList.remove("--pratice-selected");
                 currentStartPoint.removeChild(currentStartPoint.firstChild);
             }
 
@@ -815,11 +1004,30 @@ function createDrawline(obj) {
         });
     }
 
-    function CheckEndPointIsMarked(endPoint) {
+    function CheckAnswer(arrayPosition)
+    {
+        console.log(currentAnswer);
+
+        if(currentAnswer[arrayPosition] === obj.correct[arrayPosition])
+        {
+            console.log("correto");
+            parent.playSoundFx("correct");
+        }
+        else
+        {
+            console.log("incorreto");
+            parent.playSoundFx("incorrect");
+        }
+    }
+
+    function CheckEndPointIsMarked(endPoint)
+    {
         let m_end = GetPointArrayPosition(endPoint);
 
-        for (let i = 0; i < currentAnswer.length; i++) {
-            if (currentAnswer[i] === m_end) {
+        for(let i = 0; i < currentAnswer.length; i++)
+        {
+            if(currentAnswer[i] === m_end)
+            {
                 return false;
             }
         }
@@ -827,73 +1035,214 @@ function createDrawline(obj) {
         return true;
     }
 
-    function GetPointArrayPosition(point) {
-        let position = parseInt(point.id.split("-")[5]);
+    function GetPointArrayPosition(point)
+    {
+        let position = parseInt( point.id.split("-")[5] );
         return position;
     }
 
     // Line follow the cursor
     let ghost = null;
 
-    function CreateGhost() {
-        ghost = create('', "#--drawline-drawlineContainer-" + id, "--drawline-ghost", "--drawline-ghost");
+    function CreateGhost()
+    {
+        ghost = create('',"#--drawline-drawlineContainer-" + id, "--drawline-ghost", "--drawline-ghost");
 
-        window.onmousemove = function (e) {
+        window.onmousemove = function(e) {
 
             let left = e.pageX;
             let top = e.pageY;
-            ghost.style.left = ((currentStartPoint.offsetLeft) - (currentMousePosition[0] - left)) + "px";
-            ghost.style.top = ((currentStartPoint.offsetTop) - (currentMousePosition[1] - top)) + "px";
+            ghost.style.left = ((currentStartPoint.offsetLeft) - (currentMousePosition[0] - left) ) + "px";
+            ghost.style.top = ((currentStartPoint.offsetTop) - (currentMousePosition[1] - top) ) + "px";
 
             CreateLine(currentStartPoint, ghost);
         }
 
-        window.addEventListener("mouseup", function (e) {
-            if (currentStartPoint != null) {
-                window.onmousemove = function (e) { };
-                if (currentStartPoint.firstChild != null) {
+        window.addEventListener("mouseup", function(e)
+        {
+            if(currentStartPoint != null)
+            {
+                window.onmousemove = function(e) {};
+                if(currentStartPoint.firstChild != null)
+                {
                     currentStartPoint.removeChild(currentStartPoint.firstChild);
-                    currentStartPoint.style.cssText = "background-color: none";
+                    currentStartPoint.classList.remove("--pratice-selected");
                 }
             }
         });
     }
 
-    function RemoveGhost() {
-        if (ghost != null) {
-            window.onmousemove = function (e) { };
+    function RemoveGhost()
+    {
+        if(ghost != null)
+        {
+            window.onmousemove = function(e) {};
             document.getElementById("--drawline-drawlineContainer-" + id).removeChild(ghost);
             ghost = null;
         }
     }
 
-    function CreateLine(from, to) {
-        if (from.firstChild != null) {
+    function CreateLine(from, to)
+    {
+        if(from.firstChild != null)
+        {
             from.removeChild(from.firstChild);
         }
 
-        let line = create('', "#" + from.id, "--drawline-line-" + id + "-0", "--drawline-line");
+        let line = create('',"#" + from.id, "--drawline-line-" + id + "-0", "--drawline-line");
 
-        let m_height = (to.offsetTop - to.offsetHeight / 2) - (from.offsetTop - from.offsetHeight / 2);
-        let m_width = (to.offsetLeft - to.offsetWidth / 2) - (from.offsetLeft - from.offsetWidth / 2);
+        let m_height = (to.offsetTop - to.offsetHeight/2) - (from.offsetTop - from.offsetHeight/2);
+        let m_width = (to.offsetLeft - to.offsetWidth/2) - (from.offsetLeft - from.offsetWidth/2);
 
         let tan = Math.sqrt(Math.pow(m_height, 2) + Math.pow(m_width, 2));
 
-        let angleDeg = Math.atan2(m_height, m_width) * 180 / Math.PI;
+        let angleDeg = Math.atan2( m_height, m_width) * 180 / Math.PI;
 
         line.style.transform = "rotate(" + angleDeg + "deg)";
         line.style.width = tan + "px";
     }
+
+    // #region Functions
+    function EnableStartPoint()
+    {
+        for(let i = 0 ; i < startPoint.length; i++)
+        {
+            startPoint[i].addEventListener("mousedown", startPointEvent);
+            startPoint[i].style.cssText = "cursor: pointer;";
+        }
+    }
+    function DisableStartPoint()
+    {
+        for(let i = 0 ; i < startPoint.length; i++)
+        {
+            startPoint[i].removeEventListener("mousedown", startPointEvent);
+            startPoint[i].style.cssText = "cursor: default;";
+        }
+    }
+    // #region Pratice Handler
+
+        function DefaultState()
+        {
+            EnableStartPoint();
+
+            for(let i = 0; i < startPoint.length; i++)
+            {
+                if(currentAnswer[i] !== "")
+                {
+                    CreateLine(startPoint[i], endPoint[ currentAnswer[i] ]);
+                    startPoint[i].classList.add("--pratice-selected");
+                    endPoint[ currentAnswer[i] ].classList.add("--pratice-selected");
+                }
+                else if( startPoint[i].childElementCount > 0)
+                {
+                    startPoint[i].removeChild(startPoint[i].firstChild);
+                }
+
+                startPoint[i].classList.remove("--pratice-correct");
+                startPoint[i].classList.remove("--pratice-incorrect");
+                endPoint[i].classList.remove("--pratice-correct");
+                endPoint[i].classList.remove("--pratice-incorrect");
+            }
+        }
+
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                markAllIsActive = true;
+
+                for(let i = 0; i < startPoint.length; i++)
+                {
+                    DisableStartPoint();
+                    if( startPoint[i].childElementCount > 0)
+                    {
+                        if(currentAnswer[i] == obj.correct[i])
+                        {
+                            startPoint[i].classList.add("--pratice-correct");
+                            startPoint[i].firstChild.classList.add("--pratice-correct");
+                            endPoint[currentAnswer[i]].classList.add("--pratice-correct");
+                        }
+                        else
+                        {
+                            startPoint[i].classList.add("--pratice-incorrect");
+                            startPoint[i].firstChild.classList.add("--pratice-incorrect");
+                            endPoint[currentAnswer[i]].classList.add("--pratice-incorrect");
+                        }
+                    }
+                }
+            }
+            // Disable Mark All
+            else markAllIsActive = false;
+        }
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                showAnswersIsActive = true;
+                DisableStartPoint();
+
+                for(let i = 0; i < startPoint.length; i++)
+                {
+                    CreateLine(startPoint[i], endPoint[obj.correct[i]]);
+                    startPoint[i].classList.remove("--pratice-selected");
+                    endPoint[i].classList.remove("--pratice-selected");
+                }
+            }
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+
+            // Enable Reset
+            if(callback === "reset")
+            {
+                for(let i = 0; i < startPoint.length; i++)
+                {
+                    startPoint[i].classList.remove("--pratice-selected");
+                    endPoint[i].classList.remove("--pratice-selected");
+
+                    if( startPoint[i].childElementCount > 0)
+                    {
+                        startPoint[i].removeChild(startPoint[i].firstChild);
+                    }
+
+                    currentAnswer[i] = "";
+                }
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+
+    //#endregion
 }
 //#endregion
 
 //#region SENTENCE INPUT
-function createSentenceInput(obj) {
+function createSentenceInput(obj)
+{
     let id = obj.id;
     let input = [];
+    let savedAnswer = [];
     let text = create("p", "#--inner-sentenceInput-" + id, "--sentenceInput-text" + id, "text gray --sentenceInput-text");
 
-    for (let i = 0; i < (obj.text.length - 1); i++) {
+    for(let i = 0; i < (obj.text.length - 1); i++)
+    {
         text.innerHTML = text.innerHTML + obj.text[i] + " ";
 
         input[i] = create("input", "#--inner-sentenceInput-" + id, "--sentenceInput-input" + id + "-" + i, "text gray --sentenceInput-input");
@@ -902,34 +1251,133 @@ function createSentenceInput(obj) {
         text.append(input[i]);
 
         text.innerHTML = text.innerHTML + " ";
-
-        document.getElementById(input[i].id).addEventListener("blur", function () {
-            console.log(input[i].id);
-        });
     }
 
     text.innerHTML = text.innerHTML + obj.text[obj.text.length - 1];
 
-    //#region Listeners
-    for (let i = 0; i < input.length; i++) {
-        document.getElementById(input[i].id).addEventListener("blur", function (e) {
-            CheckInput(e.target.value, i);
-        });
-    }
-    //#endregion
-
     //#region Functions
-    function CheckInput(value, index) {
+    function CheckInput(value, index)
+    {
         let m_value = value.toLowerCase();
         let m_index = obj.correct[index].toLowerCase();
 
-        if (m_value === m_index) {
+        if(m_value === m_index)
+        {
             console.log("correto");
+            parent.playSoundFx("correct");
         }
-        else {
+        else
+        {
             console.log("errado");
+            parent.playSoundFx("incorrect");
         }
     }
+
+    // #region Pratice Handler
+
+        function DefaultState()
+        {
+            for(let i = 0; i < input.length; i++)
+            {
+                let currentInput = document.getElementById(input[i].id);
+                currentInput.value = savedAnswer[i];
+                currentInput.disabled = false;
+                currentInput.style.cssText = "background-color: none;";
+                currentInput.classList.remove("--pratice-correct");
+                currentInput.classList.remove("--pratice-incorrect");
+                currentInput.classList.remove("--pratice-blocked");
+            }
+        }
+
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                markAllIsActive = true;
+
+                for(let i = 0; i < input.length; i++)
+                {
+                    let currentInput = document.getElementById(input[i].id);
+
+                    currentInput.disabled = true;
+
+                    if(currentInput.value === obj.correct[i])
+                    {
+                        currentInput.classList.add("--pratice-correct");
+                    }
+                    else if(currentInput.value != "")
+                    {
+                        currentInput.classList.add("--pratice-incorrect");
+                    }
+                }
+            }
+            // Disable Mark All
+            else markAllIsActive = false;
+        }
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                showAnswersIsActive = true;
+                for(let i = 0; i < input.length; i++)
+                {
+                    let currentInput = document.getElementById(input[i].id);
+                    savedAnswer[i] = currentInput.value;
+                    currentInput.value = obj.correct[i];
+                    currentInput.disabled = true;
+                    currentInput.classList.add("--pratice-blocked");
+                }
+            }
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+
+            // Enable Reset
+            if(callback === "reset")
+            {
+                for(let i = 0; i < input.length; i++)
+                {
+                    let currentInput = document.getElementById(input[i].id);
+                    currentInput.value = "";
+                    savedAnswer[i] = "";
+                }
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+
+    //#endregion
+
+    // #region Listeners
+        for(let i = 0; i < input.length; i++)
+        {
+            let currentInput = document.getElementById(input[i].id);
+
+            savedAnswer[i] = (currentInput.value != undefined) ? currentInput.value : "";
+
+            document.getElementById(input[i].id).addEventListener("blur", function(e)
+            {
+                savedAnswer[i] = (e.target.value != undefined) ? e.target.value : "";
+                CheckInput(e.target.value, i);
+            });
+        }
     //#endregion
 }
 //#endregion
@@ -939,11 +1387,11 @@ function createSentenceInput(obj) {
  * @author Flavio Martins
  * @version 1.2 (2021-08-31)
  * 2021-08-20
- * 
+ *
  * @description multiple choice 2 - dynamic activity (one item selection per line)
  */
 
-function createPracticeMultipleChoice2(practiceObj) {
+ function createPracticeMultipleChoice2(practiceObj){
 
     var practiceContainerId = "--inner-multiple-choice-2-" + practiceObj.id;
     var practiceIsScored = document.querySelector("#" + practiceContainerId).hasAttribute("data-practice-scored");
@@ -1075,7 +1523,7 @@ function createPracticeMultipleChoice2(practiceObj) {
 
             // Send score if 'practiceIsScored'
             if (practiceIsScored) {
-                log("<<< Practice MC2 - Final score: " + finalScore.toFixed() + " >>>");
+                 log("<<< Practice MC2 - Final score: " + finalScore.toFixed() + " >>>");
 
                 // send score each interaction
                 MFPontuar(scoreResults);
@@ -1088,7 +1536,7 @@ function createPracticeMultipleChoice2(practiceObj) {
                 soundId[2].play();
             }
 
-            log("<<< Practice MC2 - selectedAnswers: " + selectedAnswers + " >>>");
+             log("<<< Practice MC2 - selectedAnswers: " + selectedAnswers + " >>>");
         }
     }();
 
@@ -1186,7 +1634,7 @@ function createPracticeMultipleChoice2(practiceObj) {
             selectedAnswers[i] = null;
         }
 
-        log("<<< selectedAnswers [on reset]: " + selectedAnswers + " >>>");
+         log("<<< selectedAnswers [on reset]: " + selectedAnswers + " >>>");
 
         // Turn OFF ShowAnswer results if it's on
         if (showAllOn) {
@@ -1214,6 +1662,728 @@ function createPracticeMultipleChoice2(practiceObj) {
             if (stat == 1 && from == 0) allButtons[i].classList.remove('correct', 'incorrect'); // remove classes -> stat = 1
         }
     }
+}
+//#endregion
+
+// #region FOOTER BUTTONS
+function createFooterButtons()
+{
+    let footerButtons = [];
+
+    create("", "#--inner-content", "practice-footer-buttons");
+    footerButtons[0] = create("", "#practice-footer-buttons", "mark-all", "mark-all");
+    footerButtons[1] = create("", "#practice-footer-buttons", "show-answers", "show-answers");
+    footerButtons[2] = create("", "#practice-footer-buttons", "reset", "reset");
+
+    let footerButtonEvent = function()
+    {
+        for(let i = 0; i < footerButtons.length; i++)
+        {
+            if(this.id == footerButtons[i].id)
+            {
+                if(!footerButtons[i].classList.contains("active"))
+                {
+                    footerButtons[i].classList.add("active");
+                }
+                else
+                {
+                    footerButtons[i].classList.remove("active");
+                }
+            }
+            else
+            {
+                footerButtons[i].classList.remove("active");
+            }
+        }
+    }
+
+    for(let i = 0; i < footerButtons.length; i ++)
+    {
+        footerButtons[i].addEventListener("click", footerButtonEvent);
+    }
+}
+
+function SignInFooterButton(markFunction, showFunction, resetFunction)
+{
+    let footerButtons= [];
+    footerButtons[0] = document.getElementById("mark-all");
+    footerButtons[1] = document.getElementById("show-answers");
+    footerButtons[2] = document.getElementById("reset");
+
+    for(let i = 0; i < footerButtons.length; i++)
+    {
+        footerButtons[i].addEventListener("click", function()
+        {
+            resetFunction(footerButtons[i].id);
+            markFunction(footerButtons[i].id);
+            showFunction(footerButtons[i].id);
+        });
+    }
+}
+//#endregion
+
+//#region SELECT LIST
+function createSelectList(obj){
+    let currentSelected = "";
+    let buttonInner = [];
+
+    let windowEvent = function()
+    {
+        let previewListOpened = document.querySelector(".--selectListContainer-list");
+
+        if(previewListOpened != null)
+        {
+            previewListOpened.parentNode.removeChild(previewListOpened);
+        }
+
+        window.removeEventListener("click", windowEvent);
+    }
+
+    let container = create("", "#--inner-selectList-" + obj.id, "--selectList-selectListContainer-"+ obj.id, "--selectListContainer");
+
+    let input = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-input-"+ obj.id, "--selectListContainer-input");
+    let text = create("p", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-text-"+ obj.id, "--selectListContainer-text text gray");
+    text.innerHTML = "";
+    create("", "#--selectListContainer-input-"+ obj.id, "--selectListContainer-button-"+ obj.id, "--selectListContainer-button");
+
+    let inputEvent = function(){
+
+        let list = create("", "#--selectList-selectListContainer-"+ obj.id, "--selectListContainer-list-"+ obj.id, "--selectListContainer-list");
+
+        for(let i = 0; i < obj.text.length; i++){
+            let listItem = create("", "#--selectListContainer-list-"+ obj.id, "--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem");
+            let textOption = create("p", "#--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem-text-"+ obj.id + "-"+ i, "--selectListContainer-listItem-text  text gray");
+
+            textOption.innerHTML = obj.text[i];
+
+            create("", "#--selectListContainer-listItem-"+ obj.id + "-"+ i, "--selectListContainer-listItem-button-"+ obj.id + "-"+ i, "--selectListContainer-listItem-button  --drawline-startpointBorder");
+
+            buttonInner[i] = create("", "#--selectListContainer-listItem-button-"+ obj.id + "-"+ i, "--selectListContainer-listItem-buttonInner-"+ obj.id + "-"+ i, "--selectListContainer-listItem-buttonInner  --drawline-startpoint");
+
+            listItem.addEventListener("click", function(){
+                container.removeChild(list);
+                text.innerHTML = obj.text[i];
+                currentSelected = i;
+
+                if(obj.correct == i){
+                    log("CORRETO");
+                    parent.playSoundFx("correct");
+                }else{
+                    parent.playSoundFx("incorrect");
+                    log("INCORRETO")
+                }
+
+            });
+        }
+        if(currentSelected != ""){
+            buttonInner[currentSelected].style.cssText = "background-color: rgb(135, 136, 157);";
+        }
+   
+        setTimeout(function() {
+            window.addEventListener("click", windowEvent);
+        }, 100);
+    }
+
+    input.addEventListener("mousedown", inputEvent);
+
+    // #region Pratice Handler
+
+        function DefaultState()
+        {
+            input.classList.remove("--pratice-correct");
+            input.classList.remove("--pratice-incorrect");
+            text.classList.remove("--pratice-text-blocked");
+            text.innerHTML = (currentSelected !== "") ? obj.text[currentSelected] : "";
+            input.addEventListener("mousedown", inputEvent);
+        }
+
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                markAllIsActive = true;
+                input.removeEventListener("mousedown", inputEvent);
+
+                if(text.innerHTML !== "")
+                {
+                    if(text.innerHTML === obj.text[obj.correct])
+                    {
+                        input.classList.add("--pratice-correct");
+                    }
+                    else
+                    {
+                        input.classList.add("--pratice-incorrect");
+                    }
+                }
+            }
+            // Disable Mark All
+            else markAllIsActive = false;
+        }
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                showAnswersIsActive = true;
+                input.removeEventListener("mousedown", inputEvent);
+
+                text.innerHTML = obj.text[obj.correct];
+                text.classList.add("--pratice-text-blocked");
+            }
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+
+            // Enable Reset
+            if(callback === "reset")
+            {
+                text.innerHTML = "";
+                currentSelected = "";
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+}
+//#endregion
+
+// #region SENTENCE CHOICE
+function createSentenceChoice(obj){
+    let buttons = [];
+    let texts = [];
+    let selectedAnswer = "";
+
+    let buttonEvent = function()
+    {
+        let index = buttons.indexOf(this);
+
+        if(selectedAnswer === "" || selectedAnswer != index){
+            selectedAnswer = index;
+            buttons.forEach(function(e){
+                if(e.classList.contains("--pratice-selected")){
+                    e.classList.remove("--pratice-selected");
+                }
+            });
+
+            this.classList.add("--pratice-selected");
+
+            if(index === obj.correct){
+                parent.playSoundFx("correct");
+                log("CORRETO")
+            }else{
+                parent.playSoundFx("incorrect");
+                log("INCORRETO")
+            }
+
+        }else {
+            this.classList.remove("--pratice-selected");
+            selectedAnswer = "";
+        }
+    }
+
+    create("", "#--inner-sentenceChoice-" + obj.id, "--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceContainer  text  gray");
+
+    texts[0] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-0-"+obj.id, "--sentenceChoice-sentenceChoiceText");
+    texts[0].innerHTML = obj.text[0];
+
+    buttons[0]= create("", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceButton-0-"+obj.id, "--sentenceChoice-sentenceChoiceButton");
+    buttons[0].innerHTML = obj.text[1];
+
+    let slash = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceSlash-"+obj.id, "--sentenceChoice-sentenceChoiceSlash");
+    slash.innerHTML = "/";
+
+    buttons[1]= create("", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceButton-1-"+obj.id, "--sentenceChoice-sentenceChoiceButton");
+    buttons[1].innerHTML = obj.text[2];
+
+    texts[1] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-1-"+obj.id, "--sentenceChoice-sentenceChoiceText");
+    texts[1].innerHTML = obj.text[3];
+
+    buttons.forEach(function(element) {
+        element.addEventListener("click", buttonEvent);
+    });
+
+
+    // #region Pratice Handler
+        function DefaultState()
+        {
+            for(let i = 0; i < buttons.length; i++)
+            {
+                if(selectedAnswer === i)
+                    buttons[i].classList.add("--pratice-selected");
+                else
+                    buttons[i].classList.remove("--pratice-selected");
+
+                buttons[i].classList.remove("--pratice-correct");
+                buttons[i].classList.remove("--pratice-incorrect");
+                buttons[i].classList.remove("--pratice-border-blocked");
+                buttons[i].classList.remove("--pratice-text-blocked");
+
+                buttons[i].addEventListener("click", buttonEvent);
+            }
+        }
+
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                markAllIsActive = true;
+                if(selectedAnswer !== "")
+                {
+                    if(selectedAnswer === obj.correct)
+                    {
+                        buttons[selectedAnswer].classList.add("--pratice-correct");
+                    }
+                    else
+                    {
+                        buttons[selectedAnswer].classList.add("--pratice-incorrect");
+                    }
+
+                    for(let i = 0; i < buttons.length; i++)
+                    {
+                        buttons[i].removeEventListener("click", buttonEvent);
+                    }
+                }
+            }
+            // Disable Mark All
+            else markAllIsActive = false;
+        }
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                showAnswersIsActive = true;
+                for(let i = 0; i < buttons.length; i++)
+                {
+                    buttons[i].classList.add("--pratice-border-blocked");
+                    buttons[i].classList.add("--pratice-text-blocked");
+                    buttons[i].classList.remove("--pratice-selected");
+                    buttons[i].removeEventListener("click", buttonEvent);
+                }
+
+                buttons[obj.correct].classList.add("--pratice-selected");
+                buttons[obj.correct].classList.remove("--pratice-text-blocked");
+            }
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+
+            // Enable Reset
+            if(callback === "reset")
+            {
+                selectedAnswer = "";
+                DefaultState();
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+}
+//#endregion
+
+// #region SENTENCE SELECT
+function createSentenceSelect(obj){
+    let buttonsInner = [];
+    let selectedAnswer = "";
+
+
+    buttonInnerEvent = function(){
+
+        let index = buttonsInner.indexOf(this);
+
+        if(selectedAnswer === "" || selectedAnswer != index){
+            selectedAnswer = index;
+            buttonsInner.forEach(function(e){
+                if(e.classList.contains("--pratice-selected")){
+                    e.classList.remove("--pratice-selected");
+                }
+            });
+            buttonsInner[index].classList.toggle("--pratice-selected");
+            if(index === obj.correct){
+                parent.playSoundFx("correct");
+                log("CORRETOOO");
+            }else{
+                parent.playSoundFx("incorrect");
+                log("INCORRETOOOOO");
+            }
+        }else{
+            buttonsInner[index].classList.remove("--pratice-selected");
+            selectedAnswer = "";
+        }
+    }
+
+    create("", "#--inner-sentenceSelect-0", "--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelectContainer  text gray");
+    for (let i = 0; i < obj.text.length; i++) {
+
+        create("", "#--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect");
+        create("", "#--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect-button-0-" + obj.id+"-"+i, "--sentenceSelect-sentenceSelect-button  --drawline-startpointBorder");
+
+        buttonsInner[i] = create("", "#--sentenceSelect-sentenceSelect-button-0-" + obj.id+"-"+i, "--sentenceSelect-sentenceSelect-text-0-"+ obj.id+"-"+i, "--sentenceSelect-sentenceSelect-buttonInner  --drawline-startpoint");
+
+        let text = create("p", "#--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect-text-0-" + obj.id, "--sentenceSelect-sentenceSelect-text");
+        text.innerHTML = obj.text[i];
+    }
+
+    for(let i = 0; i < buttonsInner.length; i++)
+    {
+        buttonsInner[i].addEventListener("click", buttonInnerEvent);
+    }
+
+    // #region Pratice Handler
+        function DefaultState()
+        {
+            for(let i = 0; i < buttonsInner.length; i++)
+            {
+                if(selectedAnswer === i)
+                    buttonsInner[i].classList.add("--pratice-selected");
+                else
+                    buttonsInner[i].classList.remove("--pratice-selected");
+
+                    buttonsInner[i].classList.remove("--pratice-correct");
+                    buttonsInner[i].classList.remove("--pratice-incorrect");
+                    buttonsInner[i].classList.remove("--pratice-blocked");
+
+                    buttonsInner[i].addEventListener("click", buttonInnerEvent);
+                }
+        }
+
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                markAllIsActive = true;
+                if(selectedAnswer !== "")
+                {
+                    if(selectedAnswer === obj.correct)
+                    {
+                        buttonsInner[selectedAnswer].classList.add("--pratice-correct");
+                    }
+                    else
+                    {
+                        buttonsInner[selectedAnswer].classList.add("--pratice-incorrect");
+                    }
+
+                    for(let i = 0; i < buttonsInner.length; i++)
+                    {
+                        buttonsInner[i].removeEventListener("click", buttonInnerEvent);
+                    }
+                }
+            }
+            // Disable Mark All
+            else markAllIsActive = false;
+        }
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                showAnswersIsActive = true;
+                for(let i = 0; i < buttonsInner.length; i++)
+                {
+                    buttonsInner[i].classList.remove("--pratice-selected");
+                    buttonsInner[i].removeEventListener("click", buttonInnerEvent);
+                }
+                
+                buttonsInner[obj.correct].classList.add("--pratice-blocked");
+            }
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+
+            // Enable Reset
+            if(callback === "reset")
+            {
+                selectedAnswer = "";
+                DefaultState();
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+}
+// #endregion
+
+// #region DRAGDROP
+function createDragDrop(obj) {
+    let divs = [];
+    let dragDrop = [];
+    let text = [];
+    let answer = [];
+    let changes = [];
+    
+    for (let index = 0; index < obj.text.length - 1; index++) {
+      text[index] = create("p","#--inner-sentenceDragDrop-" + obj.id,"--sentenceDropped-text" + obj.id + "-" + index,"text gray --sentenceDropped-text");
+  
+      text[index].innerHTML = obj.text[index];
+  
+      divs[index] = create("","#--inner-sentenceDragDrop-" + obj.id,"--sentenceDropped-container-" + obj.id + "-" + index,"--sentenceDropped-container");
+  
+      answer[index] = create("p","#--sentenceDropped-container-" + obj.id + "-" + index,"--sentenceDropped-text-answer-" + obj.id + "-" + index,"text gray --sentenceDropped-text-answer");
+  
+      dragDrop[index] = create("","#--inner-dragDrop-sentenceContainer-0","--sentenceDragged-" + obj.id + "-" + index,"--sentenceDragged");
+      dragDrop[index].setAttribute("draggable", true);
+      let dragText = create("p","#--sentenceDragged-" + obj.id + "-" + index,"--sentenceDragged-text-" + obj.id,"text gray --sentenceDragged-text");
+      dragText.innerHTML = obj.dragText[index];
+    }
+    let lastId = obj.text.length - 1;
+    text[lastId] = create("p","#--inner-sentenceDragDrop-" + obj.id,"--sentenceDropped-text" + obj.id + "-" + lastId,"text gray --sentenceDropped-text");
+    text[lastId].innerHTML = obj.text[lastId];
+  
+    const dragContainer = document.querySelector(".--inner-dragDrop-sentenceContainer");
+    // var draggedItem = null;
+    for (let index = 0; index < obj.text.length - 1; index++) {
+      //DRAG
+      dragDrop[index].addEventListener("dragstart", function (e) {
+        draggedItem = dragDrop[index];
+        let idDropContainer = dragDrop[index].id.split("-")[3] + this.id.split("-")[4];
+        verification.key = idDropContainer;
+      });
+  
+      dragDrop[index].addEventListener("dragend", function (e) {
+        setTimeout(function () {
+          draggedItem.style.display = "flex";
+          draggedItem = null;
+        }, 0);
+      });
+  
+      // container dragged
+      dragContainer.addEventListener("dragover", function (e) {
+        e.preventDefault();
+        this.style.backgroundColor = "#536fc3";
+      });
+      dragContainer.addEventListener("dragenter", function (e) {
+        e.preventDefault();
+      });
+      dragContainer.addEventListener("dragleave", function (e) {
+        e.preventDefault();
+        this.style.backgroundColor = "#a7b4da21";
+      });
+      dragContainer.addEventListener("drop", function (e) {
+        this.append(draggedItem);
+        this.style.backgroundColor = "#a7b4da21";
+      });
+  
+      //DROP
+      divs[index].addEventListener("dragover", function (e) {
+        e.preventDefault();
+      });
+  
+      divs[index].addEventListener("dragenter", function (e) {
+        e.preventDefault();
+        this.style.backgroundColor = "#536fc3";
+      });
+  
+      divs[index].addEventListener("dragleave", function (e) {
+        e.preventDefault();
+        this.style.backgroundColor = "white";
+      });
+  
+      divs[index].addEventListener("drop", function () {
+        if(divs[index].childElementCount < 2){
+            this.append(draggedItem);
+            changes[index] = draggedItem;
+            verification.value = divs[index].id.split("-")[4] + this.id.split("-")[5];
+            if (verification.key === verification.value) {
+                log("ACERTOUUU");
+            } else {
+                log("ERRROUUUU");
+            }
+        }else{
+          changes[index + 1] = this.lastChild;
+          this.removeChild(this.lastChild);
+          this.append(draggedItem);
+          dragContainer.append(changes[index + 1])
+        }
+        
+      });
+    }
+    // #region Pratice Handler
+    function DefaultState() {
+        for (let i = 0; i < divs.length; i++) {
+            dragDrop[i].classList.remove("--pratice-blocked");
+            divs[i].lastChild.classList.remove("--pratice-correct");
+            divs[i].lastChild.classList.remove("--pratice-incorrect");
+            
+            answer[i].innerHTML = "";
+            divs[i].classList.remove("--pratice-blocked");
+            divs[i].style.backgroundColor = "white";
+            divs[i].lastChild.classList.remove("--hiddenDrag");
+            divs[i].lastChild.setAttribute("draggable", true);
+        }
+    }
+    // Show Correct Markeds
+    let markAllIsActive;
+    function MarkAll(callback) {
+        // Enable Mark All
+      if (callback === "mark-all" && !markAllIsActive) {
+          markAllIsActive = true;
+          for (let i = 0; i < divs.length; i++) {
+              if(divs[i].childElementCount > 1){
+                let childDropped = divs[i].lastChild;
+                if(childDropped.firstChild.innerHTML === obj.dragText[i]){
+                    childDropped.classList.add("--pratice-correct");
+                }else{
+                    childDropped.classList.add("--pratice-incorrect");
+                }
+                childDropped.setAttribute("draggable", false);
+            }  
+        }
+    }
+    // Disable MarkAll
+    else markAllIsActive = false;
+    }
+  
+    // Show All
+    let showAnswersIsActive;
+    function ShowAnswer(callback) {
+      // Enable Show All
+      if (callback === "show-answers" && !showAnswersIsActive) {
+        showAnswersIsActive = true;
+  
+        for (let i = 0; i < divs.length; i++) {
+            answer[i].innerHTML = obj.dragText[i];
+            divs[i].classList.add("--pratice-blocked");
+            if(divs[i].lastChild.tagName.toLowerCase() === "div"){
+                divs[i].lastChild.classList.add("--hiddenDrag");
+            }
+        }
+      }
+      // Disable Show All
+      else showAnswersIsActive = false;
+    }
+  
+    // Reset All
+    function Reset(callback) {
+      DefaultState();
+      // Enable Reset
+      if (callback === "reset") {
+          
+        setTimeout(function () {
+            document.getElementById("reset").classList.remove("active");
+            for (let index = 0; index < dragDrop.length; index++) {  
+                dragContainer.append(dragDrop[index]);
+            }
+        }, 200);
+      }
+    }
+  
+    SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
+}
+// #endregion
+
+//#region AUDIO BUTTON
+function createAudioButton(obj)
+{
+    let id = obj.id;
+
+    let btn = create('', "#--inner-audioButton-" + id, "--audio-button-" + id, "--cloud-button --audio-btn");
+
+    let audio = document.querySelector("audio");
+
+    //#region Button Listener
+        btn.addEventListener("click", function()
+        {
+            ResetAudioButtons();
+            ResetProgressBarEvents();
+            StopAllMediaOfType("video");
+
+            if(audio.id == "audio-au-" + id)
+            {
+                if(audio.paused)
+                {
+                    PlayAudioCloud();
+                }
+                else
+                {
+                    audio.pause();
+                }
+            }
+            else
+            {
+                audio.id = "audio-au-" + id;
+                audio.src = "./assets/audios/" + obj.audio + ".mp3";
+                PlayAudioCloud();
+            }
+        });
+
+    //#endregion
+
+    //#region Functions
+        function PlayAudioCloud()
+        {
+            audio.play();
+            audio.removeEventListener("pause", audioTimelinePauseEvent);
+            audio.removeEventListener("ended", audioTimelineEndEvent);
+            EnableAudioEvents();
+            btn.classList.add("--audio-button-active");
+            btn.classList.add("--cloud-button-active");
+        }
+        function EnableAudioEvents()
+        {
+            audio.addEventListener("pause", audioCloudPauseEvent);
+            audio.addEventListener("ended", audioCloudPauseEvent);
+        }
+        function DisableAudioEvent()
+        {
+            audio.removeEventListener("pause", audioCloudPauseEvent);
+            audio.removeEventListener("ended", audioCloudPauseEvent);
+        }
+    //#endregion
+
+    //#region Audio Events
+        // Audio Pause/End Event
+        audioCloudPauseEvent = function()
+        {
+            DisableAudioEvent();
+            ResetAudioButtons();
+        }
+    //#endregion
 }
 //#endregion
 

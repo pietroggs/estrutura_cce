@@ -1,4 +1,7 @@
 // audio cloud object sample
+let audioButtonObj = { id: 0, audio: "01" }
+
+// audio cloud object sample
 let cloudObj = { id: 0, text: "Texto moderno", audio: "01" }
 
 // audio timeline object sample
@@ -16,7 +19,7 @@ let grammarBoxObj = {
     id: 0,
     title: "Title",
     icon: "icon_lamp",
-    text: [""]
+    text: ["Mussum Ipsum, cacilds vidis litro abertis. Suco de cevadiss deixa as pessoas mais interessantis. Quem num gosta di mé, boa gentis num é. Casamentiss faiz malandris se pirulitá.", "Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis."]
 }
 
 // video object sample
@@ -48,10 +51,46 @@ let drawlineObj = {
 // sentence input object sample
 let sentenceInputObj = { 
     id: 0,
+    text: ["You are not a journalist. You are a secretary. You", "a secretary.", "a secretary."],
+    correct: ["are", "U"]
+}
+// sentence list object sample
+let selectListObj = {
+    id: 0,
+    text: ["ON", "KJAH", "AFAS"],
+    correct: 1
+}
+let selectListObj2 = {
+    id: 1,
+    text: ["ON", "KJAH", "AFAS"],
+    correct: 1
+}
+// sentence choice object sample
+let sentenceChoiceObj = {
+    id: 0,
+    text: ["ON", "KJAH", "AFAS", "Rene"],
+    correct: 1
+}
+// sentence select object sample
+let sentenceSelectObj = {
+    id: 0,
+    text: ["Yes, he is.", "No, he isn't."],
+    correct: 1
+}
+
+let sentenceInputObj1 = { 
+    id: 1,
     text: ["You are not a journalist. You are a secretary. You", "a secretary."],
     correct: ["aren't"]
 }
+let imageFrameObj1 = {
+    id: 1,
+    image: "image_00",
+    zoom: true
+}
 
+//Use to Create The Footer Buttons
+createFooterButtons();
 
 createAudioCloud(cloudObj);
 createAudioTimeline(timelineObj);
@@ -60,5 +99,15 @@ createImageFrame(imageFrameObj);
 createVideo(videoObj);
 createRowOrderer(rowOrdererObj);
 createDrawline(drawlineObj);
-
 createSentenceInput(sentenceInputObj);
+createSelectList(selectListObj);
+createSelectList(selectListObj2);
+
+
+createSentenceChoice(sentenceChoiceObj);
+createSentenceSelect(sentenceSelectObj);
+
+createAudioButton(audioButtonObj);
+
+// createSentenceInput(sentenceInputObj1);
+// createImageFrame(imageFrameObj1);

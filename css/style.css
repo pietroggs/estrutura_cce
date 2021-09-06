@@ -93,11 +93,8 @@ body {
 }
 
 .--desc-learning {
-    display: list-item;
-    list-style: disc outside none;
-    margin-left: 1em;
-    margin-left: .5em;
-    padding-left: 0.5em;
+    list-style: disc;
+    list-style-position: inside;
     width: 89%;
 }
 

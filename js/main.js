@@ -164,5 +164,10 @@ var points = []
 
 //#endregion
 
+function playSoundFx(sound){
+    let audio = document.getElementById("sound-" + sound);
+    if(audio != null) audio.play();    
+}
+
 //End code
 init();
