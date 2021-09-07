@@ -763,9 +763,11 @@ function createRowOrderer(obj)
             drag[i].addEventListener("dragstart", dragStart);
             drag[i].addEventListener("dragend", dragEnd);
     
-            currentAnswer[i] = i;
-            startOrder[i] = i;
+            currentAnswer[i] = obj.text[i];
+            startOrder[i] = obj.text[i];
         }
+
+        console.log("Aqui ta legal: " + startOrder)
     }
     else if(obj.tagType === "image")
     {
@@ -801,20 +803,46 @@ function createRowOrderer(obj)
     function RandomizeOrder()
     {
         let temp_newOrder = shuffle(currentAnswer);
-
-        if(JSON.stringify(temp_newOrder) === JSON.stringify( startOrder ) )
+                
+        // Check if match with correct 
+        if(JSON.stringify(temp_newOrder) === JSON.stringify( obj.correct ) )
         {
             log("Embaralhar novamente: " + temp_newOrder);
             RandomizeOrder();
             return;
         }
 
+        console.log("new order: " + temp_newOrder);
+
         newOrder = temp_newOrder;
 
-        for(let i = 0; i < container.length; i ++)
+        if(obj.tagType === "text")
         {
-            container[i].append(drag[ newOrder[i] ]);
-            currentAnswer[i] = newOrder[i];
+            let temp_list = StartTempList();
+
+            // for(let i = 0; i < startOrder.length; i++)
+            // {
+            //     temp_list[i] = startOrder[i];
+            // }
+            
+            for(let i = 0; i < container.length; i ++)
+            {
+                let newPosition = temp_list.indexOf(newOrder[i]);
+                temp_list[newPosition] = "@";
+                
+                container[i].append(drag[ newPosition ]);
+                
+                currentAnswer[i] = newOrder[i];
+            }
+        }
+
+        else if(obj.tagType === "image")
+        {
+            for(let i = 0; i < container.length; i ++)
+            {
+                container[i].append(drag[ newOrder[i] ]);
+                currentAnswer[i] = newOrder[i];
+            }
         }
     }
 
@@ -823,9 +851,19 @@ function createRowOrderer(obj)
     // #region Functions
     function CheckResult()
     {
-        for(let i = 0; i < container.length; i++)
+        if(obj.tagType === "image")
         {
-            currentAnswer[i] = parseInt(container[i].firstChild.id.split("-")[5]);
+            for(let i = 0; i < container.length; i++)
+            {
+                currentAnswer[i] = parseInt(container[i].firstChild.id.split("-")[5]);
+            }
+        }
+        else if(obj.tagType === "text")
+        {
+            for(let i = 0; i < container.length; i++)
+            {
+                currentAnswer[i] = container[i].firstChild.firstChild.innerHTML;
+            }            
         }
 
         for(let i = 0; i < container.length; i++)
@@ -838,6 +876,18 @@ function createRowOrderer(obj)
         }
         parent.playSoundFx("success");
         console.log("Correto");
+    }
+
+    function StartTempList()
+    {
+        let temp_list = [];
+
+        for(let i = 0; i < startOrder.length; i++)
+        {
+            temp_list[i] = startOrder[i];
+        }
+
+        return temp_list;
     }
 
     function EnableDrag(index)
@@ -859,19 +909,30 @@ function createRowOrderer(obj)
 
         function DefaultState()
         {
+            // debugger
+            let temp_list = StartTempList();
+
+            // for(let i = 0; i < startOrder.length; i++)
+            // {
+            //     temp_list[i] = startOrder[i];
+            // }
+
             for(let i = 0; i < drag.length; i++)
             {
                 EnableDrag(i);
 
-                if(currentAnswer.length == 0)
+                if(obj.tagType === "text")
                 {
-                    container[i].append( drag[i] );
+                    let newPosition = temp_list.indexOf(currentAnswer[i]);
+                    temp_list[newPosition] = "@";
+                    
+                    container[i].append( drag[ newPosition ] );
                 }
-                else
+                else if(obj.tagType === "image")
                 {
                     container[i].append( drag[ currentAnswer[i] ] );
-                }
-
+                } 
+                    
                 drag[i].setAttribute("draggable", "true");
                 container[i].addEventListener("dragenter", containerEvent);
                 drag[i].addEventListener("dragstart", dragStart);
@@ -892,17 +953,38 @@ function createRowOrderer(obj)
             {
                 markAllIsActive = true;
 
+                let temp_list = StartTempList();
+
                 for(let i = 0; i < drag.length; i++)
                 {
                     DisableDrag(i);
 
                     if(currentAnswer[i] == obj.correct[i])
                     {
-                        drag[newOrder[i]].classList.add("--pratice-correct");
+                        if(obj.tagType === "text")
+                        {
+                            let newPosition = temp_list.indexOf(newOrder[i]);
+                            temp_list[newPosition] = "@";
+
+                            drag[newPosition].classList.add("--pratice-correct");
+                        }
+                        else if(obj.tagType === "image")
+                        {
+                            drag[newOrder[i]].classList.add("--pratice-correct");
+                        }
                     }
                     else
                     {
-                        drag[newOrder[i]].classList.add("--pratice-incorrect");
+                        if(obj.tagType === "text")
+                        {
+                            let newPosition = temp_list.indexOf(newOrder[i]);
+                            temp_list[newPosition] = "@";
+                            drag[newPosition].classList.add("--pratice-incorrect");
+                        }
+                        else if(obj.tagType === "image")
+                        {
+                            drag[newOrder[i]].classList.add("--pratice-incorrect");
+                        }
                     }
 
                     if(obj.tagType === "image") arrow[i].style.display = "none";
@@ -920,12 +1002,24 @@ function createRowOrderer(obj)
             if(callback === "show-answers" && !showAnswersIsActive)
             {
                 showAnswersIsActive = true;
+                let temp_list = StartTempList();
 
                 for(let i = 0; i < drag.length; i++)
                 {
                     DisableDrag(i);
-                    container[i].append( drag[obj.correct[i]] );
                     drag[i].classList.add("--pratice-blocked");
+
+                    if(obj.tagType === "text")
+                    {
+                        let newPosition = temp_list.indexOf(obj.correct[i]);
+                        temp_list[newPosition] = "@";
+
+                        container[i].append( drag[newPosition] );
+                    }
+                    else if(obj.tagType === "image")
+                    {
+                        container[i].append( drag[obj.correct[i]] );
+                    }
 
                     if(obj.tagType === "image") arrow[i].style.display = "none";
                 }

@@ -37,8 +37,8 @@ let rowOrdererObj = {
     id: 0,
     tagType: "text",
     orientation: "vertical",
-    correct: [2,1,3,0], 
-    text: ["Olá", "Não sei", "Cacildis", "I don't know"]
+    text: ["zero", "um", "um", "um", "um", "zero"],
+    correct: ["um", "um", "um", "um", "zero", "zero"]
 }
 
 // draw line object sample
