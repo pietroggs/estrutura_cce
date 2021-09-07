@@ -1278,5 +1278,5 @@ body{
 .balloon-orange-left,
 .balloon-green-left,
 .balloon-blue-left{
-    float: right;
+    float: left;
 }
