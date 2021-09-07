@@ -1076,10 +1076,12 @@ body{
 
 .--pratice-correct{
     background-color: rgb(94, 499, 203) !important;
+    outline-color: rgb(94, 499, 203) !important;
     color: white !important;
 }
 .--pratice-incorrect{
     background-color: rgb(230, 56, 143) !important;
+    outline-color: rgb(230, 56, 143) !important;
     color: white !important;
 }
 .--pratice-selected{
@@ -1088,6 +1090,7 @@ body{
 }
 .--pratice-blocked{
     background-color: rgb(182, 182, 182) !important;
+    outline-color: rgb(182, 182, 182) !important;
 }
 .--pratice-text-blocked{
     color: rgb(162, 164, 192) !important;
@@ -1176,4 +1179,65 @@ body{
                               supported by Chrome, Edge, Opera and Firefox */
 }
 
-/* END DRAGDROP */
+/* #endregion DRAGDROP */
+
+
+/*#region IMAGE ORDERER*/
+.--inner-imageOrderer{
+    width: 100%;
+    display: flex;
+    gap: 2px;
+}
+.--inner-imageOrderer-horizontal{
+    flex-direction: row;
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+}
+.--inner-imageOrderer-vertical{
+    flex-direction: column;
+}
+.--imageOrderer-bg{
+    width: 10rem;
+    height: 10rem;
+}
+.--imageOrderer-image{
+    height: 100%;
+    width: 100%;
+}
+.--imageOrderer-drag{
+    width: 10rem;
+    height: 10rem;
+    display: flex;
+    position: relative;
+    align-items: flex-end;
+    justify-content: flex-end;
+    outline: 5px solid #87889D;
+    outline-offset: -5px;
+    cursor: pointer;
+}
+.--imageOrderer-drag *{
+    pointer-events: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.--imageOrderer-arrow{
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    height: 1rem;
+    width: 1rem;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.--inner-imageOrderer-horizontal .--imageOrderer-arrow{
+    background-image: url(../assets/img/games/row_arrows_horizontal.png);
+}
+.--inner-imageOrderer-vertical .--imageOrderer-arrow{
+    background-image: url(../assets/img/games/row_arrows_vertical.png);
+}
+/*#endregion IMAGE ORDERER*/

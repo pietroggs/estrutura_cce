@@ -62,7 +62,7 @@ createAudioTimeline(timelineObj);
 createGrammarBox(grammarBoxObj);
 createImageFrame(imageFrameObj);
 createVideo(videoObj);
-createRowOrderer(rowOrdererObj);
+// createRowOrderer(rowOrdererObj);
 createDrawline(drawlineObj);
 
 createSentenceInput(sentenceInputObj);
