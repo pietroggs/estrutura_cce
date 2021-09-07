@@ -1,3 +1,74 @@
 #--inner-selectList-1{
     margin-left: 50rem;
 }
+
+/* Init Balloon */
+.--sentenceInput-text {
+    line-height: 2.5vw;
+}
+
+.--sentenceInput-input {
+    width: 6rem;
+}
+
+.tick {
+    width: 40px;
+    height: 30px;
+    position: absolute;
+}
+
+.balloon {
+    position: relative;
+    width: 82%;
+    border: 2px solid;
+    border-radius: 7px;
+    margin-bottom: 0.2em;
+    padding: 6px 12px;
+    background-color: #FFFFFF;
+    margin: 0.2em 0 0.2em 5em;
+}
+
+.balloon.tl {
+    margin-left: 3vw;
+}
+
+.balloon.tr {
+    margin-right: 3vw;
+}
+
+.balloon-orange {
+    border-color: #F17164;
+}
+
+.balloon-orange .tick.tl {
+    left: -40px;
+    top: -7px;
+    background: url('../assets/img/tick.png') no-repeat scroll left -60px;
+}
+
+.balloon-orange .tick.tr {
+    right: -40px;
+    top: -7px;
+    background: url('../assets/img/tick.png') no-repeat scroll right -60px;
+}
+
+.balloon-green {
+    border-color: #5EC7CB;
+}
+
+.balloon-green .tick.tl {
+    left: -40px;
+    top: -7px;
+    background: url('../assets/img/tick.png') no-repeat scroll left -30px;
+}
+
+.balloon-green .tick.tr {
+    right: -40px;
+    top: -7px;
+    background: url('../assets/img/tick.png') no-repeat scroll right -30px;
+}
+
+#--inner-content {
+    padding-bottom: 2vw;
+}
+/* End Balloon */

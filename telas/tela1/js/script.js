@@ -89,6 +89,36 @@ let imageFrameObj1 = {
     zoom: true
 }
 
+let sentenceInputObj2 = { 
+    id: 2,
+    text: ["<strong>Tony: </strong>Wow! It's great there, I went last year. In the winter it's really ", " and", ", and there's ", " and ", " everywhere. But at this time, in the summer, it's ", " and ", "."],
+    correct: ["cold", "dark", "ice", "snow", "warm", "sunny"]
+}
+
+let sentenceInputObj3 = { 
+    id: 3,
+    text: ["<strong>William: </strong>", " like London?"],
+    correct: ["Did you", ""]
+}
+
+let sentenceInputObj4 = { 
+    id: 4,
+    text: ["<strong>Tony: </strong>Of course, it's awesome! I ", "David Beckham!"],
+    correct: ["saw", ""]
+}
+
+let sentenceInputObj5 = { 
+    id: 5,
+    text: ["<strong>William: </strong>Wow! ", " you doing when you saw him?"],
+    correct: ["What were", ""]
+}
+
+let sentenceInputObj6 = { 
+    id: 6,
+    text: ["<strong>Tony: </strong>I was walking down Oxford Street when ", " I saw a lot of people taking photos. I looked closer and it was him!"],
+    correct: ["suddenly", ""]
+}
+
 //Use to Create The Footer Buttons
 createFooterButtons();
 
@@ -108,6 +138,12 @@ createSentenceChoice(sentenceChoiceObj);
 createSentenceSelect(sentenceSelectObj);
 
 createAudioButton(audioButtonObj);
+
+createSentenceInput(sentenceInputObj2);
+createSentenceInput(sentenceInputObj3);
+createSentenceInput(sentenceInputObj4);
+createSentenceInput(sentenceInputObj5);
+createSentenceInput(sentenceInputObj6);
 
 // createSentenceInput(sentenceInputObj1);
 // createImageFrame(imageFrameObj1);
