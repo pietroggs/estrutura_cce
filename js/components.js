@@ -735,8 +735,6 @@ function createRowOrderer(obj)
     let ordererContainer;
     let orientationClass;
 
-    console.log(obj.tagType);
-    
     if(obj.tagType === "text")
     {
         ordererContainer = document.getElementById("--inner-rowOrderer-" + id);
@@ -766,8 +764,6 @@ function createRowOrderer(obj)
             currentAnswer[i] = obj.text[i];
             startOrder[i] = obj.text[i];
         }
-
-        console.log("Aqui ta legal: " + startOrder)
     }
     else if(obj.tagType === "image")
     {
@@ -811,8 +807,6 @@ function createRowOrderer(obj)
             RandomizeOrder();
             return;
         }
-
-        console.log("new order: " + temp_newOrder);
 
         newOrder = temp_newOrder;
 
