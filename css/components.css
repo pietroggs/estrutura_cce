@@ -1282,6 +1282,14 @@ body{
 .balloon-green-left,
 .balloon-blue-left{
     float: left;
+    margin-left: 5%;
+}
+
+.balloon-orange-right,
+.balloon-green-right,
+.balloon-blue-right{
+    float: right;
+    margin-right: 5%;
 }
 /* #endregion DRAGDROP */
 
