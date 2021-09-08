@@ -1326,8 +1326,19 @@ body{
 }
 /*#endregion IMAGE ORDERER*/
 
-
-
+/* #region SENTENCE MULTIPLE CHOICE */
+.--innerSenteceChoiceMultipleContainer{
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.--sentenceChoiceMultipliceText{
+    display: inline-block;
+    border: 1px solid;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+/* #endregion SENTENCE MULTIPLE CHOICE */
 
 
 /* #region GENERAL PRATICES */
