@@ -1135,6 +1135,8 @@ body{
     left: 50%;
     transform: translate(-50%, -50%);
     margin: 0;
+    width: 100%;
+    text-align: center;
 }
 .--dragBackgroundColor{
     background-color: #536fc3;
