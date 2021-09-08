@@ -274,7 +274,7 @@ body{
     position: relative;
     display: flex;
     flex-direction: column;
-    width: 70%;
+    width: 50%;
 }
 .--imageFrame-popupImage{
     max-height: 20%;
