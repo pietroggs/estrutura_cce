@@ -35,9 +35,10 @@ let videoObj = {
 // row orderer object sample
 let rowOrdererObj = {
     id: 0,
+    tagType: "text",
     orientation: "vertical",
-    correct: [2,1,3,0], 
-    text: ["Olá", "Não sei", "Cacildis", "I don't know"]
+    text: ["zero", "um", "um", "um", "um", "zero"],
+    correct: ["um", "um", "um", "um", "zero", "zero"]
 }
 
 // draw line object sample
@@ -89,6 +90,15 @@ let imageFrameObj1 = {
     zoom: true
 }
 
+// image orderer object sample
+let imageOrdererObj = {
+    id: 0,
+    tagType: "image",
+    orientation: "horizontal",
+    correct: [2,1,3,0], 
+    image: ["image_01", "image_02", "image_03", "image_04"]
+}
+
 //Use to Create The Footer Buttons
 createFooterButtons();
 
@@ -108,6 +118,8 @@ createSentenceChoice(sentenceChoiceObj);
 createSentenceSelect(sentenceSelectObj);
 
 createAudioButton(audioButtonObj);
+
+createRowOrderer(imageOrdererObj);
 
 // createSentenceInput(sentenceInputObj1);
 // createImageFrame(imageFrameObj1);

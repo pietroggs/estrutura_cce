@@ -227,14 +227,12 @@ function createAudioTimeline(obj) {
     progressBarAudio.addEventListener('mousedown', () => mousedown = true);
     progressBarAudio.addEventListener('mouseup', () => mousedown = false);
 
-    //#endregion
 
     // Audio End Event
     audio.onended = function () {
         progressFilledAudio.style.width = '0px';
         audio.currentTime = 0;
     }
-    //#endregion
 }
 //#endregion
 
@@ -297,7 +295,6 @@ function createGrammarBox(obj)
 
     //#region White box
         create('',"#--grammarbox-bg-" + id, "--grammarbox-whitebox-" + id, "--grammarbox-whitebox");
-
         // Texts
         for(let i = 0; i < obj.text.length; i++)
         {
@@ -698,6 +695,7 @@ function createRowOrderer(obj)
 {
     let newOrder;
     let drag = [];
+    let arrow = [];
     let container = [];
     let draggedItem = null;
     let draggedItemParent = null;
@@ -734,40 +732,76 @@ function createRowOrderer(obj)
     }
 
     let id = obj.id;
+    let ordererContainer;
+    let orientationClass;
 
-    let rowOrdererContainer = document.getElementById("--inner-rowOrderer-" + id);
-    let orientationClass = "--inner-rowOrderer-" + obj.orientation;
-    rowOrdererContainer.classList.add(orientationClass);
-
-    for(let i = 0; i < obj.text.length; i++)
+    if(obj.tagType === "text")
     {
-        // Backgound Container
-        container[i] = create('',"#--inner-rowOrderer-" + id, "--rowOrderer-bg-" + id + "-" + i, "--rowOrderer-bg");
+        ordererContainer = document.getElementById("--inner-rowOrderer-" + id);
+        orientationClass = "--inner-rowOrderer-" + obj.orientation;
+        ordererContainer.classList.add(orientationClass);
 
-        container[i].addEventListener("dragenter", containerEvent);
+        for(let i = 0; i < obj.text.length; i++)
+        {
+            // Backgound Container
+            container[i] = create('',"#--inner-rowOrderer-" + id, "--rowOrderer-bg-" + id + "-" + i, "--rowOrderer-bg");
+    
+            container[i].addEventListener("dragenter", containerEvent);
+    
+            // Draggable Element
+            drag[i] = create('',"#--rowOrderer-bg-" + id + "-" + i, "--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-drag");
+            drag[i].setAttribute("draggable", "true");
+            // Text
+            let text = create('p',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-text-" + id + "-" + i, "--rowOrderer-text text white");
+            text.innerHTML = obj.text[i];
+    
+            // Arrow
+            create('',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-arrow-" + id + "-" + i, "--rowOrderer-arrow");
+    
+            drag[i].addEventListener("dragstart", dragStart);
+            drag[i].addEventListener("dragend", dragEnd);
+    
+            currentAnswer[i] = obj.text[i];
+            startOrder[i] = obj.text[i];
+        }
+    }
+    else if(obj.tagType === "image")
+    {
+        ordererContainer = document.getElementById("--inner-imageOrderer-" + id);
+        orientationClass = "--inner-imageOrderer-" + obj.orientation;
+        ordererContainer.classList.add(orientationClass);
 
-        // Draggable Element
-        drag[i] = create('',"#--rowOrderer-bg-" + id + "-" + i, "--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-drag");
-        drag[i].setAttribute("draggable", "true");
-        // Text
-        let text = create('p',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-text-" + id + "-" + i, "--rowOrderer-text text white");
-        text.innerHTML = obj.text[i];
+        for(let i = 0; i < obj.image.length; i++)
+        {
+            // Backgound Container
+            container[i] = create('',"#--inner-imageOrderer-" + id, "--imageOrderer-bg-" + id + "-" + i, "--imageOrderer-bg");
 
-        // Arrow
-        create('',"#--rowOrderer-drag-" + id + "-" + i, "--rowOrderer-arrow-" + id + "-" + i, "--rowOrderer-arrow");
+            container[i].addEventListener("dragenter", containerEvent);
 
-        drag[i].addEventListener("dragstart", dragStart);
-        drag[i].addEventListener("dragend", dragEnd);
+            // Draggable Element
+            drag[i] = create('',"#--imageOrderer-bg-" + id + "-" + i, "--imageOrderer-drag-" + id + "-" + i, "--imageOrderer-drag");
+            drag[i].setAttribute("draggable", "true");
+            // Text
+            let image = create('img',"#--imageOrderer-drag-" + id + "-" + i, "--imageOrderer-image-" + id + "-" + i, "--imageOrderer-image");
+            image.src = "./assets/img/" + obj.image[i] + ".jpg";
 
-        currentAnswer[i] = i;
-        startOrder[i] = i;
+            // Arrow
+            arrow[i] = create('',"#--imageOrderer-drag-" + id + "-" + i, "--imageOrderer-arrow-" + id + "-" + i, "--imageOrderer-arrow");
+
+            drag[i].addEventListener("dragstart", dragStart);
+            drag[i].addEventListener("dragend", dragEnd);
+
+            currentAnswer[i] = i;
+            startOrder[i] = i;
+        }
     }
 
     function RandomizeOrder()
     {
         let temp_newOrder = shuffle(currentAnswer);
-
-        if(JSON.stringify(temp_newOrder) === JSON.stringify( startOrder ) )
+                
+        // Check if match with correct 
+        if(JSON.stringify(temp_newOrder) === JSON.stringify( obj.correct ) )
         {
             log("Embaralhar novamente: " + temp_newOrder);
             RandomizeOrder();
@@ -776,10 +810,33 @@ function createRowOrderer(obj)
 
         newOrder = temp_newOrder;
 
-        for(let i = 0; i < container.length; i ++)
+        if(obj.tagType === "text")
         {
-            container[i].append(drag[ newOrder[i] ]);
-            currentAnswer[i] = newOrder[i];
+            let temp_list = StartTempList();
+
+            // for(let i = 0; i < startOrder.length; i++)
+            // {
+            //     temp_list[i] = startOrder[i];
+            // }
+            
+            for(let i = 0; i < container.length; i ++)
+            {
+                let newPosition = temp_list.indexOf(newOrder[i]);
+                temp_list[newPosition] = "@";
+                
+                container[i].append(drag[ newPosition ]);
+                
+                currentAnswer[i] = newOrder[i];
+            }
+        }
+
+        else if(obj.tagType === "image")
+        {
+            for(let i = 0; i < container.length; i ++)
+            {
+                container[i].append(drag[ newOrder[i] ]);
+                currentAnswer[i] = newOrder[i];
+            }
         }
     }
 
@@ -788,9 +845,19 @@ function createRowOrderer(obj)
     // #region Functions
     function CheckResult()
     {
-        for(let i = 0; i < container.length; i++)
+        if(obj.tagType === "image")
         {
-            currentAnswer[i] = parseInt(container[i].firstChild.id.split("-")[5]);
+            for(let i = 0; i < container.length; i++)
+            {
+                currentAnswer[i] = parseInt(container[i].firstChild.id.split("-")[5]);
+            }
+        }
+        else if(obj.tagType === "text")
+        {
+            for(let i = 0; i < container.length; i++)
+            {
+                currentAnswer[i] = container[i].firstChild.firstChild.innerHTML;
+            }            
         }
 
         for(let i = 0; i < container.length; i++)
@@ -803,6 +870,18 @@ function createRowOrderer(obj)
         }
         parent.playSoundFx("success");
         console.log("Correto");
+    }
+
+    function StartTempList()
+    {
+        let temp_list = [];
+
+        for(let i = 0; i < startOrder.length; i++)
+        {
+            temp_list[i] = startOrder[i];
+        }
+
+        return temp_list;
     }
 
     function EnableDrag(index)
@@ -824,19 +903,30 @@ function createRowOrderer(obj)
 
         function DefaultState()
         {
+            // debugger
+            let temp_list = StartTempList();
+
+            // for(let i = 0; i < startOrder.length; i++)
+            // {
+            //     temp_list[i] = startOrder[i];
+            // }
+
             for(let i = 0; i < drag.length; i++)
             {
                 EnableDrag(i);
 
-                if(currentAnswer.length == 0)
+                if(obj.tagType === "text")
                 {
-                    container[i].append( drag[i] );
+                    let newPosition = temp_list.indexOf(currentAnswer[i]);
+                    temp_list[newPosition] = "@";
+                    
+                    container[i].append( drag[ newPosition ] );
                 }
-                else
+                else if(obj.tagType === "image")
                 {
                     container[i].append( drag[ currentAnswer[i] ] );
-                }
-
+                } 
+                    
                 drag[i].setAttribute("draggable", "true");
                 container[i].addEventListener("dragenter", containerEvent);
                 drag[i].addEventListener("dragstart", dragStart);
@@ -844,6 +934,8 @@ function createRowOrderer(obj)
                 drag[i].classList.remove("--pratice-blocked");
                 drag[i].classList.remove("--pratice-correct");
                 drag[i].classList.remove("--pratice-incorrect");
+
+                if(obj.tagType === "image") arrow[i].style.display = "block";
             }
         }
         // Show Correct Markeds
@@ -855,18 +947,41 @@ function createRowOrderer(obj)
             {
                 markAllIsActive = true;
 
+                let temp_list = StartTempList();
+
                 for(let i = 0; i < drag.length; i++)
                 {
                     DisableDrag(i);
 
                     if(currentAnswer[i] == obj.correct[i])
                     {
-                        drag[newOrder[i]].classList.add("--pratice-correct");
+                        if(obj.tagType === "text")
+                        {
+                            let newPosition = temp_list.indexOf(newOrder[i]);
+                            temp_list[newPosition] = "@";
+
+                            drag[newPosition].classList.add("--pratice-correct");
+                        }
+                        else if(obj.tagType === "image")
+                        {
+                            drag[newOrder[i]].classList.add("--pratice-correct");
+                        }
                     }
                     else
                     {
-                        drag[newOrder[i]].classList.add("--pratice-incorrect");
+                        if(obj.tagType === "text")
+                        {
+                            let newPosition = temp_list.indexOf(newOrder[i]);
+                            temp_list[newPosition] = "@";
+                            drag[newPosition].classList.add("--pratice-incorrect");
+                        }
+                        else if(obj.tagType === "image")
+                        {
+                            drag[newOrder[i]].classList.add("--pratice-incorrect");
+                        }
                     }
+
+                    if(obj.tagType === "image") arrow[i].style.display = "none";
                 }
             }
             // Disable MarkAll
@@ -881,12 +996,26 @@ function createRowOrderer(obj)
             if(callback === "show-answers" && !showAnswersIsActive)
             {
                 showAnswersIsActive = true;
+                let temp_list = StartTempList();
 
                 for(let i = 0; i < drag.length; i++)
                 {
                     DisableDrag(i);
-                    container[i].append( drag[obj.correct[i]] );
                     drag[i].classList.add("--pratice-blocked");
+
+                    if(obj.tagType === "text")
+                    {
+                        let newPosition = temp_list.indexOf(obj.correct[i]);
+                        temp_list[newPosition] = "@";
+
+                        container[i].append( drag[newPosition] );
+                    }
+                    else if(obj.tagType === "image")
+                    {
+                        container[i].append( drag[obj.correct[i]] );
+                    }
+
+                    if(obj.tagType === "image") arrow[i].style.display = "none";
                 }
             }
             // Disable Show All
@@ -1778,7 +1907,7 @@ function createSelectList(obj){
         if(currentSelected != ""){
             buttonInner[currentSelected].style.cssText = "background-color: rgb(135, 136, 157);";
         }
-   
+
         setTimeout(function() {
             window.addEventListener("click", windowEvent);
         }, 100);
@@ -2042,7 +2171,7 @@ function createSentenceSelect(obj){
         }
     }
 
-    create("", "#--inner-sentenceSelect-0", "--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelectContainer  text gray");
+    create("", "#--inner-sentenceSelect-" + obj.id, "--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelectContainer  text gray");
     for (let i = 0; i < obj.text.length; i++) {
 
         create("", "#--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect");
@@ -2119,7 +2248,7 @@ function createSentenceSelect(obj){
                     buttonsInner[i].classList.remove("--pratice-selected");
                     buttonsInner[i].removeEventListener("click", buttonInnerEvent);
                 }
-                
+
                 buttonsInner[obj.correct].classList.add("--pratice-blocked");
             }
             // Disable Show All
@@ -2155,16 +2284,16 @@ function createDragDrop(obj) {
     let text = [];
     let answer = [];
     let changes = [];
-    
+
     for (let index = 0; index < obj.text.length - 1; index++) {
       text[index] = create("p","#--inner-sentenceDragDrop-" + obj.id,"--sentenceDropped-text" + obj.id + "-" + index,"text gray --sentenceDropped-text");
-  
+
       text[index].innerHTML = obj.text[index];
-  
+
       divs[index] = create("","#--inner-sentenceDragDrop-" + obj.id,"--sentenceDropped-container-" + obj.id + "-" + index,"--sentenceDropped-container");
-  
+
       answer[index] = create("p","#--sentenceDropped-container-" + obj.id + "-" + index,"--sentenceDropped-text-answer-" + obj.id + "-" + index,"text gray --sentenceDropped-text-answer");
-  
+
       dragDrop[index] = create("","#--inner-dragDrop-sentenceContainer-0","--sentenceDragged-" + obj.id + "-" + index,"--sentenceDragged");
       dragDrop[index].setAttribute("draggable", true);
       let dragText = create("p","#--sentenceDragged-" + obj.id + "-" + index,"--sentenceDragged-text-" + obj.id,"text gray --sentenceDragged-text");
@@ -2173,7 +2302,7 @@ function createDragDrop(obj) {
     let lastId = obj.text.length - 1;
     text[lastId] = create("p","#--inner-sentenceDragDrop-" + obj.id,"--sentenceDropped-text" + obj.id + "-" + lastId,"text gray --sentenceDropped-text");
     text[lastId].innerHTML = obj.text[lastId];
-  
+
     const dragContainer = document.querySelector(".--inner-dragDrop-sentenceContainer");
     // var draggedItem = null;
     for (let index = 0; index < obj.text.length - 1; index++) {
@@ -2183,14 +2312,14 @@ function createDragDrop(obj) {
           let idDropContainer = dragDrop[index].id.split("-")[3] + this.id.split("-")[4];
           verification.key = idDropContainer;
         });
-    
+
         dragDrop[index].addEventListener("dragend", function (e) {
           setTimeout(function () {
             draggedItem.style.display = "flex";
             draggedItem = null;
           }, 0);
         });
-    
+
         // container dragged
         dragContainer.addEventListener("dragover", function (e) {
           e.preventDefault();
@@ -2207,23 +2336,23 @@ function createDragDrop(obj) {
           this.append(draggedItem);
           this.classList.remove("--dragBackgroundColor");
         });
-    
+
         //DROP
         divs[index].addEventListener("dragover", function (e) {
           e.preventDefault();
         });
-    
+
         divs[index].addEventListener("dragenter", function (e) {
           e.preventDefault();
           this.classList.add("--dragBackgroundColor");
         });
-    
+
         divs[index].addEventListener("dragleave", function (e) {
           e.preventDefault();
           // this.style.backgroundColor = "white";
           this.classList.remove("--dragBackgroundColor");
         });
-    
+
         divs[index].addEventListener("drop", function () {
           if(divs[index].childElementCount < 2){
               this.append(draggedItem);
@@ -2240,7 +2369,7 @@ function createDragDrop(obj) {
             this.append(draggedItem);
             dragContainer.append(changes[index + 1])
           }
-          
+
         });
       }
     // #region Pratice Handler
@@ -2249,7 +2378,7 @@ function createDragDrop(obj) {
             dragDrop[i].classList.remove("--pratice-blocked");
             divs[i].lastChild.classList.remove("--pratice-correct");
             divs[i].lastChild.classList.remove("--pratice-incorrect");
-            
+
             answer[i].innerHTML = "";
             divs[i].classList.remove("--pratice-blocked");
             divs[i].style.backgroundColor = "white";
@@ -2272,20 +2401,20 @@ function createDragDrop(obj) {
                     childDropped.classList.add("--pratice-incorrect");
                 }
                 childDropped.setAttribute("draggable", false);
-            }  
+            }
         }
     }
     // Disable MarkAll
     else markAllIsActive = false;
     }
-  
+
     // Show All
     let showAnswersIsActive;
     function ShowAnswer(callback) {
       // Enable Show All
       if (callback === "show-answers" && !showAnswersIsActive) {
         showAnswersIsActive = true;
-  
+
         for (let i = 0; i < divs.length; i++) {
             answer[i].innerHTML = obj.dragText[i];
             divs[i].classList.add("--pratice-blocked");
@@ -2297,22 +2426,22 @@ function createDragDrop(obj) {
       // Disable Show All
       else showAnswersIsActive = false;
     }
-  
+
     // Reset All
     function Reset(callback) {
       DefaultState();
       // Enable Reset
       if (callback === "reset") {
-          
+
         setTimeout(function () {
             document.getElementById("reset").classList.remove("active");
-            for (let index = 0; index < dragDrop.length; index++) {  
+            for (let index = 0; index < dragDrop.length; index++) {
                 dragContainer.append(dragDrop[index]);
             }
         }, 200);
       }
     }
-  
+
     SignInFooterButton(MarkAll, ShowAnswer, Reset);
     //#endregion
 }
@@ -2387,4 +2516,3 @@ function createAudioButton(obj)
     //#endregion
 }
 //#endregion
-
