@@ -2171,7 +2171,7 @@ function createSentenceSelect(obj){
         }
     }
 
-    create("", "#--inner-sentenceSelect-0", "--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelectContainer  text gray");
+    create("", "#--inner-sentenceSelect-" + obj.id, "--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelectContainer  text gray");
     for (let i = 0; i < obj.text.length; i++) {
 
         create("", "#--sentenceSelect-sentenceSelectContainer-" + obj.id, "--sentenceSelect-sentenceSelect-0-" + obj.id + "-"+i, "--sentenceSelect-sentenceSelect");
