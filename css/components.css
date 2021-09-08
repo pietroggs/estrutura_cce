@@ -1071,36 +1071,7 @@ body{
     align-items: center;
 }
 /* #endregion SENTENCE SELECT */
-
-
-
-.--pratice-correct{
-    background-color: rgb(94, 499, 203) !important;
-    outline-color: rgb(94, 499, 203) !important;
-    color: white !important;
-}
-.--pratice-incorrect{
-    background-color: rgb(230, 56, 143) !important;
-    outline-color: rgb(230, 56, 143) !important;
-    color: white !important;
-}
-.--pratice-selected{
-    background-color: rgb(135, 136, 157);
-    color: white;
-}
-.--pratice-blocked{
-    background-color: rgb(182, 182, 182) !important;
-    outline-color: rgb(182, 182, 182) !important;
-}
-.--pratice-text-blocked{
-    color: rgb(162, 164, 192) !important;
-}
-.--pratice-border-blocked{
-    border-color: rgb(175, 175, 175) !important;
-}
     
-
-
 /* #region DRAGDROP */
 .--hiddenDrag{
     opacity: 0;
@@ -1293,7 +1264,6 @@ body{
 }
 /* #endregion DRAGDROP */
 
-
 /*#region IMAGE ORDERER*/
 .--inner-imageOrderer{
     width: 100%;
@@ -1353,3 +1323,34 @@ body{
     background-image: url(../assets/img/games/row_arrows_vertical.png);
 }
 /*#endregion IMAGE ORDERER*/
+
+
+
+
+
+/* #region GENERAL PRATICES */
+.--pratice-correct{
+    background-color: rgb(94, 499, 203) !important;
+    outline-color: rgb(94, 499, 203) !important;
+    color: white !important;
+}
+.--pratice-incorrect{
+    background-color: rgb(230, 56, 143) !important;
+    outline-color: rgb(230, 56, 143) !important;
+    color: white !important;
+}
+.--pratice-selected{
+    background-color: rgb(135, 136, 157);
+    color: white;
+}
+.--pratice-blocked{
+    background-color: rgb(182, 182, 182) !important;
+    outline-color: rgb(182, 182, 182) !important;
+}
+.--pratice-text-blocked{
+    color: rgb(162, 164, 192) !important;
+}
+.--pratice-border-blocked{
+    border-color: rgb(175, 175, 175) !important;
+}
+/* #endregion GENERAL PRATICES */
