@@ -76,19 +76,20 @@ let selectListObj = {
 createSelectList(selectListObj);
 
 let sentenceChoiceObj = {
-  id: 0,
-  text: ["She's", "a", "an", "photographer."],
-  correct: 0,
+  0:{
+    id: 0,
+    separator: "",
+    text: ["I", "wear a blue uniform."],
+    alternativesText: [["always", "never", "sometimes"]],
+    correct: [1],
+  }
 };
 
-let lesson2 = {
-  id: 0,
-  text: ["This is Emma's", "mum", "aunt", "."],
-  correct: 0,
-};
 
-createSentenceChoice(sentenceChoiceObj);
-createSentenceChoice(lesson2);
+for (const index in sentenceChoiceObj) {
+  createSentenceChoice(sentenceChoiceObj[index]);
+}
+// createSentenceChoice(lesson2);
 
 let sentenceSelectObj = {
   id: 0,

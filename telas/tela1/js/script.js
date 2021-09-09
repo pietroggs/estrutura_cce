@@ -114,7 +114,7 @@ createSelectList(selectListObj);
 createSelectList(selectListObj2);
 
 
-createSentenceChoice(sentenceChoiceObj);
+// createSentenceChoice(sentenceChoiceObj);
 createSentenceSelect(sentenceSelectObj);
 
 createAudioButton(audioButtonObj);

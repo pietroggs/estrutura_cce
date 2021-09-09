@@ -1034,33 +1034,24 @@ body{
 /* #endregion SELECT LIST */
 
 /* #region SENTENCE CHOICE */
-.--sentenceChoice-sentenceChoiceContainer{
+.--inner-sentenceChoice{
     display: flex;
-    gap: 7px;
+    width: 100%;
+    gap: 0.2rem;
     align-items: center;
 }
-.--sentenceChoice-sentenceChoiceContainer p{
-    margin: 1rem 0;
-}
-.--sentenceChoice-sentenceChoiceButton{
-    border: 1px solid gray;
+.--sentenceChoice-alternative{
+    border: 1px solid;
     height: 2rem;
-    width: auto;
-    align-items: center;
+    cursor: pointer;
+}
+.--sentenceChoice-alternativeText{
     display: flex;
     justify-content: center;
-    cursor: pointer;
-    padding: 0 0.5rem;
+    align-items: center;
+    margin: 0.3rem 0.5rem;
 }
-.--sentenceChoice-sentenceChoiceButton *{
-    pointer-events: none;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
+
 /* #endregion SENTENCE CHOICE */
 
 /* #region SENTENCE SELECT */

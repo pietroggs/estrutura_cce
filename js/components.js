@@ -1993,149 +1993,179 @@ function createSelectList(obj){
 
 // #region SENTENCE CHOICE
 function createSentenceChoice(obj){
+    const PRATICE_SELECTED = "--pratice-selected";
+    let lastChildAlternatives = null;
+    let lastChildText = obj.text.length - 1;
     let buttons = [];
-    let texts = [];
-    let selectedAnswer = "";
 
-    let buttonEvent = function()
-    {
-        let index = buttons.indexOf(this);
+    let currentAnswer = [];
 
-        if(selectedAnswer === "" || selectedAnswer != index){
-            selectedAnswer = index;
-            buttons.forEach(function(e){
-                if(e.classList.contains("--pratice-selected")){
-                    e.classList.remove("--pratice-selected");
-                }
-            });
+    let buttonEvent = function (e){
+        let divButtonClicked = this;
+        let boxInformation = parseInt(e.target.id.split("-")[6]);
+        let elementId = parseInt(e.target.id.split("-")[7]);
 
-            this.classList.add("--pratice-selected");
-
-            if(index === obj.correct){
-                parent.playSoundFx("correct");
-                log("CORRETO")
-            }else{
-                parent.playSoundFx("incorrect");
-                log("INCORRETO")
+        if(currentAnswer[boxInformation] === "" || currentAnswer[boxInformation] != elementId){
+            for (let i = 0; i < buttons[boxInformation].length; i++) {
+                buttons[boxInformation][i].classList.remove(PRATICE_SELECTED);
             }
 
-        }else {
-            this.classList.remove("--pratice-selected");
-            selectedAnswer = "";
+            divButtonClicked.classList.add(PRATICE_SELECTED);
+            currentAnswer[boxInformation] = elementId;
+
+            checkAnswer(boxInformation);
+
+        }else{
+            divButtonClicked.classList.remove(PRATICE_SELECTED);
+            currentAnswer[boxInformation] = "";
         }
     }
 
-    create("", "#--inner-sentenceChoice-" + obj.id, "--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceContainer  text  gray");
+    function checkAnswer(question){
+        if(obj.correct[question] === currentAnswer[question]){
+            console.log("correto");
+            parent.parent.playSoundFx("correct")
+        }
+        else{
+            console.log("errado");
+            parent.parent.playSoundFx("incorrect")
+        }
+    }
 
-    texts[0] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-0-"+obj.id, "--sentenceChoice-sentenceChoiceText");
-    texts[0].innerHTML = obj.text[0];
+    create("", "#--inner-sentenceChoice-" + obj.id, "--inner-sentenceChoiceContainer-"+ obj.id, "--inner-sentenceChoice");
+    for (let i = 0; i < lastChildText; i++) {
+        let text1 = create("p", "#--inner-sentenceChoiceContainer-"+ obj.id, "--sentenceChoice-text-"+ obj.id +"-"+i, "--sentenceChoice-text text gray");
+        text1.innerHTML = obj.text[i];
 
-    buttons[0]= create("", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceButton-0-"+obj.id, "--sentenceChoice-sentenceChoiceButton");
-    buttons[0].innerHTML = obj.text[1];
-
-    let slash = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceSlash-"+obj.id, "--sentenceChoice-sentenceChoiceSlash");
-    slash.innerHTML = "/";
-
-    buttons[1]= create("", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceButton-1-"+obj.id, "--sentenceChoice-sentenceChoiceButton");
-    buttons[1].innerHTML = obj.text[2];
-
-    texts[1] = create("p", "#--sentenceChoice-sentenceChoiceContainer-"+obj.id, "--sentenceChoice-sentenceChoiceText-1-"+obj.id, "--sentenceChoice-sentenceChoiceText");
-    texts[1].innerHTML = obj.text[3];
-
-    buttons.forEach(function(element) {
-        element.addEventListener("click", buttonEvent);
-    });
-
-
-    // #region Pratice Handler
-        function DefaultState()
-        {
-            for(let i = 0; i < buttons.length; i++)
-            {
-                if(selectedAnswer === i)
-                    buttons[i].classList.add("--pratice-selected");
-                else
-                    buttons[i].classList.remove("--pratice-selected");
-
-                buttons[i].classList.remove("--pratice-correct");
-                buttons[i].classList.remove("--pratice-incorrect");
-                buttons[i].classList.remove("--pratice-border-blocked");
-                buttons[i].classList.remove("--pratice-text-blocked");
-
-                buttons[i].addEventListener("click", buttonEvent);
-            }
+        lastChildAlternatives = obj.alternativesText[i].length - 1;
+        let buttonsTemp = [];
+    
+        for (let j = 0; j < lastChildAlternatives; j++) {
+            let button = create("", "#--inner-sentenceChoiceContainer-"+ obj.id, "--sentenceChoice-alternative-"+ obj.id +"-"+i+"-"+j, "--sentenceChoice-alternative text gray");
+            let textAlternative = create("p", "#--sentenceChoice-alternative-"+ obj.id +"-"+i+"-"+j, "--sentenceChoice-alternative-text-"+ obj.id +"-"+i+"-"+j, "--sentenceChoice-alternativeText");
+            textAlternative.innerHTML = obj.alternativesText[i][j];
+            
+            let separator = create("p", "#--inner-sentenceChoiceContainer-"+ obj.id, "--sentenceChoice-separator-"+ obj.id +"-"+i+"-"+j, "--sentenceChoice-separator");
+            separator.innerHTML = obj.separator;
+            
+            button.addEventListener("click", buttonEvent);
+            buttonsTemp[j] = button;
+            buttons[i] = buttonsTemp;
         }
 
-        // Show Correct Markeds
-        let markAllIsActive;
-        function MarkAll(callback)
+        let button = create("", "#--inner-sentenceChoiceContainer-"+ obj.id, "--sentenceChoice-alternative-"+ obj.id +"-"+i+"-"+lastChildAlternatives, "--sentenceChoice-alternative text gray");
+        let textAlternative = create("p", "#--sentenceChoice-alternative-"+ obj.id +"-"+i+"-"+lastChildAlternatives, "--sentenceChoice-alternative-text-"+ obj.id +"-"+i+"-"+lastChildAlternatives, "--sentenceChoice-alternativeText");
+        textAlternative.innerHTML = obj.alternativesText[i][lastChildAlternatives];
+
+        button.addEventListener("click", buttonEvent);
+
+        buttonsTemp[lastChildAlternatives] = button;
+        buttons[i] = buttonsTemp;
+
+        currentAnswer[i] = "";
+    }
+
+    let text1 = create("p", "#--inner-sentenceChoiceContainer-"+ obj.id, "--sentenceChoice-text-"+ obj.id +"-"+lastChildText, "--sentenceChoice-text text gray");
+    text1.innerHTML = obj.text[lastChildText];
+
+    // #region Pratice Handler
+    function DefaultState() {
+        
+        for (let i = 0; i < buttons.length; i++)
         {
-            // Enable Mark All
-            if(callback === "mark-all" && !markAllIsActive)
+            for (let j = 0; j < buttons[i].length; j++)
             {
-                markAllIsActive = true;
-                if(selectedAnswer !== "")
+                buttons[i][j].addEventListener("click", buttonEvent);
+                buttons[i][j].classList.remove("--pratice-correct");
+                buttons[i][j].classList.remove("--pratice-incorrect");
+                buttons[i][j].classList.remove("--pratice-selected");
+                buttons[i][j].classList.remove("--pratice-blocked");
+                    
+                if(currentAnswer[i] !== "" && currentAnswer[i] === j)
                 {
-                    if(selectedAnswer === obj.correct)
+                    buttons[i][j].classList.add("--pratice-selected");
+                }
+            }
+        }
+    }
+    // Show Correct Markeds
+    let markAllIsActive;
+    function MarkAll(callback) {
+        // Enable Mark All
+        if (callback === "mark-all" && !markAllIsActive)
+        {
+            markAllIsActive = true;
+
+            for (let i = 0; i < obj.correct.length; i++)
+            {
+                if(currentAnswer[i] !== "")
+                {
+                    if(currentAnswer[i] === obj.correct[i])
                     {
-                        buttons[selectedAnswer].classList.add("--pratice-correct");
+                        buttons[i][currentAnswer[i]].classList.add("--pratice-correct");
                     }
                     else
                     {
-                        buttons[selectedAnswer].classList.add("--pratice-incorrect");
-                    }
-
-                    for(let i = 0; i < buttons.length; i++)
-                    {
-                        buttons[i].removeEventListener("click", buttonEvent);
+                        buttons[i][currentAnswer[i]].classList.add("--pratice-incorrect");  
                     }
                 }
             }
-            // Disable Mark All
-            else markAllIsActive = false;
-        }
 
-        // Show All
-        let showAnswersIsActive;
-        function ShowAnswer(callback)
-        {
-            // Enable Show All
-            if(callback === "show-answers" && !showAnswersIsActive)
+            for (let i = 0; i < buttons.length; i++)
             {
-                showAnswersIsActive = true;
-                for(let i = 0; i < buttons.length; i++)
+                for (let j = 0; j < buttons[i].length; j++)
                 {
-                    buttons[i].classList.add("--pratice-border-blocked");
-                    buttons[i].classList.add("--pratice-text-blocked");
-                    buttons[i].classList.remove("--pratice-selected");
-                    buttons[i].removeEventListener("click", buttonEvent);
+                    buttons[i][j].removeEventListener("click", buttonEvent);
                 }
-
-                buttons[obj.correct].classList.add("--pratice-selected");
-                buttons[obj.correct].classList.remove("--pratice-text-blocked");
             }
-            // Disable Show All
-            else showAnswersIsActive = false;
         }
+        // Disable MarkAll
+        else markAllIsActive = false;
+    }
 
-        // Reset All
-        function Reset(callback)
+    // Show All
+    let showAnswersIsActive;
+    function ShowAnswer(callback)
+    {
+        // Enable Show All
+        if (callback === "show-answers" && !showAnswersIsActive)
         {
+            showAnswersIsActive = true;
+
+            for (let i = 0; i < buttons.length; i++)
+            {
+                for (let j = 0; j < buttons[i].length; j++)
+                {
+                    buttons[i][j].removeEventListener("click", buttonEvent);
+                    buttons[i][j].classList.remove("--pratice-selected");
+                    
+                    if(obj.correct[i] === j) buttons[i][j].classList.add("--pratice-blocked");
+                }
+            }
+        }
+        // Disable Show All
+        else showAnswersIsActive = false;
+    }
+
+    // Reset All
+    function Reset(callback) {
+        DefaultState();
+        // Enable Reset
+        if (callback === "reset") {
+
+            for (let i = 0; i < currentAnswer.length; i++) {
+                currentAnswer[i] = "";
+            }
+
             DefaultState();
 
-            // Enable Reset
-            if(callback === "reset")
-            {
-                selectedAnswer = "";
-                DefaultState();
-
-                setTimeout(function()
-                {
-                    document.getElementById("reset").classList.remove("active");
-                }, 200);
-            }
+            setTimeout(function () {
+                document.getElementById("reset").classList.remove("active");
+            }, 200);
         }
-        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    }
+
+    SignInFooterButton(MarkAll, ShowAnswer, Reset);
     //#endregion
 }
 //#endregion
