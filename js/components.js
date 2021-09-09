@@ -2580,9 +2580,6 @@ function createSentenceMultipleChoice(obj){
     text.innerHTML = obj.text[lastObj];
     sentenceBlocks[lastObj].addEventListener("click", buttonEvent);
 
-
-    console.log(sentenceBlocks);
-
         // #region Pratice Handler
         function DefaultState()
         {
@@ -2689,14 +2686,184 @@ function createSentenceMultipleChoice(obj){
 function createTableChoice(obj)
 {
     let headerText = [];
+    let buttons = [];
+    let currentAnswer = [];
 
-    create("", "#--innerTableChoice-"+obj.id, "--innerTableChoice-header-"+obj.id, "--innerTableChoice-header");
-    headerText[0] = create("", "#--innerTableChoice-header-"+obj.id, "--innerTableChoice-text-" + obj.id + "-0", "--innerTableChoice-text text gray");
+    let buttonEvent = function(e)
+    {
+        let btn = e.currentTarget.firstChild;
+        let question = parseInt(btn.id.split("-")[6]);
+        let selected = parseInt(btn.id.split("-")[7]);
+
+        if(currentAnswer[question] === "" || currentAnswer[question] != selected)
+        {
+            for(let i = 0; i < buttons[question].length; i++)
+            {
+                buttons[question][i].firstChild.classList.remove("--pratice-selected");
+            }
+
+            btn.classList.add("--pratice-selected");
+            currentAnswer[question] = selected;
+            
+            CheckAnswer(question);
+        }
+        else
+        {
+            btn.classList.remove("--pratice-selected");
+            currentAnswer[question] = "";
+        }
+    }
+
+    function CheckAnswer(question)
+    {
+        if(obj.correct[question] === currentAnswer[question])
+        {
+            console.log("correto");
+            parent.parent.playSoundFx("correct")
+        }
+        else
+        {
+            console.log("errado");
+            parent.parent.playSoundFx("incorrect")
+        }
+    }
+
+    create("", "#--inner-tableChoice-"+obj.id, "--inner-tableChoice-header-"+obj.id, "--inner-tableChoice-header");
+    create("", "#--inner-tableChoice-header-"+obj.id, "--inner-tableChoice-headerContainer-" + obj.id, "--inner-tableChoice-headerContainer text gray");
+
+    headerText[0] = create("", "#--inner-tableChoice-headerContainer-" + obj.id, "--inner-tableChoice-text-" + obj.id + "-0", "--inner-tableChoice-headerText text gray");
     headerText[0].innerHTML = obj.header[0];
-    headerText[1] = create("", "#--innerTableChoice-header-"+obj.id, "--innerTableChoice-text-" + obj.id + "-1", "--innerTableChoice-text text gray");
+    headerText[1] = create("", "#--inner-tableChoice-headerContainer-" + obj.id, "--inner-tableChoice-text-" + obj.id + "-1", "--inner-tableChoice-headerText text gray");
     headerText[1].innerHTML = obj.header[1];
-    
 
+    for(let i = 0; i < obj.text.length; i++)
+    {
+        create("", "#--inner-tableChoice-"+obj.id, "--inner-tableChoice-question-" + obj.id + "-" + i, "--inner-tableChoice-question");
+        let text = create("p", "#--inner-tableChoice-question-" + obj.id + "-" + i, "--inner-tableChoice-text-" + obj.id + "-" + i, "--inner-tableChoice-text text gray");
+        text.innerHTML = obj.text[i];
+
+        create("", "#--inner-tableChoice-question-" + obj.id + "-" + i, "--inner-tableChoice-questionContainer-" + obj.id + "-" + i, "--inner-tableChoice-questionContainer");
+        
+        // button containers
+        let btnContainer = [];
+        btnContainer[0] = create("", "#--inner-tableChoice-questionContainer-" + obj.id + "-" + i, "--inner-tableChoice-questionContainerLeft-" + obj.id + "-" + i, "--inner-tableChoice-questionContainerSide");       // right
+        btnContainer[1] = create("", "#--inner-tableChoice-questionContainer-" + obj.id + "-" + i, "--inner-tableChoice-questionContainerRight-" + obj.id + "-" + i, "--inner-tableChoice-questionContainerSide");
+        
+        // buttons
+        let temp_array = [];
+
+        for (let j = 0; j < btnContainer.length; j++)
+        {
+            let btn = create("", "#" + btnContainer[j].id, "--inner-tableChoice-buttonBorder-" + obj.id + "-" + i + "-" + j, "--inner-tableChoice-buttonBorder");
+            create("", "#--inner-tableChoice-buttonBorder-" + obj.id + "-" + i + "-" + j, "--inner-tableChoice-buttonInner-" + obj.id + "-" + i + "-" + j, "--inner-tableChoice-buttonInner");
+        
+            btn.addEventListener("click", buttonEvent);
+            temp_array[j] = btn;
+            buttons[i] = temp_array;
+        }
+
+        currentAnswer[i] = "";
+    }
+
+    // #region Pratice Handler
+    function DefaultState() {
+        
+        for (let i = 0; i < buttons.length; i++)
+        {
+            for (let j = 0; j < buttons[i].length; j++)
+            {
+                buttons[i][j].addEventListener("click", buttonEvent);
+                buttons[i][j].firstChild.classList.remove("--pratice-correct");
+                buttons[i][j].firstChild.classList.remove("--pratice-incorrect");
+                buttons[i][j].firstChild.classList.remove("--pratice-selected");
+                buttons[i][j].firstChild.classList.remove("--pratice-blocked");
+                    
+                if(currentAnswer[i] !== "" && currentAnswer[i] === j)
+                {
+                    buttons[i][j].firstChild.classList.add("--pratice-selected");
+                }
+            }
+        }
+    }
+    // Show Correct Markeds
+    let markAllIsActive;
+    function MarkAll(callback) {
+        // Enable Mark All
+        if (callback === "mark-all" && !markAllIsActive)
+        {
+            markAllIsActive = true;
+
+            for (let i = 0; i < obj.correct.length; i++)
+            {
+                if(currentAnswer[i] !== "")
+                {
+                    if(currentAnswer[i] === obj.correct[i])
+                    {
+                        buttons[i][currentAnswer[i]].firstChild.classList.add("--pratice-correct");
+                    }
+                    else
+                    {
+                        buttons[i][currentAnswer[i]].firstChild.classList.add("--pratice-incorrect");  
+                    }
+                }
+            }
+
+            for (let i = 0; i < buttons.length; i++)
+            {
+                for (let j = 0; j < buttons[i].length; j++)
+                {
+                    buttons[i][j].removeEventListener("click", buttonEvent);
+                }
+            }
+        }
+        // Disable MarkAll
+        else markAllIsActive = false;
+    }
+
+    // Show All
+    let showAnswersIsActive;
+    function ShowAnswer(callback)
+    {
+        // Enable Show All
+        if (callback === "show-answers" && !showAnswersIsActive)
+        {
+            showAnswersIsActive = true;
+
+            for (let i = 0; i < buttons.length; i++)
+            {
+                for (let j = 0; j < buttons[i].length; j++)
+                {
+                    buttons[i][j].removeEventListener("click", buttonEvent);
+                    buttons[i][j].firstChild.classList.remove("--pratice-selected");
+                    
+                    if(obj.correct[i] === j) buttons[i][j].firstChild.classList.add("--pratice-blocked");
+                }
+            }
+        }
+        // Disable Show All
+        else showAnswersIsActive = false;
+    }
+
+    // Reset All
+    function Reset(callback) {
+        DefaultState();
+        // Enable Reset
+        if (callback === "reset") {
+
+            for (let i = 0; i < currentAnswer.length; i++) {
+                currentAnswer[i] = "";
+            }
+
+            DefaultState();
+
+            setTimeout(function () {
+                document.getElementById("reset").classList.remove("active");
+            }, 200);
+        }
+    }
+
+    SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
 }
 //#endregion
 

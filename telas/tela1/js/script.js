@@ -109,8 +109,8 @@ let sentenceChoiceMultiploObj = {
 let tableChoiceObj = {
     id: 0,
     header: ["True", "False"],
-    text: ["always", "never", "sometimes"],
-    correct: [0, 1]
+    text: ["always", "never", "sometimes", "sometimes"],
+    correct: [0, 1, 0, 1]
 }
 
 //Use to Create The Footer Buttons

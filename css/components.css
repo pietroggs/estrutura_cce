@@ -1365,6 +1365,7 @@ body{
 }
 .--pratice-selected{
     background-color: rgb(135, 136, 157);
+    border-color: rgb(135, 136, 157) !important;
     color: white;
 }
 .--pratice-blocked{
@@ -1381,4 +1382,55 @@ body{
 
 
 /* #region TABLE CHOICE */
+.--inner-tableChoice-header{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.--inner-tableChoice-headerContainer,
+.--inner-tableChoice-questionContainer{
+    display: flex;
+    width: 20%;
+    min-height: 3rem;
+    min-width: 3rem;
+    text-align: center;
+}
+
+.--inner-tableChoice-headerText,
+.--inner-tableChoice-questionContainerSide{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+}
+
+.--inner-tableChoice-question{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border-top: 2px solid #595b68;
+
+}
+
+.--inner-tableChoice-headerText,
+.--inner-tableChoice-buttonBorder{
+    margin: 0.5rem;
+
+}
+.--inner-tableChoice-buttonBorder,
+.--inner-tableChoice-buttonInner{
+    cursor: pointer;
+    height: 3rem;
+    width: 3rem;
+    border: 2px solid #595b68;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.--inner-tableChoice-buttonInner{
+    height: 50%;
+    width: 50%;
+}
 /* #endregion TABLE CHOICE */
