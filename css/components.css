@@ -721,6 +721,7 @@ body{
     z-index: 2;
 }
 #--drawline-ghost{
+    pointer-events: none;
     margin: 0;
     width: 3rem;
     height: 3rem;
