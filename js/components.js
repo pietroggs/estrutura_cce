@@ -2002,9 +2002,9 @@ function createSentenceChoice(obj){
 
     let buttonEvent = function (e){
         let divButtonClicked = this;
-        let boxInformation = parseInt(e.target.id.split("-")[6]);
-        let elementId = parseInt(e.target.id.split("-")[7]);
-
+        let boxInformation = parseInt(e.target.id.split("-")[5]);
+        let elementId = parseInt(e.target.id.split("-")[6]);
+        
         if(currentAnswer[boxInformation] === "" || currentAnswer[boxInformation] != elementId){
             for (let i = 0; i < buttons[boxInformation].length; i++) {
                 buttons[boxInformation][i].classList.remove(PRATICE_SELECTED);
@@ -2042,7 +2042,7 @@ function createSentenceChoice(obj){
     
         for (let j = 0; j < lastChildAlternatives; j++) {
             let button = create("", "#--inner-sentenceChoiceContainer-"+ obj.id, "--sentenceChoice-alternative-"+ obj.id +"-"+i+"-"+j, "--sentenceChoice-alternative text gray");
-            let textAlternative = create("p", "#--sentenceChoice-alternative-"+ obj.id +"-"+i+"-"+j, "--sentenceChoice-alternative-text-"+ obj.id +"-"+i+"-"+j, "--sentenceChoice-alternativeText");
+            let textAlternative = create("p", "#--sentenceChoice-alternative-"+ obj.id +"-"+i+"-"+j, "--sentenceChoice-alternativetext-"+ obj.id +"-"+i+"-"+j, "--sentenceChoice-alternativeText");
             textAlternative.innerHTML = obj.alternativesText[i][j];
             
             let separator = create("p", "#--inner-sentenceChoiceContainer-"+ obj.id, "--sentenceChoice-separator-"+ obj.id +"-"+i+"-"+j, "--sentenceChoice-separator");
@@ -2054,7 +2054,7 @@ function createSentenceChoice(obj){
         }
 
         let button = create("", "#--inner-sentenceChoiceContainer-"+ obj.id, "--sentenceChoice-alternative-"+ obj.id +"-"+i+"-"+lastChildAlternatives, "--sentenceChoice-alternative text gray");
-        let textAlternative = create("p", "#--sentenceChoice-alternative-"+ obj.id +"-"+i+"-"+lastChildAlternatives, "--sentenceChoice-alternative-text-"+ obj.id +"-"+i+"-"+lastChildAlternatives, "--sentenceChoice-alternativeText");
+        let textAlternative = create("p", "#--sentenceChoice-alternative-"+ obj.id +"-"+i+"-"+lastChildAlternatives, "--sentenceChoice-alternativetext-"+ obj.id +"-"+i+"-"+lastChildAlternatives, "--sentenceChoice-alternativeText");
         textAlternative.innerHTML = obj.alternativesText[i][lastChildAlternatives];
 
         button.addEventListener("click", buttonEvent);

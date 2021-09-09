@@ -68,9 +68,11 @@ let selectListObj2 = {
 }
 // sentence choice object sample
 let sentenceChoiceObj = {
-    id: 0,
-    text: ["ON", "KJAH", "AFAS", "Rene"],
-    correct: 1
+    id: 0,
+    separator: "",
+    text: ["I", "wear a blue uniform."],
+    alternativesText: [["always", "never", "sometimes"]],
+    correct: [1],
 }
 // sentence select object sample
 let sentenceSelectObj = {
@@ -128,7 +130,7 @@ createSelectList(selectListObj);
 createSelectList(selectListObj2);
 
 
-// createSentenceChoice(sentenceChoiceObj);
+createSentenceChoice(sentenceChoiceObj);
 createSentenceSelect(sentenceSelectObj);
 
 createAudioButton(audioButtonObj);
