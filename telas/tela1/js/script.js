@@ -99,6 +99,20 @@ let imageOrdererObj = {
     image: ["image_01", "image_02", "image_03", "image_04"]
 }
 
+let sentenceChoiceMultiploObj = {
+    id: 0,
+    separator: "/",
+    text: ["always", "never", "sometimes"],
+    correct: [0, 1]
+}
+
+let tableChoiceObj = {
+    id: 0,
+    header: ["True", "False"],
+    text: ["always", "never", "sometimes", "sometimes"],
+    correct: [0, 1, 0, 1]
+}
+
 //Use to Create The Footer Buttons
 createFooterButtons();
 
@@ -121,5 +135,8 @@ createAudioButton(audioButtonObj);
 
 createRowOrderer(imageOrdererObj);
 
+createSentenceMultipleChoice(sentenceChoiceMultiploObj);
+
+createTableChoice(tableChoiceObj);
 // createSentenceInput(sentenceInputObj1);
 // createImageFrame(imageFrameObj1);

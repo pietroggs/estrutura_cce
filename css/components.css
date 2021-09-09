@@ -274,7 +274,7 @@ body{
     position: relative;
     display: flex;
     flex-direction: column;
-    width: 70%;
+    width: 50%;
 }
 .--imageFrame-popupImage{
     max-height: 20%;
@@ -721,6 +721,7 @@ body{
     z-index: 2;
 }
 #--drawline-ghost{
+    pointer-events: none;
     margin: 0;
     width: 3rem;
     height: 3rem;
@@ -1329,6 +1330,17 @@ body{
     padding: 0.5rem;
     cursor: pointer;
 }
+.sentenceChoiceMultipliceText{
+    pointer-events: none;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
 /* #endregion SENTENCE MULTIPLE CHOICE */
 
 
@@ -1345,6 +1357,7 @@ body{
 }
 .--pratice-selected{
     background-color: rgb(135, 136, 157);
+    border-color: rgb(135, 136, 157) !important;
     color: white;
 }
 .--pratice-blocked{
@@ -1358,3 +1371,58 @@ body{
     border-color: rgb(175, 175, 175) !important;
 }
 /* #endregion GENERAL PRATICES */
+
+
+/* #region TABLE CHOICE */
+.--inner-tableChoice-header{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.--inner-tableChoice-headerContainer,
+.--inner-tableChoice-questionContainer{
+    display: flex;
+    width: 20%;
+    min-height: 3rem;
+    min-width: 3rem;
+    text-align: center;
+}
+
+.--inner-tableChoice-headerText,
+.--inner-tableChoice-questionContainerSide{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+}
+
+.--inner-tableChoice-question{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border-top: 2px solid #595b68;
+
+}
+
+.--inner-tableChoice-headerText,
+.--inner-tableChoice-buttonBorder{
+    margin: 0.5rem;
+
+}
+.--inner-tableChoice-buttonBorder,
+.--inner-tableChoice-buttonInner{
+    cursor: pointer;
+    height: 3rem;
+    width: 3rem;
+    border: 2px solid #595b68;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.--inner-tableChoice-buttonInner{
+    height: 50%;
+    width: 50%;
+}
+/* #endregion TABLE CHOICE */
