@@ -1,0 +1,10 @@
+.--innerSenteceChoiceMultipleContainer{
+    display: flex;
+    gap: 0.5rem;
+}
+.--sentenceChoiceMultipliceText{
+    display: inline-block;
+    border: 1px solid;
+    padding: 0.5rem;
+    cursor: pointer;
+}
