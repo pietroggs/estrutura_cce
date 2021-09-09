@@ -2349,31 +2349,40 @@ function createDragDrop(obj) {
 
         divs[index].addEventListener("dragleave", function (e) {
           e.preventDefault();
-          // this.style.backgroundColor = "white";
           this.classList.remove("--dragBackgroundColor");
         });
 
         divs[index].addEventListener("drop", function () {
           if(divs[index].childElementCount < 2){
-              this.append(draggedItem);
-              changes[index] = draggedItem;
-              verification.value = divs[index].id.split("-")[4] + this.id.split("-")[5];
-              if (verification.key === verification.value) {
-                  parent.parent.playSoundFx("correct")
-                  log("ACERTOUUU");
-                } else {
-                  parent.parent.playSoundFx("incorrect")
-                  log("ERRROUUUU");
-              }
-          }else{
+            this.append(draggedItem);
+
+            checkAnswer(draggedItem, index, this);
+          }
+          else{
             changes[index + 1] = this.lastChild;
             this.removeChild(this.lastChild);
             this.append(draggedItem);
-            dragContainer.append(changes[index + 1])
+            dragContainer.append(changes[index + 1]);
+
+            checkAnswer(draggedItem, index, this)
           }
 
         });
       }
+
+    function checkAnswer(draggedItem, index, div)
+    {
+        changes[index] = draggedItem;
+        verification.value = divs[index].id.split("-")[4] + div.id.split("-")[5];
+        if (verification.key === verification.value) {
+            parent.parent.playSoundFx("correct")
+            log("ACERTOUUU");
+        } else {
+            parent.parent.playSoundFx("incorrect")
+            log("ERRROUUUU");
+        }
+    }
+
     // #region Pratice Handler
     function DefaultState() {
         for (let i = 0; i < divs.length; i++) {
@@ -2675,3 +2684,19 @@ function createSentenceMultipleChoice(obj){
     //#endregion
 }
 //#endregion
+
+// #region TABLE CHOICE
+function createTableChoice(obj)
+{
+    let headerText = [];
+
+    create("", "#--innerTableChoice-"+obj.id, "--innerTableChoice-header-"+obj.id, "--innerTableChoice-header");
+    headerText[0] = create("", "#--innerTableChoice-header-"+obj.id, "--innerTableChoice-text-" + obj.id + "-0", "--innerTableChoice-text text gray");
+    headerText[0].innerHTML = obj.header[0];
+    headerText[1] = create("", "#--innerTableChoice-header-"+obj.id, "--innerTableChoice-text-" + obj.id + "-1", "--innerTableChoice-text text gray");
+    headerText[1].innerHTML = obj.header[1];
+    
+
+}
+//#endregion
+
