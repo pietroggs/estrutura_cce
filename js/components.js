@@ -2359,8 +2359,10 @@ function createDragDrop(obj) {
               changes[index] = draggedItem;
               verification.value = divs[index].id.split("-")[4] + this.id.split("-")[5];
               if (verification.key === verification.value) {
+                  parent.parent.playSoundFx("correct")
                   log("ACERTOUUU");
-              } else {
+                } else {
+                  parent.parent.playSoundFx("incorrect")
                   log("ERRROUUUU");
               }
           }else{
@@ -2518,7 +2520,7 @@ function createAudioButton(obj)
 //#endregion
 
 // #region SENTECE CHOICE MULTIPLE
-function sentenceMultipleChoice(obj){
+function createSentenceMultipleChoice(obj){
     let sentenceBlocks = [];
     let answerSelected = "";
     let responseArray = [];
@@ -2527,12 +2529,15 @@ function sentenceMultipleChoice(obj){
   
     function buttonEvent(){
       answerSelected = sentenceBlocks.indexOf(this);
+
       if(!responseArray.includes(answerSelected)){
         responseArray.push(answerSelected);
+        sentenceBlocks[answerSelected].firstChild.classList.add("--pratice-selected");
         count ++;
       }else{
         let idInResponse = responseArray.indexOf(answerSelected);
         responseArray.splice(idInResponse, 1);
+        sentenceBlocks[answerSelected].firstChild.classList.remove("--pratice-selected");
         count --;
       }
       checkAnswer();
@@ -2565,6 +2570,108 @@ function sentenceMultipleChoice(obj){
     let text = create("p", "#--sentenceChoiceMultipliceItem-" + obj.id +"-"+ lastObj, "--sentenceChoiceMultipliceText-" + obj.id +"-"+lastObj, "--sentenceChoiceMultipliceText");
     text.innerHTML = obj.text[lastObj];
     sentenceBlocks[lastObj].addEventListener("click", buttonEvent);
-  
+
+
+    console.log(sentenceBlocks);
+
+        // #region Pratice Handler
+        function DefaultState()
+        {
+            for(let i = 0; i < sentenceBlocks.length; i++)
+            {
+                sentenceBlocks[i].firstChild.classList.remove("--pratice-selected");
+                sentenceBlocks[i].firstChild.classList.remove("--pratice-correct");
+                sentenceBlocks[i].firstChild.classList.remove("--pratice-incorrect");
+                sentenceBlocks[i].firstChild.classList.remove("--pratice-text-blocked");
+                sentenceBlocks[i].firstChild.classList.remove("--pratice-border-blocked");
+                sentenceBlocks[i].addEventListener("click", buttonEvent);
+
+                if(responseArray.includes(i))
+                {
+                    sentenceBlocks[i].firstChild.classList.add("--pratice-selected");
+                }
+            }
+        }
+
+        // Show Correct Markeds
+        let markAllIsActive;
+        function MarkAll(callback)
+        {
+            // Enable Mark All
+            if(callback === "mark-all" && !markAllIsActive)
+            {
+                markAllIsActive = true;
+                
+                for(let i = 0; i < sentenceBlocks.length; i++)
+                {
+                    if(responseArray.includes(i))
+                    {
+                        if(obj.correct.includes(i))
+                        {
+                            sentenceBlocks[i].firstChild.classList.add("--pratice-correct");
+                        }
+                        else
+                        {
+                            sentenceBlocks[i].firstChild.classList.add("--pratice-incorrect");
+                        }
+                    }
+
+                    sentenceBlocks[i].removeEventListener("click", buttonEvent);
+                }
+                
+            }
+            // Disable Mark All
+            else markAllIsActive = false;
+        }
+
+        // Show All
+        let showAnswersIsActive;
+        function ShowAnswer(callback)
+        {
+            // Enable Show All
+            if(callback === "show-answers" && !showAnswersIsActive)
+            {
+                showAnswersIsActive = true;
+
+                for(let i = 0; i < sentenceBlocks.length; i++)
+                {
+                    if(obj.correct.includes(i))
+                    {
+                        sentenceBlocks[i].firstChild.classList.add("--pratice-selected");
+                    }
+                    else
+                    {
+                        sentenceBlocks[i].firstChild.classList.remove("--pratice-selected");
+                        sentenceBlocks[i].firstChild.classList.add("--pratice-text-blocked");
+                        sentenceBlocks[i].firstChild.classList.add("--pratice-border-blocked");
+                    }
+
+                    sentenceBlocks[i].removeEventListener("click", buttonEvent);
+                }
+            }
+            // Disable Show All
+            else showAnswersIsActive = false;
+        }
+
+        // Reset All
+        function Reset(callback)
+        {
+            DefaultState();
+
+            // Enable Reset
+            if(callback === "reset")
+            {
+                responseArray = [];
+                count = 0;
+                DefaultState();
+
+                setTimeout(function()
+                {
+                    document.getElementById("reset").classList.remove("active");
+                }, 200);
+            }
+        }
+        SignInFooterButton(MarkAll, ShowAnswer, Reset);
+    //#endregion
 }
 //#endregion

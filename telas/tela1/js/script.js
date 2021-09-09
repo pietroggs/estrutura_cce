@@ -99,6 +99,13 @@ let imageOrdererObj = {
     image: ["image_01", "image_02", "image_03", "image_04"]
 }
 
+let sentenceChoiceMultiploObj = {
+    id: 0,
+    separator: "/",
+    text: ["always", "never", "sometimes"],
+    correct: [0, 1]
+}
+
 //Use to Create The Footer Buttons
 createFooterButtons();
 
@@ -120,6 +127,8 @@ createSentenceSelect(sentenceSelectObj);
 createAudioButton(audioButtonObj);
 
 createRowOrderer(imageOrdererObj);
+
+createSentenceMultipleChoice(sentenceChoiceMultiploObj);
 
 // createSentenceInput(sentenceInputObj1);
 // createImageFrame(imageFrameObj1);

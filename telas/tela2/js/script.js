@@ -142,57 +142,7 @@ let sentenceChoiceMultiploObj = {
   correct: [1, 3]
 }
 
-sentenceMultipleChoice(sentenceChoiceMultiploObj);
-
-function sentenceMultipleChoice(obj){
-  let sentenceBlocks = [];
-  let answerSelected = "";
-  let responseArray = [];
-  let count = 0;
-  let lastObj = obj.text.length - 1;
-
-  function buttonEvent(){
-    answerSelected = sentenceBlocks.indexOf(this);
-    if(!responseArray.includes(answerSelected)){
-      responseArray.push(answerSelected);
-      count ++;
-    }else{
-      let idInResponse = responseArray.indexOf(answerSelected);
-      responseArray.splice(idInResponse, 1);
-      count --;
-    }
-    checkAnswer();
-  }
-
-
-  function checkAnswer(){
-    for (let index = 0; index < obj.correct.length; index++) {
-      let objCorrect = obj.correct[index];
-      if(!responseArray.includes(objCorrect) || count != obj.correct.length){
-        return;
-      }
-    }
-    console.log("CORRETO")
-    parent.parent.playSoundFx("success");
-  }
-
-
-  for (let index = 0; index < lastObj; index++) {
-    sentenceBlocks[index] = create("", "#--innerSenteceChoiceMultiple-" + obj.id, "--sentenceChoiceMultipliceItem-" + obj.id +"-"+ index, "--sentenceChoiceMultipliceItem gray text");
-    let text = create("p", "#--sentenceChoiceMultipliceItem-" + obj.id +"-"+ index, "--sentenceChoiceMultipliceText-" + obj.id +"-"+index, "--sentenceChoiceMultipliceText");
-    text.innerHTML = obj.text[index];
-
-    sentenceBlocks[index].append(" " + obj.separator + " ");
-
-    sentenceBlocks[index].addEventListener("click", buttonEvent);
-  }
-  
-  sentenceBlocks[lastObj] = create("", "#--innerSenteceChoiceMultiple-" + obj.id, "--sentenceChoiceMultipliceItem-" + obj.id +"-"+ lastObj, "--sentenceChoiceMultipliceItem gray text");
-  let text = create("p", "#--sentenceChoiceMultipliceItem-" + obj.id +"-"+ lastObj, "--sentenceChoiceMultipliceText-" + obj.id +"-"+lastObj, "--sentenceChoiceMultipliceText");
-  text.innerHTML = obj.text[lastObj];
-  sentenceBlocks[lastObj].addEventListener("click", buttonEvent);
-
-}
+// createSentenceMultipleChoice(sentenceChoiceMultiploObj);
 
 
 
